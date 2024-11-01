@@ -1,0 +1,28 @@
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 5.2//EN" "http://www.hibernate.org/dtd/hibernate-configuration-5.2.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <!-- JDBC Database connection settings -->
+        <property name="hibernate.connection.driver_class">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
+        <property name="hibernate.connection.url">jdbc:sqlserver://localhost:1433;databaseName=supermarket_db</property>
+        <property name="hibernate.connection.username">Maya2002Yagan</property>
+        <property name="hibernate.connection.password">123</property>
+
+        <!-- JDBC connection pool settings -->
+        <property name="hibernate.c3p0.min_size">5</property>
+        <property name="hibernate.c3p0.max_size">20</property>
+
+        <!-- SQL Dialect -->
+        <property name="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</property>
+
+        <!-- Echo all executed SQL to stdout -->
+        <property name="hibernate.show_sql">true</property>
+        <property name="hibernate.format_sql">true</property>
+
+        <!-- Automatically drop and recreate the database schema on startup -->
+        <property name="hibernate.hbm2ddl.auto">update</property>
+
+        <!-- Register entity class -->
+        <mapping class="com.maya2002yagan.supermarket_management.Role"/>
+        <mapping class="com.maya2002yagan.supermarket_management.User"/>
+    </session-factory>
+</hibernate-configuration>
