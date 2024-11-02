@@ -1,4 +1,4 @@
-package com.maya2002yagan.supermarket_management;
+package com.maya2002yagan.supermarket_management.model;
 
 import java.util.List;
 import javax.persistence.Column;

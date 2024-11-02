@@ -22,7 +22,7 @@
         <property name="hibernate.hbm2ddl.auto">update</property>
 
         <!-- Register entity class -->
-        <mapping class="com.maya2002yagan.supermarket_management.Role"/>
-        <mapping class="com.maya2002yagan.supermarket_management.User"/>
+        <mapping class="com.maya2002yagan.supermarket_management.model.Role"/>
+        <mapping class="com.maya2002yagan.supermarket_management.model.User"/>
     </session-factory>
 </hibernate-configuration>

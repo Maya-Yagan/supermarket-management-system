@@ -1,4 +1,6 @@
-package com.maya2002yagan.supermarket_management;
+package com.maya2002yagan.supermarket_management.service;
+
+import com.maya2002yagan.supermarket_management.model.User;
 
 /**
  * Service class responsible for authenticating users based on their email and password.

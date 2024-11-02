@@ -1,5 +1,8 @@
-package com.maya2002yagan.supermarket_management;
+package com.maya2002yagan.supermarket_management.controller;
 
+import com.maya2002yagan.supermarket_management.service.AuthenticationService;
+import com.maya2002yagan.supermarket_management.util.HibernateUtil;
+import com.maya2002yagan.supermarket_management.model.User;
 import java.io.IOException;
 import javafx.scene.text.Text;
 import javafx.scene.control.TextField;

@@ -1,4 +1,4 @@
-package com.maya2002yagan.supermarket_management;
+package com.maya2002yagan.supermarket_management.controller;
 
 import java.io.IOException;
 import java.net.URL;

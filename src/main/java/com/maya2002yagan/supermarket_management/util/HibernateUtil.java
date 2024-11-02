@@ -1,4 +1,4 @@
-package com.maya2002yagan.supermarket_management;
+package com.maya2002yagan.supermarket_management.util;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;

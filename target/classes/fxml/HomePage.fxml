@@ -6,7 +6,7 @@
 <?import javafx.scene.text.Text?>
 
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23" fx:controller="com.maya2002yagan.supermarket_management.HomePageController">
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23" fx:controller="com.maya2002yagan.supermarket_management.controller.HomePageController">
    <children>
       <Text layoutX="32.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Supermarket Manager">
          <font>

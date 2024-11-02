@@ -1,5 +1,7 @@
-package com.maya2002yagan.supermarket_management;
+package com.maya2002yagan.supermarket_management.dao;
 
+import com.maya2002yagan.supermarket_management.util.HibernateUtil;
+import com.maya2002yagan.supermarket_management.model.Role;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
