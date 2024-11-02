@@ -1,6 +1,5 @@
 package com.maya2002yagan.supermarket_management.model;
 
-import com.maya2002yagan.supermarket_management.model.Role;
 import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.Column;

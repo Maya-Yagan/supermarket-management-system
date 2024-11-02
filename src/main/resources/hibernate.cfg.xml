@@ -24,5 +24,7 @@
         <!-- Register entity class -->
         <mapping class="com.maya2002yagan.supermarket_management.model.Role"/>
         <mapping class="com.maya2002yagan.supermarket_management.model.User"/>
+        <mapping class="com.maya2002yagan.supermarket_management.model.Category"/>
+        <mapping class="com.maya2002yagan.supermarket_management.model.Product"/>
     </session-factory>
 </hibernate-configuration>
