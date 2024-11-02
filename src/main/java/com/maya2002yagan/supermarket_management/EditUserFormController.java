@@ -11,9 +11,12 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 /**
- * FXML Controller class
- *
- * @author maya2
+ * Controller class for the "Edit User" form in the supermarket management system.
+ * Handles loading existing user information, editing user details, and saving changes.
+ * Provides functionality for setting user fields, managing position and employment options,
+ * and saving or deleting user information in the database.
+ * 
+ * @author Maya Yagan
  */
 public class EditUserFormController implements Initializable {
     
@@ -48,6 +51,12 @@ public class EditUserFormController implements Initializable {
     private final RoleDAO roleDAO = new RoleDAO();
     
 
+    /**
+     * Initializes the form by setting up gender, employment type, and position selection menus.
+     *
+     * @param location  The location of the FXML resource.
+     * @param resources The resources to localize the root object.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initializeGenderMenu();
@@ -55,11 +64,20 @@ public class EditUserFormController implements Initializable {
         initializePositionMenu();
     }
     
+    /**
+     * Sets the current user to be edited and populates form fields with the user's data.
+     *
+     * @param user The user whose information is to be loaded and edited.
+     */
     public void setUser(User user){
         this.user = user;
         populateFields();
     }
     
+    /**
+     * Handles the deletion of the current user by confirming the action with the user,
+     * and if confirmed, deletes the user record from the database.
+     */
     @FXML
     private void handleDelete(){
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -74,6 +92,10 @@ public class EditUserFormController implements Initializable {
         });
     }
     
+    /**
+     * Sets up event handlers for gender selection. Updates the displayed gender label 
+     * based on the selected item.
+     */
     private void initializeGenderMenu(){
         maleMenuItem.setOnAction(e -> {
             selectedGender = "Male";
@@ -85,6 +107,10 @@ public class EditUserFormController implements Initializable {
         });
     }
     
+    /**
+     * Configures employment type options as either "Part time" or "Full time."
+     * Updates the employment type label when an option is selected.
+     */
     private void initializeEmploymentTypeMenu(){
         partTimeMenuItem.setOnAction(e -> {
             selectedEmploymentType = "Part time";
@@ -95,7 +121,11 @@ public class EditUserFormController implements Initializable {
             employmentTypeMenu.setText(selectedEmploymentType);
         });
     }
-        
+       
+    /**
+     * Initializes the position menu, setting up checkboxes for different roles
+     * and updating the selected positions list based on user choices.
+     */
     private void initializePositionMenu(){
         managerCheckMenuItem.setOnAction(e -> toggleRoleSelection(managerCheckMenuItem, "Manager"));
         accountantCheckMenuItem.setOnAction(e -> toggleRoleSelection(accountantCheckMenuItem, "Accountant"));
@@ -103,6 +133,13 @@ public class EditUserFormController implements Initializable {
         cashierCheckMenuItem.setOnAction(e -> toggleRoleSelection(cashierCheckMenuItem, "Cashier"));
     }
  
+    /**
+     * Toggles the selection of a role in the selected positions list based on the 
+     * checkbox state. Adds or removes the role depending on whether the checkbox is selected.
+     *
+     * @param menuItem The checkbox item corresponding to a role.
+     * @param roleName The name of the role associated with the checkbox.
+     */
     private void toggleRoleSelection(CheckMenuItem menuItem, String roleName){
         Role role = roleDAO.getRoleByName(roleName);
         if(menuItem.isSelected()){
@@ -111,6 +148,10 @@ public class EditUserFormController implements Initializable {
         else selectedPositions.remove(role);
     }
     
+    /**
+     * Populates the form fields with the current user's data, including personal
+     * information, gender, employment type, and roles.
+     */
     private void populateFields(){
         if(user == null) return;
         
@@ -135,6 +176,9 @@ public class EditUserFormController implements Initializable {
         setPositionMenuSelection();
     }
     
+    /**
+     * Updates the position menu checkboxes based on the roles associated with the current user.
+     */
     private void setPositionMenuSelection(){
         managerCheckMenuItem.setSelected(selectedPositions.stream().anyMatch(r -> r.getPosition().equals("manager")));
         accountantCheckMenuItem.setSelected(selectedPositions.stream().anyMatch(r -> r.getPosition().equals("accountant")));
@@ -142,6 +186,10 @@ public class EditUserFormController implements Initializable {
         cashierCheckMenuItem.setSelected(selectedPositions.stream().anyMatch(r -> r.getPosition().equals("cashier")));
     }
     
+    /**
+     * Saves the edited user information to the database. Updates the user's personal details,
+     * employment type, roles, and password if specified. Closes the form upon successful save.
+     */
     @FXML
     private void handleSave(){
         if(user == null) return;
@@ -164,7 +212,6 @@ public class EditUserFormController implements Initializable {
         }
          user.getRoles().clear();
          user.getRoles().addAll(selectedPositions);
-         //user.setRoles(selectedPositions);
          
         if(!passwordField.getText().isEmpty())
             user.setPassword(passwordField.getText());
@@ -172,11 +219,17 @@ public class EditUserFormController implements Initializable {
         closeForm();
     }
     
+    /**
+     * Cancels the operation and closes the form without saving changes.
+     */
     @FXML
     private void handleCancel(){
         closeForm();
     }
     
+    /**
+     * Closes the current form window.
+     */
     private void closeForm(){
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         if (stage != null) {

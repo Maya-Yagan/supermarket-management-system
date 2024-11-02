@@ -6,10 +6,19 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 /**
- *
- * CRUD create read update delete
+ * Data Access Object (DAO) for the User entity.
+ * 
+ * UserDAO provides methods for performing CRUD (Create, Read, Update, Delete) operations on User entities.
+ * It interacts with the database using Hibernate for session management.
+ * 
+ * @author Maya Yagan
  */
 public class UserDAO {
+    /**
+     * Inserts a new user into the database.
+     *
+     * @param user the User object to be inserted
+     */
     public void insertUser(User user){
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -22,6 +31,12 @@ public class UserDAO {
         }
     }
     
+    /**
+     * Retrieves a user from the database by their ID.
+     *
+     * @param id the ID of the user to retrieve
+     * @return the User object with the specified ID, or null if not found
+     */
     public User getUserById(int id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<User> query = session.createQuery("FROM User u LEFT JOIN FETCH u.roles WHERE u.id = :id", User.class);
@@ -33,7 +48,11 @@ public class UserDAO {
         }
     }
 
-    
+    /**
+     * Retrieves a list of all users from the database.
+     *
+     * @return a List of User objects
+     */
     public List<User> getUsers(){
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<User> query = session.createQuery("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.roles", User.class);
@@ -44,6 +63,11 @@ public class UserDAO {
         }
     }
     
+    /**
+     * Updates the information of an existing user in the database.
+     *
+     * @param user the User object containing updated information
+     */
     public void updateUser(User user){
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()){
@@ -61,10 +85,8 @@ public class UserDAO {
             u.setIsPartTime(user.getIsPartTime());
             u.getRoles().clear();
             u.getRoles().addAll(user.getRoles());
-            // Update password if changed
-            if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+            if (user.getPassword() != null && !user.getPassword().isEmpty())
                 u.setPassword(user.getPassword());
-            }
             session.update(u);
             transaction.commit();
         } catch (Exception e){
@@ -73,6 +95,11 @@ public class UserDAO {
         }
     }
     
+    /**
+     * Deletes a user from the database by their ID.
+     *
+     * @param id the ID of the user to delete
+     */
     public void deleteUser(int id){
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()){

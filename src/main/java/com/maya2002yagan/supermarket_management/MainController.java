@@ -14,6 +14,14 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.hibernate.Session;
 
+/**
+ * Controller class for the main login screen of the application.
+ * 
+ * Note: This controller uses Hibernate for database access
+ * and depends on the AuthenticationService for password verification.
+ * 
+ * @author Maya Yagan
+ */
 public class MainController implements Initializable {
     @FXML
     private TextField emailField;
@@ -27,6 +35,26 @@ public class MainController implements Initializable {
     @FXML
     private Text statusText;
     
+    /**
+     * Initializes the controller class.
+     * Sets up an action event for the password field to trigger
+     * the login button when the Enter key is pressed.
+     *
+     * @param location  The location of the FXML resource.
+     * @param resources The resources to localize the root object.
+     */
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        passwordField.setOnAction(event -> loginButton.fire());
+    } 
+    
+    /**
+     * Handles the login button click event.
+     * Validates user input and attempts to authenticate the user 
+     * with the provided email and password. If authentication is 
+     * successful, it loads the home page; otherwise, it displays 
+     * an error message.
+     */
     @FXML
     public void handleLoginButtonClick(){
         String email = emailField.getText();
@@ -43,13 +71,9 @@ public class MainController implements Initializable {
                 .uniqueResult();
         AuthenticationService auth = new AuthenticationService(email, password);
         if (auth.authenticate(user)) {
-            // Successful login
             try {
-                // Load the home page
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/HomePage.fxml"));
                 Parent homeRoot = loader.load();
-
-                // Set up a new scene for the home page
                 Stage stage = (Stage) loginButton.getScene().getWindow();
                 stage.setScene(new Scene(homeRoot));
                 stage.setTitle("Home Page");
@@ -61,14 +85,5 @@ public class MainController implements Initializable {
             statusText.setText("Wrong email or password");
         }
         session.close();
-    }  
-    /**
-     * Initializes the controller class.
-     */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        //emailField.requestFocus();
-        passwordField.setOnAction(event -> loginButton.fire());
-    }    
-    
+    }     
 }

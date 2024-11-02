@@ -14,9 +14,9 @@ import javafx.stage.Stage;
 
 
 /**
- * FXML Controller class
+ * FXML Controller class for managing the home page in the supermarket management system.
  *
- * @author maya2
+ * @author Maya Yagan
  */
 public class HomePageController implements Initializable {
 
@@ -25,9 +25,18 @@ public class HomePageController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
     }    
     
+    /**
+     * Handles the event when the User Management Button is clicked
+     * 
+     * This method loads the User Management screen's FXML layout and displays
+     * it in the current application window. It replaces the current scene with
+     * the User Management interface.
+     * 
+     * @param event The ActionEvent triggered by clicking the 
+     * "User Management" button which serves as the source of the event.
+     */
     @FXML
     private void handleUserManagementButtonClick(ActionEvent event) {
         try {

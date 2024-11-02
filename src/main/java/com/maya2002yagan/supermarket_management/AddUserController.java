@@ -1,18 +1,24 @@
 package com.maya2002yagan.supermarket_management;
 
+import java.net.URL;
+import java.util.ResourceBundle;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.mindrot.jbcrypt.BCrypt;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.fxml.Initializable;
 
-public class AddUserController {
+/**
+ * Controller class for managing the "Add User" form in the supermarket management system.
+ * Provides functionality for initializing form controls, handling user input, and
+ * saving new user information to the database.
+ * 
+ * @author Maya Yagan
+ */
+public class AddUserController implements Initializable {
 
     @FXML
     private TextField firstNameField, lastNameField, emailField, phoneNumberField, tcNumberField, salaryField;
@@ -53,16 +59,24 @@ public class AddUserController {
 
     private final UserDAO userDAO = new UserDAO();
     private final RoleDAO roleDAO = new RoleDAO();
-
-    public AddUserController() {}
     
-    @FXML
-    public void initialize() {
+    /**
+     * Initializes the form by setting up gender, employment type, and position selection menus.
+     *
+     * @param location  The location of the FXML resource.
+     * @param resources The resources to localize the root object.
+     */
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
         initializeGenderMenu();
         initializeEmploymentTypeMenu();
         initializePositionMenu();
     }
     
+    /**
+     * Sets up event handlers for gender selection. Updates the displayed gender label 
+     * based on the selected item.
+     */
     private void initializeGenderMenu(){
         maleMenuItem.setOnAction(e -> {
             selectedGender = "Male";
@@ -73,7 +87,11 @@ public class AddUserController {
             genderMenuButton.setText(selectedGender);
         });
     }
-
+    
+    /**
+     * Configures employment type options as either "Part time" or "Full time."
+     * Updates the employment type label when an option is selected.
+     */
     private void initializeEmploymentTypeMenu(){
         partTimeMenuItem.setOnAction(e -> {
             selectedEmploymentType = "Part time";
@@ -85,6 +103,9 @@ public class AddUserController {
         });
     }
     
+    /**
+     * Initializes position selection checkboxes, adding listeners to track selected positions.
+     */
     private void initializePositionMenu(){
         managerCheckMenuItem.selectedProperty().addListener((obs, oldVal, newVal) -> updateSelectedPositions());
         accountantCheckMenuItem.selectedProperty().addListener((obs, oldVal, newVal) -> updateSelectedPositions());
@@ -92,6 +113,10 @@ public class AddUserController {
         cashierCheckMenuItem.selectedProperty().addListener((obs, oldVal, newVal) -> updateSelectedPositions());
     }
     
+    /**
+     * Updates the list of selected roles based on the checked menu items.
+     * Also updates the display text to show selected roles.
+     */
     private void updateSelectedPositions() {
         selectedPositions.clear(); // Clear previous selections
         if (managerCheckMenuItem.isSelected()) selectedPositions.add(roleDAO.getRoleByName("manager"));
@@ -105,6 +130,11 @@ public class AddUserController {
         .orElse("Select"));
     }
     
+    /**
+     * Handles the action when the save button is clicked. Validates the user input,
+     * creates a new User object, and saves it to the database if all fields are valid.
+     * Updates the warning label in case of missing or invalid input.
+     */
     @FXML
     public void handleSave() {
         warningLabel.setText("");
@@ -144,11 +174,17 @@ public class AddUserController {
         }
     }
     
+    /**
+     * Cancels the operation and closes the form without saving changes.
+     */
     @FXML
     public void handleCancel() {
         closeForm();
     }
     
+    /**
+     * Closes the current form window.
+     */
     private void closeForm() {
         Stage stage = (Stage) saveButton.getScene().getWindow();
         if (stage != null) {
@@ -156,6 +192,12 @@ public class AddUserController {
         }
     }
 
+    /**
+     * Hashes the provided password using BCrypt for secure storage.
+     *
+     * @param password The password to be hashed.
+     * @return The hashed password.
+     */
     private String hashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());
     }

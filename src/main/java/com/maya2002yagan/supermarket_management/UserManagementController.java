@@ -19,11 +19,17 @@ import java.util.ResourceBundle;
 import javafx.scene.control.TableRow;
 import javafx.stage.Stage;
 
+/**
+ * Controller class for managing the user interface related to user operations,
+ * including displaying, adding, and editing users.
+ * It interacts with the UserDAO for data access and manipulation.
+ * 
+ * @author  Maya Yagan
+ */
 public class UserManagementController implements Initializable {
 
     @FXML
     private TableView<User> userTableView;
-
     @FXML
     private TableColumn<User, String> firstNameColumn;
     @FXML
@@ -46,18 +52,22 @@ public class UserManagementController implements Initializable {
     private TableColumn<User, String> tcNumberColumn;
     @FXML
     private TableColumn<User, Integer> ageColumn;
-
-    private UserDAO userDAO;
-    
     @FXML
     private Button addUserButton; 
+    private UserDAO userDAO;
 
+    /**
+     * Initializes the controller. It sets up the table columns and loads
+     * the user data from the database.
+     * 
+     * @param location  The location of the FXML resource.
+     * @param resources The resources to localize the root object.
+     */
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
+    public void initialize(URL location, ResourceBundle resources) {
         userDAO = new UserDAO();
         configureTableColumns();
         loadUserData();
-        // Attach action to addUserButton
         addUserButton.setOnAction(event -> openAddUserModal());
         userTableView.setRowFactory(tv -> {
             TableRow<User> row = new TableRow<>();
@@ -71,6 +81,11 @@ public class UserManagementController implements Initializable {
         });
     }
     
+    /**
+     * Opens a modal dialog to edit a selected user.
+     * 
+     * @param user the User object to be edited
+     */
     private void openEditUserModal(User user){
         try{
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EditUserForm.fxml"));
@@ -88,15 +103,16 @@ public class UserManagementController implements Initializable {
         }
     }
 
+    /**
+     * Configures the columns of the user table with the appropriate cell value factories.
+     */
     private void configureTableColumns() {
         firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
         lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
         genderColumn.setCellValueFactory(new PropertyValueFactory<>("gender"));
-        // Custom cell value factory for positionColumn to show user roles
         positionColumn.setCellValueFactory(data -> {
             User user = data.getValue();
             List<Role> roles = user.getRoles();
-            // Convert the roles list to a comma-separated string of positions
             String roleNames = roles != null ? 
                 roles.stream().map(Role::getPosition).reduce((a, b) -> a + ", " + b).orElse("") : "";
             return new ReadOnlyObjectWrapper<>(roleNames);
@@ -121,11 +137,14 @@ public class UserManagementController implements Initializable {
                 int age = Period.between(birthDate, LocalDate.now()).getYears();
                 return new ReadOnlyObjectWrapper<>(age);
             } else {
-                return new ReadOnlyObjectWrapper<>(null); // or return a default value if preferred
+                return new ReadOnlyObjectWrapper<>(null);
             }
         });
     }
 
+    /**
+     * Loads the user data from the database and populates the table view.
+     */
     private void loadUserData() {
         List<User> users = userDAO.getUsers();
         if (users != null) {
@@ -133,23 +152,19 @@ public class UserManagementController implements Initializable {
         }
     }
     
-    // Method to open the add user modal
+    /**
+     * Opens a modal dialog to add a new user.
+     */
     private void openAddUserModal() {
         try {
-            // Load the FXML for the modal
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AddUserForm.fxml"));
             Parent root = loader.load();
-
-            // Create a new Stage for the modal
             Stage modalStage = new Stage();
             modalStage.setTitle("Add New User");
             modalStage.initModality(Modality.APPLICATION_MODAL);
             modalStage.setScene(new Scene(root));
             modalStage.showAndWait();
-
-            // Optionally, refresh user data after modal is closed
             loadUserData();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
