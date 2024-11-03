@@ -11,14 +11,14 @@
 
 <AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23" fx:controller="com.maya2002yagan.supermarket_management.controller.ProductManagementController">
     <children>
-      <TableView fx:id="userTableView" AnchorPane.bottomAnchor="22.0" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="153.0">
+      <TableView fx:id="productTableView" AnchorPane.bottomAnchor="22.0" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="153.0">
          <columns>
-            <TableColumn fx:id="nameColumn1" text="ID" />
+            <TableColumn fx:id="idColumn" text="ID" />
             <TableColumn fx:id="nameColumn" text="Name" />
             <TableColumn fx:id="priceColumn" text="Price" />
             <TableColumn fx:id="productionDate" text="Production Date" />
             <TableColumn fx:id="expirationDateColumn" text="Expiration Date" />
-            <TableColumn fx:id="nameColumn2" text="Discount(s)" />
+            <TableColumn fx:id="discountsColumn" text="Discount(s)" />
          </columns>
       </TableView>
       <Button fx:id="addProductButton" layoutX="347.0" layoutY="112.0" mnemonicParsing="false" text="Add Product" AnchorPane.topAnchor="112.0" />
@@ -27,13 +27,11 @@
             <Font size="26.0" />
          </font>
       </Text>
-      <MenuButton layoutX="32.0" layoutY="112.0" mnemonicParsing="false" text="Category">
+      <MenuButton fx:id="categoryMenuButton" layoutX="32.0" layoutY="112.0" mnemonicParsing="false" text="Category">
         <items>
-          <MenuItem mnemonicParsing="false" text="Action 1" />
-          <MenuItem mnemonicParsing="false" text="Action 2" />
         </items>
       </MenuButton>
-      <Button layoutX="129.0" layoutY="112.0" mnemonicParsing="false" text="Add Category" />
-      <Button layoutX="234.0" layoutY="112.0" mnemonicParsing="false" text="Edit Categories" />
+      <Button fx:id="addCategoryButton" layoutX="129.0" layoutY="112.0" mnemonicParsing="false" text="Add Category" />
+      <Button fx:id="editCategoriesButton" layoutX="234.0" layoutY="112.0" mnemonicParsing="false" text="Edit Categories" />
    </children>
 </AnchorPane>

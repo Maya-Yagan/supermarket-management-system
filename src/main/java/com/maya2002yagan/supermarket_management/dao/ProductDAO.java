@@ -1,5 +1,6 @@
 package com.maya2002yagan.supermarket_management.dao;
 
+import com.maya2002yagan.supermarket_management.model.Category;
 import com.maya2002yagan.supermarket_management.model.Product;
 import com.maya2002yagan.supermarket_management.util.HibernateUtil;
 import java.util.HashSet;
@@ -36,6 +37,18 @@ public class ProductDAO {
             return null;
         }
     }
+    
+    public Set<Product> getProductsByCategory(Category category) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<Product> query = session.createQuery("FROM Product p WHERE p.category = :category", Product.class);
+            query.setParameter("category", category);
+            return new HashSet<>(query.getResultList());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     
     public Set<Product> getProducts(){
         try (Session session = HibernateUtil.getSessionFactory().openSession()){

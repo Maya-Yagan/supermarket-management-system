@@ -197,7 +197,6 @@ public class EditUserFormController implements Initializable {
     @FXML
     private void handleSave(){
         if(user == null) return;
-        System.out.println("Selected Positions: " + selectedPositions);
 
         user.setFirstName(firstNameField.getText());
         user.setLastName(lastNameField.getText());
