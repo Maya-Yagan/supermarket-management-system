@@ -20,6 +20,7 @@ import java.time.Period;
 import java.util.List;
 import javafx.scene.control.Button;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
 import javafx.scene.control.TableRow;
 import javafx.stage.Stage;
 
@@ -170,6 +171,20 @@ public class UserManagementController implements Initializable {
             modalStage.showAndWait();
             loadUserData();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    @FXML
+    private void goToHomePage(ActionEvent event){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/HomePage.fxml"));
+            Parent userManagementRoot = loader.load();
+            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(userManagementRoot));
+            stage.setTitle("Product Management");
+            stage.show();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

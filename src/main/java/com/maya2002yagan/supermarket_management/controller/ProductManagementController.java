@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -142,6 +143,12 @@ public class ProductManagementController implements Initializable {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(new Scene(root));
             stage.showAndWait();
+            // Refresh the product list for the currently selected category
+        String selectedCategoryName = categoryMenuButton.getText();
+        if (!selectedCategoryName.equals("Category")) { 
+            Category selectedCategory = categoryDAO.getCategoryByName(selectedCategoryName);
+            handleCategorySelection(selectedCategory);
+        }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -173,6 +180,20 @@ public class ProductManagementController implements Initializable {
             stage.showAndWait();
             loadCategories();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    @FXML
+    private void goToHomePage(ActionEvent event){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/HomePage.fxml"));
+            Parent userManagementRoot = loader.load();
+            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(userManagementRoot));
+            stage.setTitle("Product Management");
+            stage.show();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

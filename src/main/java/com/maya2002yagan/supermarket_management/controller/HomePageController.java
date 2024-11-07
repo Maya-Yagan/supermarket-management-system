@@ -50,4 +50,32 @@ public class HomePageController implements Initializable {
             e.printStackTrace();
         }
     } 
+    
+    @FXML
+    private void handleProductManagementButtonClick(ActionEvent event){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProductManagement.fxml"));
+            Parent userManagementRoot = loader.load();
+            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(userManagementRoot));
+            stage.setTitle("Product Management");
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    @FXML
+    private void handleLogoutButtonClick(ActionEvent event){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Main.fxml"));
+            Parent userManagementRoot = loader.load();
+            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(userManagementRoot));
+            stage.setTitle("Product Management");
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
