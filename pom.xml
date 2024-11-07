@@ -35,15 +35,27 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <mainClass>${exec.mainClass}</mainClass>
+                    <modulePaths>
+                    <path>C:/javafx-sdk-17/lib</path> <!-- Use the actual path to your JavaFX SDK lib folder -->
+                </modulePaths>
+                    <options>
+                        <option>--module-path</option>
+                        <option>C:/javafx-sdk-17/lib</option>
+                        <option>--add-modules</option>
+                        <option>javafx.controls,javafx.fxml,javafx.graphics</option>
+                    </options>
+                </configuration>
             </plugin>
         </plugins>
     </build>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <javafx.version>21</javafx.version>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <javafx.version>17</javafx.version>
         <exec.mainClass>com.maya2002yagan.supermarket_management.Main</exec.mainClass>
     </properties>
 
@@ -98,7 +110,7 @@
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
-            <version>9.4.1.jre8</version>
+            <version>9.4.1.jre11</version>
         </dependency>
 
         <!-- Hibernate ORM Tools (Optional for schema generation) -->
@@ -119,6 +131,12 @@
             <groupId>com.mchange</groupId>
             <artifactId>c3p0</artifactId>
             <version>0.9.5.5</version> <!-- Use the latest version available -->
+        </dependency>
+        
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${javafx.version}</version>
         </dependency>
 
     </dependencies>
