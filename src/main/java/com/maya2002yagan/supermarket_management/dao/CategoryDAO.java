@@ -36,6 +36,17 @@ public class CategoryDAO {
         }
     }
     
+    public Category getCategoryByName(String category){
+        try (Session session = HibernateUtil.getSessionFactory().openSession()){
+            Query<Category> query = session.createQuery("FROM Category WHERE name = :name", Category.class);
+            query.setParameter("name", category);
+            return query.uniqueResult();
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
     public Set<Category> getCategories(){
         try (Session session = HibernateUtil.getSessionFactory().openSession()){
             Query<Category> query = session.createQuery("SELECT DISTINCT c FROM Category c", Category.class);
