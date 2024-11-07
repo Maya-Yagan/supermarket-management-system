@@ -111,7 +111,7 @@ public class User {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.salary = salary;
-        this.password = password;
+        this.password = hashPassword(password);
         this.roles = roles;
         this.isPartTime = isPartTime;
         this.isFullTime = isFullTime;
@@ -348,10 +348,21 @@ public class User {
     /**
      * Sets the user's password and hashes it.
      * 
-     * @param password the password to set
+     * @param plaintextPassword the password to set
      */
-    public void setPassword(String password) {
-        this.password = hashPassword(password);
+    public void setPassword(String plaintextPassword) {
+         if (plaintextPassword == null || plaintextPassword.isEmpty()) {
+        System.out.println("Password field is empty, skipping hash.");
+        return;
+    }
+    
+    // Only hash if it's a new plaintext password
+    if (!checkPassword(plaintextPassword)) {
+        System.out.println("Setting new password hash.");
+        this.password = hashPassword(plaintextPassword);
+    } else {
+        System.out.println("Password unchanged, skipping rehash.");
+    }
     }
 
     /**

@@ -169,7 +169,7 @@ public class AddUserController implements Initializable {
             }
             boolean isPartTime = selectedEmploymentType.equals("Part time");
             boolean isFullTime = selectedEmploymentType.equals("Full time");
-            User newUser = new User(firstName, lastName, tcNumber, birthDate, gender, email, phoneNumber, salary, hashPassword(password), roles, isPartTime, isFullTime);
+            User newUser = new User(firstName, lastName, tcNumber, birthDate, gender, email, phoneNumber, salary, password, roles, isPartTime, isFullTime);
             userDAO.insertUser(newUser);
             closeForm();
         } catch (Exception e) {
@@ -194,15 +194,5 @@ public class AddUserController implements Initializable {
         if (stage != null) {
             stage.close();
         }
-    }
-
-    /**
-     * Hashes the provided password using BCrypt for secure storage.
-     *
-     * @param password The password to be hashed.
-     * @return The hashed password.
-     */
-    private String hashPassword(String password) {
-        return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 }
