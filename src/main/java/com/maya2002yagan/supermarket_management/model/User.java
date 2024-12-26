@@ -352,17 +352,31 @@ public class User {
      */
     public void setPassword(String plaintextPassword) {
          if (plaintextPassword == null || plaintextPassword.isEmpty()) {
-        System.out.println("Password field is empty, skipping hash.");
-        return;
+            System.out.println("Password field is empty, skipping hash.");
+            return;
+        }
+    
+        // Only hash if it's a new plaintext password
+        if (!checkPassword(plaintextPassword)) {
+            System.out.println("Setting new password hash.");
+            this.password = hashPassword(plaintextPassword);
+        } 
+        else {
+            System.out.println("Password unchanged, skipping rehash.");
+        }
     }
     
-    // Only hash if it's a new plaintext password
-    if (!checkPassword(plaintextPassword)) {
-        System.out.println("Setting new password hash.");
-        this.password = hashPassword(plaintextPassword);
-    } else {
-        System.out.println("Password unchanged, skipping rehash.");
-    }
+    /**
+     * Sets the user's password without hashing it (used to avoid double hashing!)
+     * 
+     * @param password the password to set
+     */
+    public void setPasswordWithoutHashing(String password){
+        if (password == null || password.isEmpty()) {
+            System.out.println("Password field is empty, skipping assignment.");
+            return;
+        }
+        this.password = password;
     }
 
     /**

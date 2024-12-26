@@ -87,7 +87,7 @@ public class UserDAO {
             u.setIsPartTime(user.getIsPartTime());
             u.getRoles().clear();
             u.getRoles().addAll(user.getRoles());
-            if (user.getPassword() != null && !user.getPassword().isEmpty())
+            if (user.getPassword() != null && !user.getPassword().isEmpty() && user.getPassword().length() != 60)
                 u.setPassword(user.getPassword());
             session.update(u);
             transaction.commit();
