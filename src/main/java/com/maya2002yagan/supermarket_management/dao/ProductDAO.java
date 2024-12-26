@@ -11,10 +11,17 @@ import org.hibernate.query.Query;
 
 /**
  * Data Access Object (DAO) for the Product entity.
+ * This class provides methods for performing CRUD operations on Product data
+ * in the database, including inserting, retrieving, updating, and deleting products.
  * 
  * @author Maya Yagan
  */
 public class ProductDAO {
+    /**
+     * Inserts a new product into the database.
+     * 
+     * @param product The product to be inserted
+     */
     public void insertProduct(Product product){
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()){
@@ -27,6 +34,12 @@ public class ProductDAO {
         }
     }
     
+    /**
+     * Retrieves a product by its unique identifier.
+     * 
+     * @param id The unique identifier of the product
+     * @return The product with the specified id, or null if not found
+     */
     public Product getProductById(int id){
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Product> query = session.createQuery("FROM Product p WHERE p.id = :id", Product.class);
@@ -38,6 +51,12 @@ public class ProductDAO {
         }
     }
     
+    /**
+     * Retrieves a set of products that belong to a specific category.
+     * 
+     * @param category The category for which to retrieve products
+     * @return A set of products in the specified category
+     */
     public Set<Product> getProductsByCategory(Category category) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Product> query = session.createQuery("FROM Product p WHERE p.category = :category", Product.class);
@@ -49,7 +68,11 @@ public class ProductDAO {
         }
     }
 
-    
+    /**
+     * Retrieves all distinct products from the database.
+     * 
+     * @return A set of all products
+     */
     public Set<Product> getProducts(){
         try (Session session = HibernateUtil.getSessionFactory().openSession()){
             Query<Product> query = session.createQuery("SELECT DISTINCT p FROM Product p", Product.class);
@@ -60,6 +83,11 @@ public class ProductDAO {
         }
     }
     
+    /**
+     * Updates an existing product in the database.
+     * 
+     * @param product The product with updated data
+     */
     public void updateProduct(Product product){
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()){
@@ -78,6 +106,11 @@ public class ProductDAO {
         }
     }
     
+    /**
+     * Deletes a product from the database using its unique identifier.
+     * 
+     * @param id The unique identifier of the product to be deleted
+     */
     public void deleteProduct(int id){
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()){

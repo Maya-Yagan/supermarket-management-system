@@ -7,12 +7,20 @@ import java.util.Set;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+
 /**
  * Data Access Object (DAO) for the Category entity.
+ * This class provides methods for performing CRUD operations on Category data
+ * in the database, including inserting, retrieving, updating, and deleting categories.
  * 
  * @author Maya Yagan
  */
 public class CategoryDAO {
+    /**
+     * Inserts a new category into the database.
+     * 
+     * @param category The category to be inserted
+     */
     public void insertCategory(Category category){
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()){
@@ -25,6 +33,12 @@ public class CategoryDAO {
         }
     }
     
+    /**
+     * Retrieves a category by its unique identifier.
+     * 
+     * @param id The unique identifier of the category
+     * @return The category with the specified id, or null if not found
+     */
     public Category getCategoryById(int id){
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Category> query = session.createQuery("FROM Category c WHERE c.id = :id", Category.class);
@@ -36,6 +50,12 @@ public class CategoryDAO {
         }
     }
     
+    /**
+     * Retrieves a category by its name.
+     * 
+     * @param category The name of the category to be retrieved
+     * @return The category with the specified name, or null if not found
+     */
     public Category getCategoryByName(String category){
         try (Session session = HibernateUtil.getSessionFactory().openSession()){
             Query<Category> query = session.createQuery("FROM Category WHERE name = :name", Category.class);
@@ -47,6 +67,11 @@ public class CategoryDAO {
         }
     }
     
+    /**
+     * Retrieves all distinct categories from the database.
+     * 
+     * @return A set of all categories
+     */
     public Set<Category> getCategories(){
         try (Session session = HibernateUtil.getSessionFactory().openSession()){
             Query<Category> query = session.createQuery("SELECT DISTINCT c FROM Category c", Category.class);
@@ -57,6 +82,11 @@ public class CategoryDAO {
         }
     }
     
+    /**
+     * Updates an existing category in the database.
+     * 
+     * @param category The category with updated data
+     */
     public void updateCategory(Category category){
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()){
@@ -71,6 +101,11 @@ public class CategoryDAO {
         }
     }
     
+    /**
+     * Deletes a category from the database using its unique identifier.
+     * 
+     * @param id The unique identifier of the category to be deleted
+     */
     public void deleteCategory(int id){
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()){
