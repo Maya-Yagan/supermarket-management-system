@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<StackPane fx:id="stackPane" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya2002yagan.supermarket_management.controller.WarehouseProductsController">
+    <children>
+    <AnchorPane fx:id="AnchorPane">
+        <children>
+          <TableView fx:id="productTableView" layoutX="32.0" layoutY="121.0" AnchorPane.bottomAnchor="54.33333333333337" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="121.0">
+             <columns>
+                <TableColumn fx:id="idColumn" text="ID" />
+                <TableColumn fx:id="nameColumn" text="Name" />
+                <TableColumn fx:id="priceColumn" text="Price" />
+                <TableColumn fx:id="productionDate" text="Production Date" />
+                <TableColumn fx:id="expirationDateColumn" text="Expiration Date" />
+                <TableColumn fx:id="amountColumn" text="Amount" />
+                  <TableColumn fx:id="deleteColumn" text="Delete" />
+             </columns>
+             <styleClass>
+                <String fx:value="bordered" />
+                <String fx:value="striped" />
+             </styleClass>
+          </TableView>
+          <Button fx:id="addProductButton" layoutX="143.0" layoutY="80.0" mnemonicParsing="false" styleClass="accent" text="Add Product" AnchorPane.topAnchor="80.0" />
+          <Text fx:id="warehouseName" fill="#455079" layoutX="32.0" layoutY="57.0" text="" textAlignment="CENTER" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="429.4072265625" AnchorPane.topAnchor="28.943359375">
+             <font>
+                <Font size="26.0" />
+             </font>
+          </Text>
+          <MenuButton fx:id="categoryMenuButton" layoutX="32.0" layoutY="112.0" mnemonicParsing="false" styleClass="accent" text="Category" AnchorPane.leftAnchor="32.0" AnchorPane.topAnchor="80.0">
+            <items>
+            </items>
+          </MenuButton>
+            <Button fx:id="backButton" layoutX="520.0" layoutY="28.0" mnemonicParsing="false" styleClass="flat" text="Go Back" AnchorPane.rightAnchor="31.999999999999957" AnchorPane.topAnchor="28.0" />
+            <Label fx:id="label1" layoutX="291.0" layoutY="80.0" text="Double-click an amount cell to edit it" textFill="#a3a1a1" >
+                <graphic>
+                    <org.kordamp.ikonli.javafx.FontIcon iconLiteral="fth-info" />
+                </graphic>
+                <contentDisplay>LEFT</contentDisplay>
+                <graphicTextGap>5</graphicTextGap>
+            </Label>
+            <Label fx:id="label2" layoutX="292.0" layoutY="98.0" text="Then press Enter to save the new amount" textFill="#a3a1a1" />
+        </children>
+    </AnchorPane>
+    </children>
+</StackPane>
