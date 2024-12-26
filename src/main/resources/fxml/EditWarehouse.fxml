@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="386.0" prefWidth="417.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya2002yagan.supermarket_management.controller.EditWarehouseController">
+   <children>
+      <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="353.0" prefWidth="372.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints maxHeight="79.33333333333333" minHeight="10.0" prefHeight="59.66667175292969" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="52.33335367838541" minHeight="10.0" prefHeight="17.333343505859375" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="52.33335367838541" minHeight="7.333343505859375" prefHeight="18.666676839192704" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="52.33335367838541" minHeight="7.666666666666671" prefHeight="7.666666666666671" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="287.99997965494794" minHeight="10.0" prefHeight="213.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="128.33334350585938" minHeight="9.0" prefHeight="51.666646321614564" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <TableView fx:id="warehouseTableView" prefHeight="212.0" prefWidth="372.0" GridPane.rowIndex="4">
+               <columns>
+                  <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" />
+                  <TableColumn fx:id="capacityColumn" prefWidth="75.0" text="Capacity" />
+                  <TableColumn fx:id="deleteColumn" prefWidth="75.0" text="Delete" />
+               </columns>
+               <styleClass>
+                  <String fx:value="striped" />
+                  <String fx:value="bordered" />
+               </styleClass>
+            </TableView>
+            <Label text="Edit Categories" GridPane.halignment="CENTER">
+                <font>
+                    <Font size="23.0" />
+                </font>
+                <graphic>
+                    <org.kordamp.ikonli.javafx.FontIcon iconLiteral="fth-edit-3" />
+                </graphic>
+                <contentDisplay>LEFT</contentDisplay>
+                <graphicTextGap>20</graphicTextGap>
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+            </Label>
+            <Button fx:id="closeButton" mnemonicParsing="false" text="Close" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
+               <GridPane.margin>
+                  <Insets right="10.0" />
+               </GridPane.margin>
+            </Button>
+            <Label text="To edit a cell, double-click it." textFill="#a3a1a1" GridPane.rowIndex="1">
+                <graphic>
+                    <org.kordamp.ikonli.javafx.FontIcon iconLiteral="fth-info" />
+                </graphic>
+                <contentDisplay>LEFT</contentDisplay>
+                <graphicTextGap>5</graphicTextGap>
+            </Label>
+            <Label text="To save an edited cell, press Enter." textFill="#a3a1a1" GridPane.rowIndex="2" />
+         </children>
+      </GridPane>
+   </children>
+</StackPane>
