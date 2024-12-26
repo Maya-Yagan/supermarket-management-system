@@ -1,5 +1,7 @@
 package com.maya2002yagan.supermarket_management.controller;
 
+import atlantafx.base.controls.PasswordTextField;
+import atlantafx.base.theme.Styles;
 import com.maya2002yagan.supermarket_management.service.AuthenticationService;
 import com.maya2002yagan.supermarket_management.util.HibernateUtil;
 import com.maya2002yagan.supermarket_management.model.User;
@@ -12,10 +14,13 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.hibernate.Session;
+import org.kordamp.ikonli.feather.Feather;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 /**
  * Controller class for the main login screen of the application.
@@ -30,13 +35,14 @@ public class MainController implements Initializable {
     private TextField emailField;
 
     @FXML
-    private TextField passwordField;
+    private PasswordTextField passwordField;
 
     @FXML
     private Button loginButton;
 
     @FXML
     private Text statusText;
+    private final Session session = HibernateUtil.getSessionFactory().openSession();
     
     /**
      * Initializes the controller class.
@@ -49,6 +55,21 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         passwordField.setOnAction(event -> loginButton.fire());
+        emailField.setOnAction(event -> passwordField.requestFocus());
+        emailField.textProperty().addListener((obs, old, newVal) -> {
+            if (newVal.matches("^[\\w.%+-]+@[\\w.-]+\\.[a-z]{2,}$")) 
+                emailField.setStyle("-fx-border-color: green;"); // Valid input
+            else 
+                emailField.setStyle("-fx-border-color: red;");   // Invalid input
+        });
+        passwordField.setPrefWidth(250);
+        FontIcon icon = new FontIcon(Feather.EYE_OFF);
+        icon.setCursor(Cursor.HAND);
+        icon.setOnMouseClicked(e -> {
+            icon.setIconCode(passwordField.getRevealPassword() ? Feather.EYE_OFF : Feather.EYE);
+            passwordField.setRevealPassword(!passwordField.getRevealPassword());
+        });
+        passwordField.setRight(icon);
     } 
     
     /**
@@ -61,14 +82,12 @@ public class MainController implements Initializable {
     @FXML
     public void handleLoginButtonClick(){
         String email = emailField.getText();
-        String password = passwordField.getText();
-        
+        String password = passwordField.getPassword();
+
         if(email.isEmpty() || password.isEmpty()){
-            statusText.setText("Please fill in the fields");
+            statusText.setText("Please fill in the empty fields");
             return;
         }
-        
-        Session session = HibernateUtil.getSessionFactory().openSession();
         User user = session.createQuery("FROM User WHERE email = :email", User.class)
                 .setParameter("email", email)
                 .uniqueResult();
@@ -77,16 +96,17 @@ public class MainController implements Initializable {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/HomePage.fxml"));
                 Parent homeRoot = loader.load();
-                Stage stage = (Stage) loginButton.getScene().getWindow();
-                stage.setScene(new Scene(homeRoot));
+                Scene scene = loginButton.getScene();
+                scene.setRoot(homeRoot);
+                Stage stage = (Stage) scene.getWindow();
                 stage.setTitle("Home Page");
+                stage.setMaximized(true);
                 stage.show();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
-            statusText.setText("Wrong email or password");
+            statusText.setText("Wrong email or password!");
         }
-        session.close();
     }     
 }
