@@ -53,8 +53,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <javafx.version>17</javafx.version>
         <exec.mainClass>com.maya2002yagan.supermarket_management.Main</exec.mainClass>
     </properties>
@@ -84,6 +84,12 @@
             <version>0.4</version>
         </dependency>
 
+        <!--AtlantaFX-->
+        <dependency>
+            <groupId>io.github.mkpaz</groupId>
+            <artifactId>atlantafx-base</artifactId>
+            <version>2.0.0</version>
+        </dependency>
 
         <!-- JavaFX base module (required for most apps) -->
         <dependency>
@@ -130,7 +136,7 @@
         <dependency>
             <groupId>com.mchange</groupId>
             <artifactId>c3p0</artifactId>
-            <version>0.9.5.5</version> <!-- Use the latest version available -->
+            <version>0.9.5.5</version>
         </dependency>
         
         <dependency>
@@ -138,6 +144,17 @@
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-javafx</artifactId>
+            <version>12.3.1</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-feather-pack</artifactId>
+            <version>12.3.1</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 </project>
