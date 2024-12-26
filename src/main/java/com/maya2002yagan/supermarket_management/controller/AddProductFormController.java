@@ -1,5 +1,6 @@
 package com.maya2002yagan.supermarket_management.controller;
 
+import atlantafx.base.controls.ModalPane;
 import com.maya2002yagan.supermarket_management.dao.CategoryDAO;
 import com.maya2002yagan.supermarket_management.dao.ProductDAO;
 import com.maya2002yagan.supermarket_management.model.Category;
@@ -12,7 +13,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
@@ -20,8 +20,13 @@ import java.util.Set;
 
 
 /**
- * FXML Controller class
- *
+ * FXML Controller class for handling the logic of the "Add Product" form in the application.
+ * 
+ * This controller manages the interaction with the UI components of the "Add Product" form, which includes 
+ * input fields for the product's name, price, production date, expiration date, and category. It provides 
+ * functionality to validate the form fields, save the new product to the database, and handle the form's 
+ * closing action.
+ * 
  * @author Maya Yagan
  */
 public class AddProductFormController implements Initializable {
@@ -50,13 +55,17 @@ public class AddProductFormController implements Initializable {
     @FXML
     private Button cancelButton;
 
+    private Runnable onCloseAction;
+    private ModalPane modalPane;
     private final CategoryDAO categoryDAO = new CategoryDAO();
     private final ProductDAO productDAO = new ProductDAO();
-
     private Category selectedCategory = null;
     
     /**
      * Initializes the controller class.
+     * 
+     * This method sets up the category menu and action handlers for the save and cancel buttons.
+     * The save button calls the saveProduct method, while the cancel button calls the closeForm method.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -65,7 +74,14 @@ public class AddProductFormController implements Initializable {
         cancelButton.setOnAction(event -> closeForm());
     }    
     
-     private void loadCategories() {
+    /**
+     * Loads categories from the database and populates the category selection menu.
+     * 
+     * This method fetches all available categories from the database using the CategoryDAO, 
+     * and adds them as menu items to the categoryMenuButton. When a menu item is selected, 
+     * it sets the selectedCategory to the corresponding category and updates the button's text.
+     */
+    private void loadCategories() {
         Set<Category> categories = categoryDAO.getCategories();
         if (categories != null) {
             for (Category category : categories) {
@@ -78,7 +94,33 @@ public class AddProductFormController implements Initializable {
             }
         }
     }
+     
+     /**
+      * Sets the current modal pane for the form.
+      * 
+      * @param modalPane The modal pane to be set.
+      */
+     public void setModalPane(ModalPane modalPane){
+         this.modalPane = modalPane;
+     }
+     
+     /**
+      * Sets the action to be executed when the form is closed.
+      * 
+      * @param onCloseAction The close action to be set.
+      */
+     public void setOnCloseAction(Runnable onCloseAction){
+         this.onCloseAction = onCloseAction;
+     }
 
+     /**
+     * Saves the product by validating the form fields and inserting it into the database.
+     * 
+     * This method collects the values from the form fields, validates them (checking for empty fields, 
+     * valid price format, and expiration date validity), and creates a new Product object. If all fields are 
+     * valid, the product is inserted into the database using the ProductDAO. After saving, the onCloseAction 
+     * is run, and the form is closed.
+     */
     private void saveProduct() {
         // Clear previous warnings
         warningLabel.setText("");
@@ -89,6 +131,7 @@ public class AddProductFormController implements Initializable {
         LocalDate productionDate = productionDatePicker.getValue();
         LocalDate expirationDate = expirationDatePicker.getValue();
 
+        // Check if any fields are empty
         if (name.isEmpty() || priceText.isEmpty() || productionDate == null || expirationDate == null || selectedCategory == null) {
             warningLabel.setText("Please fill in all fields.");
             return;
@@ -103,13 +146,13 @@ public class AddProductFormController implements Initializable {
             return;
         }
 
-        // Check date validity
+        // Check if the expiration date is before the production date
         if (expirationDate.isBefore(productionDate)) {
             warningLabel.setText("Expiration date invalid. ");
             return;
         }
 
-        // Create the new product object
+        // Create the new Product object and set its properties
         Product product = new Product();
         product.setName(name);
         product.setPrice(price);
@@ -117,16 +160,22 @@ public class AddProductFormController implements Initializable {
         product.setExpirationDate(expirationDate);
         product.setCategory(selectedCategory);
 
-        // Save the product to the database
+        // Insert the product into the database
         productDAO.insertProduct(product);
-
-        // Close the form (or clear the fields if you want to allow adding multiple products)
+        
+        // Run the onCloseAction if it's defined
+        if(onCloseAction != null) onCloseAction.run();
+        
+        // Close the form after saving the product
         closeForm();
     }
 
+    /**
+     * Closes the form by hiding the modal pane.
+     * 
+     * This method hides the form by calling the hide method on the modal pane
+     */
     private void closeForm() {
-        Stage stage = (Stage) cancelButton.getScene().getWindow();
-        stage.close();
+        if(modalPane != null) modalPane.hide();
     }
-    
 }

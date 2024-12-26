@@ -1,5 +1,7 @@
 package com.maya2002yagan.supermarket_management.controller;
 
+import atlantafx.base.controls.ModalPane;
+import atlantafx.base.theme.Tweaks;
 import com.maya2002yagan.supermarket_management.dao.CategoryDAO;
 import com.maya2002yagan.supermarket_management.model.Category;
 import java.net.URL;
@@ -17,11 +19,15 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.stage.Stage;
 
 /**
- * FXML Controller class
+ * FXML Controller class for managing and editing categories in the supermarket management system.
  *
+ * This controller handles the user interface for the category management screen. It provides functionality 
+ * for displaying a list of categories in a table, editing category names, and deleting categories. The categories 
+ * are managed through interactions with the `CategoryDAO` for data persistence. 
+ * Users can modify category names directly in the table, and a delete option is provided for each category.
+ * 
  * @author Maya Yagan
  */
 public class EditCategoriesController implements Initializable {
@@ -35,11 +41,17 @@ public class EditCategoriesController implements Initializable {
     @FXML
     private Button closeButton;
 
+    private Runnable onCloseAction;
+    private ModalPane modalPane;
     private final CategoryDAO categoryDAO = new CategoryDAO();
     private ObservableList<Category> categoryList;
     
     /**
      * Initializes the controller class.
+     *
+     * This method sets up the category table, enables editing for the name column,
+     * and configures the delete column with a button to delete categories.
+     * The method also handles the close button action and applies styles to the table.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -47,14 +59,46 @@ public class EditCategoriesController implements Initializable {
         setupNameColumnForEditing();
         setupDeleteColumn();
         closeButton.setOnAction(event -> closeWindow());
+        categoryTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        categoryTableView.getStyleClass().add(Tweaks.EDGE_TO_EDGE);
     }    
     
+    /**
+     * Sets the modal pane for the controller.
+     *
+     * @param modalPane The modal pane to be set.
+     */
+    public void setModalPane(ModalPane modalPane){
+        this.modalPane = modalPane;
+    }
+    
+    /**
+     * Sets the action to be executed when the window is closed.
+     *
+     * @param onCloseAction The action to be executed when the window is closed.
+     */
+    public void setOnCloseAction(Runnable onCloseAction){
+        this.onCloseAction = onCloseAction;
+    }
+    
+    /**
+     * Loads the categories from the database and sets them in the table view.
+     *
+     * This method retrieves the list of categories from the `CategoryDAO` and sets the list in the category table. 
+     * The name column is bound to the category name property.
+     */
     private void loadCategories(){
         categoryList = FXCollections.observableArrayList(categoryDAO.getCategories());
         categoryTableView.setItems(categoryList);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
     }
     
+    /**
+     * Configures the name column to be editable and updates the category when the name is changed.
+     *
+     * This method enables inline editing for the category name in the table. When a name is edited, it is 
+     * updated in the `Category` object and persisted in the database.
+     */
     private void setupNameColumnForEditing(){
         nameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         nameColumn.setOnEditCommit(event -> {
@@ -62,7 +106,6 @@ public class EditCategoriesController implements Initializable {
             String newName = event.getNewValue();
             
             if(newName != null && !newName.trim().isEmpty()){
-                System.out.println("IM HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + newName);
                 category.setName(newName.trim());
                 categoryDAO.updateCategory(category);
             }
@@ -70,6 +113,12 @@ public class EditCategoriesController implements Initializable {
         categoryTableView.setEditable(true);
     }
     
+    /**
+     * Configures the delete column with a delete button to remove categories.
+     *
+     * This method sets up a delete button for each row in the table. When clicked, the button triggers a 
+     * confirmation dialog asking if the user is sure they want to delete the category.
+     */
     private void setupDeleteColumn(){
         deleteColumn.setCellFactory(param -> {
             return new TableCell<Category, Void>(){
@@ -90,6 +139,14 @@ public class EditCategoriesController implements Initializable {
         });
     }
     
+    /**
+     * Displays a confirmation dialog before deleting a category.
+     *
+     * This method shows a confirmation alert when the delete button is clicked. If the user confirms, 
+     * the category is deleted from the database and removed from the table view.
+     *
+     * @param category The category to be deleted.
+     */
     private void showDeleteConfirmation(Category category){
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Delete Confirmation");
@@ -102,8 +159,14 @@ public class EditCategoriesController implements Initializable {
         }
     }
     
+    /**
+     * Closes the window and executes the close action.
+     *
+     * This method is invoked when the close button is pressed.
+     * It runs the specified `onCloseAction` and hides the modal pane.
+     */
     private void closeWindow(){
-        Stage stage = (Stage) closeButton.getScene().getWindow();
-        stage.close();
+        if(onCloseAction != null) onCloseAction.run();
+        if(modalPane != null) modalPane.hide();
     }
 }

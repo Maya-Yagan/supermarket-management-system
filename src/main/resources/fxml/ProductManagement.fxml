@@ -1,37 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya2002yagan.supermarket_management.controller.ProductManagementController">
+<StackPane fx:id="stackPane" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya2002yagan.supermarket_management.controller.ProductManagementController">
     <children>
-      <TableView fx:id="productTableView" layoutX="32.0" layoutY="121.0" AnchorPane.bottomAnchor="54.33333333333337" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="121.0">
-         <columns>
-            <TableColumn fx:id="idColumn" text="ID" />
-            <TableColumn fx:id="nameColumn" text="Name" />
-            <TableColumn fx:id="priceColumn" text="Price" />
-            <TableColumn fx:id="productionDate" text="Production Date" />
-            <TableColumn fx:id="expirationDateColumn" text="Expiration Date" />
-            <TableColumn fx:id="discountsColumn" text="Discount(s)" />
-         </columns>
-      </TableView>
-      <Button fx:id="addProductButton" layoutX="395.0" layoutY="86.0" mnemonicParsing="false" text="Add Product" AnchorPane.topAnchor="80.0" />
-      <Text fill="#53a194" layoutX="32.0" layoutY="57.0" text="Product Management" textAlignment="CENTER" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="429.4072265625" AnchorPane.topAnchor="28.943359375">
-         <font>
-            <Font size="26.0" />
-         </font>
-      </Text>
-      <MenuButton fx:id="categoryMenuButton" layoutX="32.0" layoutY="112.0" mnemonicParsing="false" text="Category" AnchorPane.leftAnchor="32.0" AnchorPane.topAnchor="80.0">
-        <items>
-        </items>
-      </MenuButton>
-      <Button fx:id="addCategoryButton" layoutX="157.0" layoutY="80.0" mnemonicParsing="false" text="Add Category" AnchorPane.topAnchor="80.0" />
-      <Button fx:id="editCategoriesButton" layoutX="272.0" layoutY="80.0" mnemonicParsing="false" text="Edit Categories" AnchorPane.topAnchor="80.0" />
-      <Button layoutX="601.0" layoutY="360.0" mnemonicParsing="false" onAction="#goToHomePage" text="Home Page" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="32.07552083333326" />
+    <AnchorPane fx:id="AnchorPane">
+        <children>
+          <TableView fx:id="productTableView" layoutX="32.0" layoutY="121.0" AnchorPane.bottomAnchor="54.33333333333337" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="121.0">
+             <columns>
+                <TableColumn fx:id="idColumn" text="ID" />
+                <TableColumn fx:id="nameColumn" text="Name" />
+                <TableColumn fx:id="priceColumn" text="Price" />
+                <TableColumn fx:id="productionDate" text="Production Date" />
+                <TableColumn fx:id="expirationDateColumn" text="Expiration Date" />
+                <TableColumn fx:id="discountsColumn" text="Discount(s)" />
+             </columns>
+             <styleClass>
+                <String fx:value="bordered" />
+                <String fx:value="striped" />
+             </styleClass>
+          </TableView>
+          <Button fx:id="addProductButton" layoutX="395.0" layoutY="86.0" mnemonicParsing="false" styleClass="accent" text="Add Product" AnchorPane.topAnchor="80.0" />
+          <Text fill="#455079" layoutX="32.0" layoutY="57.0" text="Product Management" textAlignment="CENTER" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="429.4072265625" AnchorPane.topAnchor="28.943359375">
+             <font>
+                <Font size="26.0" />
+             </font>
+          </Text>
+          <MenuButton fx:id="categoryMenuButton" layoutX="32.0" layoutY="112.0" mnemonicParsing="false" styleClass="accent" text="Category" AnchorPane.leftAnchor="32.0" AnchorPane.topAnchor="80.0">
+            <items>
+            </items>
+          </MenuButton>
+          <Button fx:id="addCategoryButton" layoutX="157.0" layoutY="80.0" mnemonicParsing="false" styleClass="accent" text="Add Category" AnchorPane.topAnchor="80.0" />
+          <Button fx:id="editCategoriesButton" layoutX="272.0" layoutY="80.0" mnemonicParsing="false" styleClass="accent" text="Edit Categories" AnchorPane.topAnchor="80.0" />
+        </children>
+    </AnchorPane>
     </children>
-</AnchorPane>
+</StackPane>

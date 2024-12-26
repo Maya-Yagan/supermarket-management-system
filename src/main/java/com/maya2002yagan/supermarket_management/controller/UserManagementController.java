@@ -1,18 +1,18 @@
 package com.maya2002yagan.supermarket_management.controller;
+
+import atlantafx.base.controls.ModalPane;
+import atlantafx.base.theme.Tweaks;
 import com.maya2002yagan.supermarket_management.model.Role;
 import com.maya2002yagan.supermarket_management.model.User;
 import com.maya2002yagan.supermarket_management.dao.UserDAO;
-import com.maya2002yagan.supermarket_management.controller.EditUserFormController;
 import java.io.IOException;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.stage.Modality;
 import javafx.scene.control.cell.PropertyValueFactory;
 import java.net.URL;
 import java.time.LocalDate;
@@ -20,9 +20,10 @@ import java.time.Period;
 import java.util.List;
 import javafx.scene.control.Button;
 import java.util.ResourceBundle;
-import javafx.event.ActionEvent;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.TableRow;
-import javafx.stage.Stage;
+import javafx.scene.layout.StackPane;
 
 /**
  * Controller class for managing the user interface related to user operations,
@@ -58,8 +59,12 @@ public class UserManagementController implements Initializable {
     @FXML
     private TableColumn<User, Integer> ageColumn;
     @FXML
-    private Button addUserButton; 
-    private UserDAO userDAO;
+    private Button addUserButton;
+    @FXML
+    private StackPane stackPane;
+    private UserDAO userDAO = new UserDAO();
+    private ModalPane modalPane;
+    private final ObservableList<User> userObservableList = FXCollections.observableArrayList();
 
     /**
      * Initializes the controller. It sets up the table columns and loads
@@ -70,10 +75,9 @@ public class UserManagementController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        userDAO = new UserDAO();
         configureTableColumns();
-        loadUserData();
         addUserButton.setOnAction(event -> openAddUserModal());
+        userTableView.setItems(userObservableList);
         userTableView.setRowFactory(tv -> {
             TableRow<User> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
@@ -84,6 +88,17 @@ public class UserManagementController implements Initializable {
             });
             return row;
         });
+        userTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        userTableView.getStyleClass().add(Tweaks.EDGE_TO_EDGE);
+        loadUserData();
+        initializeModalPane();
+    }
+    
+    private void initializeModalPane() {
+        StackPane root = stackPane;
+        modalPane = new ModalPane();
+        modalPane.setId("modalPane");
+        root.getChildren().add(modalPane);
     }
     
     /**
@@ -97,12 +112,10 @@ public class UserManagementController implements Initializable {
             Parent root = loader.load();
             EditUserFormController editController = loader.getController();
             editController.setUser(user);
-            Stage modalStage = new Stage();
-            modalStage.setTitle(("Edit User"));
-            modalStage.initModality(Modality.APPLICATION_MODAL);
-            modalStage.setScene(new Scene(root));
-            modalStage.showAndWait();
-            loadUserData();
+            editController.setModalPane(modalPane);
+            modalPane.setContent(root);
+            modalPane.show(root);
+            editController.setOnCloseAction(() -> loadUserData());
         } catch (IOException e){
             e.printStackTrace();
         }
@@ -152,8 +165,9 @@ public class UserManagementController implements Initializable {
      */
     private void loadUserData() {
         List<User> users = userDAO.getUsers();
+        userObservableList.clear();
         if (users != null) {
-            userTableView.getItems().setAll(users);
+            userObservableList.addAll(users);
         }
     }
     
@@ -164,27 +178,12 @@ public class UserManagementController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AddUserForm.fxml"));
             Parent root = loader.load();
-            Stage modalStage = new Stage();
-            modalStage.setTitle("Add New User");
-            modalStage.initModality(Modality.APPLICATION_MODAL);
-            modalStage.setScene(new Scene(root));
-            modalStage.showAndWait();
-            loadUserData();
+            AddUserController addController = loader.getController();
+            addController.setModalPane(modalPane);
+            modalPane.setContent(root);
+            modalPane.show(root);
+            addController.setOnCloseAction(() -> loadUserData());
         } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    
-    @FXML
-    private void goToHomePage(ActionEvent event){
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/HomePage.fxml"));
-            Parent userManagementRoot = loader.load();
-            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(userManagementRoot));
-            stage.setTitle("Product Management");
-            stage.show();
-        } catch (Exception e) {
             e.printStackTrace();
         }
     }

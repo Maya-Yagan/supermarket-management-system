@@ -1,11 +1,11 @@
 package com.maya2002yagan.supermarket_management.controller;
 
+import atlantafx.base.controls.ModalPane;
 import com.maya2002yagan.supermarket_management.dao.CategoryDAO;
 import com.maya2002yagan.supermarket_management.dao.ProductDAO;
 import com.maya2002yagan.supermarket_management.model.Category;
 import com.maya2002yagan.supermarket_management.model.Product;
 import java.net.URL;
-import java.time.LocalDate;
 import java.util.ResourceBundle;
 import java.util.Set;
 import javafx.fxml.FXML;
@@ -18,10 +18,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
 /**
- * FXML Controller class
+ * FXML Controller class for editing product details in the supermarket management system.
+ * 
+ * This controller is responsible for handling the editing of product information. The updated information 
+ * is saved to the database. The controller also provides functionality for deleting a product and 
+ * canceling the editing operation.
  *
  * @author Maya Yagan
  */
@@ -46,12 +49,11 @@ public class EditProductFormController implements Initializable {
     private Label warningLabel;
     
     @FXML
-    private Button saveButton;
-    
-    @FXML
     private Button cancelButton;
     
     private Product product;
+    private ModalPane modalPane;
+    private Runnable onCloseAction;
     private final CategoryDAO categoryDAO = new CategoryDAO();
     private final ProductDAO productDAO = new ProductDAO();
     private Category selectedCategory;
@@ -67,9 +69,32 @@ public class EditProductFormController implements Initializable {
         loadCategories();
     }
 
+    /**
+     * Sets the current product and populates the fields with the product's data.
+     *
+     * @param product The product to be set.
+     */
     public void setProduct(Product product){
         this.product = product;
         populateFields();
+    }
+    
+    /**
+     * Sets the current modal pane.
+     *
+     * @param modalPane The modal pane to be set.
+     */
+    public void setModalPane(ModalPane modalPane){
+        this.modalPane = modalPane;
+    }
+    
+    /**
+     * Sets the current close action.
+     *
+     * @param onCloseAction The close action to be set.
+     */
+    public void setOnCloseAction(Runnable onCloseAction){
+        this.onCloseAction = onCloseAction;
     }
     
     private void loadCategories(){
@@ -86,6 +111,9 @@ public class EditProductFormController implements Initializable {
         }
     }
     
+    /**
+     * Populates the form fields with the selected product's data.
+     */
     private void populateFields(){
         if(product == null) return;
         
@@ -98,6 +126,10 @@ public class EditProductFormController implements Initializable {
         categoryMenuButton.setText(selectedCategory.toString());
     }
     
+    /**
+     * Handles the deletion of a product by confirming the action with the user,
+     * and if confirmed, deletes the product from the database.
+     */
     @FXML
     private void handleDelete(){
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -107,11 +139,16 @@ public class EditProductFormController implements Initializable {
         alert.showAndWait().ifPresent(response -> {
             if(response == ButtonType.OK){
                 productDAO.deleteProduct(product.getId());
+                if(onCloseAction != null) onCloseAction.run();
                 closeForm();
             }
         });
     }
     
+    /**
+     * Saves the edited product information to the database. Updates the product info
+     * and closes the form upon successful save.
+     */
     @FXML
     private void handleSave(){
         if(product == null) return;
@@ -123,16 +160,22 @@ public class EditProductFormController implements Initializable {
         product.setCategory(selectedCategory);
         
         productDAO.updateProduct(product);
+        if(onCloseAction != null) onCloseAction.run();
         closeForm();
     }
     
+    /**
+     * Cancels the operation and closes the form without saving changes.
+     */
     @FXML
     private void handleCancel(){
         closeForm();
     }
     
+    /**
+     * Closes the current form window.
+     */
     private void closeForm(){
-        Stage stage = (Stage) cancelButton.getScene().getWindow();
-        if(stage != null) stage.close();
+        if(modalPane != null) modalPane.hide();
     }
 }

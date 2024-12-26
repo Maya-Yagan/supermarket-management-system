@@ -1,5 +1,6 @@
 package com.maya2002yagan.supermarket_management.controller;
 
+import atlantafx.base.controls.ModalPane;
 import com.maya2002yagan.supermarket_management.model.Role;
 import com.maya2002yagan.supermarket_management.dao.RoleDAO;
 import com.maya2002yagan.supermarket_management.model.User;
@@ -12,7 +13,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
 /**
  * Controller class for the "Edit User" form in the supermarket management system.
@@ -29,7 +29,7 @@ public class EditUserFormController implements Initializable {
     @FXML
     private DatePicker birthDatePicker;
     @FXML
-    private MenuButton genderMenuButton, employmentTypeMenu, positionMenuButton;
+    private MenuButton genderMenuButton, employmentTypeMenu;
     @FXML
     private MenuItem maleMenuItem, femaleMenuItem, partTimeMenuItem, fullTimeMenuItem;
     @FXML
@@ -41,14 +41,13 @@ public class EditUserFormController implements Initializable {
     @FXML
     private CheckMenuItem cashierCheckMenuItem;
     @FXML
-    private Button saveButton, cancelButton, deleteButton;
-    @FXML
     private PasswordField passwordField;
     
+    private Runnable onCloseAction;
+    private ModalPane modalPane;
     private String selectedEmploymentType;
     private String selectedGender;
     private List<Role> selectedPositions = new ArrayList<>();
-
 
     private User user;
     private final UserDAO userDAO = new UserDAO();
@@ -66,6 +65,16 @@ public class EditUserFormController implements Initializable {
         initializeGenderMenu();
         initializeEmploymentTypeMenu();
         initializePositionMenu();
+        emailField.textProperty().addListener((obs, old, newVal) -> {
+            if (newVal.matches("^[\\w.%+-]+@[\\w.-]+\\.[a-z]{2,}$")) 
+                emailField.setStyle("-fx-border-color: green;"); // Valid input
+            else 
+                emailField.setStyle("-fx-border-color: red;");   // Invalid input
+        });
+        salaryField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*\\.?\\d*"))
+                salaryField.setText(oldValue);
+        });
     }
     
     /**
@@ -79,21 +88,21 @@ public class EditUserFormController implements Initializable {
     }
     
     /**
-     * Handles the deletion of the current user by confirming the action with the user,
-     * and if confirmed, deletes the user record from the database.
+     * Sets the current modal pane.
+     *
+     * @param modalPane The modal pane to be set.
      */
-    @FXML
-    private void handleDelete(){
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Delete User");
-        alert.setHeaderText("Are you sure you want to delete this user?");
-        alert.setContentText("This action cannot be undone.");
-        alert.showAndWait().ifPresent(response -> {
-            if(response == ButtonType.OK){
-                userDAO.deleteUser(user.getId());
-                closeForm();
-            }
-        });
+    public void setModalPane(ModalPane modalPane){
+        this.modalPane = modalPane;
+    }
+    
+    /**
+     * Sets the current close action.
+     *
+     * @param onCloseAction The close action to be set.
+     */
+    public void setOnCloseAction(Runnable onCloseAction){
+        this.onCloseAction = onCloseAction;
     }
     
     /**
@@ -217,9 +226,29 @@ public class EditUserFormController implements Initializable {
          user.getRoles().addAll(selectedPositions);
          
         if(!passwordField.getText().isEmpty())
-            user.setPassword(passwordField.getText());
+            user.setPasswordWithoutHashing(passwordField.getText());
         userDAO.updateUser(user);
+        if(onCloseAction != null) onCloseAction.run();
         closeForm();
+    }
+    
+    /**
+     * Handles the deletion of the current user by confirming the action with the user,
+     * and if confirmed, deletes the user record from the database.
+     */
+    @FXML
+    private void handleDelete(){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete User");
+        alert.setHeaderText("Are you sure you want to delete this user?");
+        alert.setContentText("This action cannot be undone.");
+        alert.showAndWait().ifPresent(response -> {
+            if(response == ButtonType.OK){
+                userDAO.deleteUser(user.getId());
+                if(onCloseAction != null) onCloseAction.run();
+                closeForm();
+            }
+        });
     }
     
     /**
@@ -234,9 +263,6 @@ public class EditUserFormController implements Initializable {
      * Closes the current form window.
      */
     private void closeForm(){
-        Stage stage = (Stage) cancelButton.getScene().getWindow();
-        if (stage != null) {
-            stage.close();
-        }
+        if(modalPane != null) modalPane.hide();
     }
 }

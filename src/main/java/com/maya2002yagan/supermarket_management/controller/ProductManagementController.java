@@ -1,5 +1,7 @@
 package com.maya2002yagan.supermarket_management.controller;
 
+import atlantafx.base.controls.ModalPane;
+import atlantafx.base.theme.Tweaks;
 import com.maya2002yagan.supermarket_management.dao.CategoryDAO;
 import com.maya2002yagan.supermarket_management.dao.ProductDAO;
 import com.maya2002yagan.supermarket_management.model.Product;
@@ -10,12 +12,10 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
@@ -23,12 +23,15 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
+import javafx.scene.layout.StackPane;
 
 /**
- * FXML Controller class
- *
+ * FXML Controller class for managing products in the supermarket management system.
+ * 
+ * This controller handles the product management interface, including displaying product details in a table,
+ * adding new products, editing existing products, and managing categories. The class interacts with the 
+ * database to fetch and update product and category data.
+ * 
  * @author Maya Yagan
  */
 public class ProductManagementController implements Initializable {
@@ -53,9 +56,11 @@ public class ProductManagementController implements Initializable {
     private Button addCategoryButton;
     @FXML
     private Button editCategoriesButton;
-    
     @FXML
     private MenuButton categoryMenuButton;
+    @FXML
+    private StackPane stackPane;
+    private ModalPane modalPane;
     private final CategoryDAO categoryDAO = new CategoryDAO();
     private final ProductDAO productDAO = new ProductDAO();
     private final ObservableList<Product> productObservableList = FXCollections.observableArrayList();
@@ -63,8 +68,12 @@ public class ProductManagementController implements Initializable {
     
     /**
      * Initializes the controller class.
-     * @param location
-     * @param resources
+     * 
+     * This method configures table columns, sets up event handlers for buttons and table rows,
+     * loads categories, and initializes the modal pane for displaying forms.
+     * 
+     * @param location The location of the FXML resource.
+     * @param resources The resources to localize the root object.
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -83,9 +92,29 @@ public class ProductManagementController implements Initializable {
             });
             return row;
         });
+        productTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        productTableView.getStyleClass().add(Tweaks.EDGE_TO_EDGE);
         loadCategories();
+        initializeModalPane();
     }
-
+    
+    /**
+     * Initializes the modal pane for the product management screen.
+     * 
+     * This method sets up the modal pane and adds it to the root stack pane.
+     */
+    private void initializeModalPane() {
+        StackPane root = stackPane;
+        modalPane = new ModalPane();
+        modalPane.setId("modalPane");
+        root.getChildren().add(modalPane);
+    }
+    
+    /**
+     * Loads categories from the database and populates the category menu button.
+     * 
+     * This method retrieves all categories and adds them as menu items to the category menu button.
+     */
     private void loadCategories() {
         categoryMenuButton.getItems().clear();
         Set<Category> categories = categoryDAO.getCategories();
@@ -99,6 +128,12 @@ public class ProductManagementController implements Initializable {
         }
     }
     
+    /**
+     * Configures the table columns for displaying product information.
+     * 
+     * This method sets the cell value factory for each column to display product attributes 
+     * such as ID, name, price, production date, and expiration date.
+     */
     private void configureTableColumns(){
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -107,6 +142,14 @@ public class ProductManagementController implements Initializable {
         expirationDateColumn.setCellValueFactory(new PropertyValueFactory<>("expirationDate"));
     }
 
+    /**
+     * Handles the selection of a category from the category menu button.
+     * 
+     * This method updates the displayed products in the table to show only those belonging 
+     * to the selected category.
+     * 
+     * @param category The selected category.
+     */
     private void handleCategorySelection(Category category) {
         categoryMenuButton.setText(category.getName());
         Set<Product> products = productDAO.getProductsByCategory(category);
@@ -116,84 +159,95 @@ public class ProductManagementController implements Initializable {
         }
     }
     
+    /**
+     * Opens the product edit modal for the selected product.
+     * 
+     * This method loads the edit product form and displays it in a modal window.
+     * 
+     * @param product The product to be edited.
+     */
     private void openEditProductModal(Product product){
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EditProductForm.fxml"));
             Parent root = loader.load();
             EditProductFormController editController = loader.getController();
             editController.setProduct(product);
-            Stage stage = new Stage();
-            stage.setTitle("Edit Product");
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setScene(new Scene(root));
-            stage.showAndWait();
-            handleCategorySelection(product.getCategory());
+            editController.setModalPane(modalPane);
+            modalPane.setContent(root);
+            modalPane.show(root);
+            editController.setOnCloseAction(() -> handleCategorySelection(product.getCategory()));
         } catch(IOException e) {
             e.printStackTrace();
         }
         
     }
     
+    /**
+     * Opens the add product form in a modal window.
+     * 
+     * This method loads the add product form and displays it in a modal window.
+     */
     private void openAddProductForm() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AddProductForm.fxml"));
             Parent root = loader.load();
-            Stage stage = new Stage();
-            stage.setTitle("Add New Product");
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setScene(new Scene(root));
-            stage.showAndWait();
-            // Refresh the product list for the currently selected category
-        String selectedCategoryName = categoryMenuButton.getText();
-        if (!selectedCategoryName.equals("Category")) { 
-            Category selectedCategory = categoryDAO.getCategoryByName(selectedCategoryName);
-            handleCategorySelection(selectedCategory);
-        }
+            AddProductFormController addController = loader.getController();
+            addController.setModalPane(modalPane);
+            modalPane.setContent(root);
+            modalPane.show(root);
+            addController.setOnCloseAction(() -> handleCloseAction());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
     
+    /**
+     * Handles the close action after a new product is added.
+     * 
+     * This method refreshes the product list after adding a new product by selecting the appropriate category.
+     */
+    private void handleCloseAction(){
+        String selectedCategoryName = categoryMenuButton.getText();
+            if (!selectedCategoryName.equals("Category")) { 
+                Category selectedCategory = categoryDAO.getCategoryByName(selectedCategoryName);
+                handleCategorySelection(selectedCategory);
+            }
+    }
+    
+    /**
+     * Opens the add category form in a modal window.
+     * 
+     * This method loads the add category form and displays it in a modal window.
+     */
     private void openAddCategoryForm(){
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AddCategory.fxml"));
             Parent root = loader.load();
-            Stage stage = new Stage();
-            stage.setTitle("Add New Category");
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setScene(new Scene(root));
-            stage.showAndWait();
-            loadCategories();
+            AddCategoryController addController = loader.getController();
+            addController.setModalPane(modalPane);
+            modalPane.setContent(root);
+            modalPane.show(root);
+            addController.setOnCloseAction(() -> loadCategories());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
     
+    /**
+     * Opens the edit categories form in a modal window.
+     * 
+     * This method loads the edit categories form and displays it in a modal window.
+     */
     private void openEditCategories(){
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EditCategories.fxml"));
             Parent root = loader.load();
-            Stage stage = new Stage();
-            stage.setTitle("Edit Categories");
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setScene(new Scene(root));
-            stage.showAndWait();
-            loadCategories();
+            EditCategoriesController editController = loader.getController();
+            editController.setModalPane(modalPane);
+            modalPane.setContent(root);
+            modalPane.show(root);
+            editController.setOnCloseAction(() -> loadCategories());
         } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    
-    @FXML
-    private void goToHomePage(ActionEvent event){
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/HomePage.fxml"));
-            Parent userManagementRoot = loader.load();
-            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(userManagementRoot));
-            stage.setTitle("Product Management");
-            stage.show();
-        } catch (Exception e) {
             e.printStackTrace();
         }
     }
