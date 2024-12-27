@@ -24,8 +24,3 @@ The **Supermarket Management System** is a comprehensive platform designed to st
 - **ORM:** Hibernate
 - **Design Pattern:** Model-View-Controller (MVC)
 
-### Prerequisites
-- **Java Development Kit (JDK 17 or higher)**
-- **SQL Database**
-- **JavaFX 17 SDK**
-
