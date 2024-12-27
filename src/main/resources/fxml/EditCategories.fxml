@@ -12,20 +12,22 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="409.0" prefWidth="293.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya2002yagan.supermarket_management.controller.EditCategoriesController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="416.0" prefWidth="349.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya2002yagan.supermarket_management.controller.EditCategoriesController">
    <children>
-      <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="404.0" prefWidth="262.0">
+      <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="383.0" prefWidth="281.0">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
          </columnConstraints>
          <rowConstraints>
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="257.0" minHeight="10.0" prefHeight="257.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="128.33334350585938" minHeight="9.0" prefHeight="9.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="56.999996185302734" minHeight="10.0" prefHeight="54.33333969116211" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="32.33332824707031" minHeight="10.0" prefHeight="19.66666030883789" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="30.33331298828125" minHeight="10.0" prefHeight="21.666666666666664" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="30.33331298828125" minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="257.0" minHeight="10.0" prefHeight="252.33333841959634" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="128.33334350585938" minHeight="9.0" prefHeight="46.666646321614564" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <TableView fx:id="categoryTableView" prefHeight="248.0" prefWidth="223.0" GridPane.rowIndex="1">
+            <TableView fx:id="categoryTableView" prefHeight="248.0" prefWidth="223.0" GridPane.rowIndex="4">
                <columns>
                   <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" />
                   <TableColumn fx:id="deleteColumn" prefWidth="75.0" text="Delete" />
@@ -35,16 +37,32 @@
                   <String fx:value="bordered" />
                </styleClass>
             </TableView>
-            <Label contentDisplay="CENTER" text="Edit Categories" GridPane.halignment="CENTER">
-               <font>
-                  <Font size="23.0" />
-               </font>
+            <Label text="Edit Categories" GridPane.halignment="CENTER">
+                <font>
+                    <Font size="23.0" />
+                </font>
+                <graphic>
+                    <org.kordamp.ikonli.javafx.FontIcon iconLiteral="fth-edit-3" />
+                </graphic>
+                <contentDisplay>LEFT</contentDisplay>
+                <graphicTextGap>20</graphicTextGap>
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
             </Label>
-            <Button fx:id="closeButton" mnemonicParsing="false" text="Close" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+            <Button fx:id="closeButton" mnemonicParsing="false" text="Close" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
                <GridPane.margin>
                   <Insets right="10.0" />
                </GridPane.margin>
             </Button>
+            <Label text="To edit a cell, double-click it." textFill="#a3a1a1" GridPane.rowIndex="1">
+                <graphic>
+                    <org.kordamp.ikonli.javafx.FontIcon iconLiteral="fth-info" />
+                </graphic>
+                <contentDisplay>LEFT</contentDisplay>
+                <graphicTextGap>5</graphicTextGap>
+            </Label>
+            <Label text="To save an edited cell, press Enter." textFill="#a3a1a1" GridPane.rowIndex="2" />
          </children>
       </GridPane>
    </children>

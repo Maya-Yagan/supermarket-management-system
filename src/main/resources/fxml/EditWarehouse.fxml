@@ -38,7 +38,7 @@
                   <String fx:value="bordered" />
                </styleClass>
             </TableView>
-            <Label text="Edit Categories" GridPane.halignment="CENTER">
+            <Label text="Edit Warehouse" GridPane.halignment="CENTER">
                 <font>
                     <Font size="23.0" />
                 </font>

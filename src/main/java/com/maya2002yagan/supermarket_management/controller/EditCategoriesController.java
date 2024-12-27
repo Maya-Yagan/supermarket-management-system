@@ -1,6 +1,7 @@
 package com.maya2002yagan.supermarket_management.controller;
 
 import atlantafx.base.controls.ModalPane;
+import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Tweaks;
 import com.maya2002yagan.supermarket_management.dao.CategoryDAO;
 import com.maya2002yagan.supermarket_management.model.Category;
@@ -124,6 +125,7 @@ public class EditCategoriesController implements Initializable {
             return new TableCell<Category, Void>(){
                 private final Button deleteButton = new Button("Delete");
                 {
+                    deleteButton.getStyleClass().add(Styles.DANGER);
                     deleteButton.setOnAction(event -> {
                         Category category = getTableView().getItems().get(getIndex());
                         showDeleteConfirmation(category);
