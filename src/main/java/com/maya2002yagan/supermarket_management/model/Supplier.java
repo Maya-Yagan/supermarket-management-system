@@ -1,11 +1,14 @@
 package com.maya2002yagan.supermarket_management.model;
 
 import java.util.Objects;
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -26,8 +29,8 @@ public class Supplier {
     private String email;
     @Column(name = "phoneNumber")
     private String phoneNumber;
-    @Column(name = "description")
-    private String description;
+    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<SupplierProduct> supplierProducts;
     
     /**
      * Default constructor
@@ -42,11 +45,10 @@ public class Supplier {
      * @param email the email of the supplier
      * @param phoneNumber the phone number of the supplier
      */
-    public Supplier(String name, String email, String phoneNumber, String description) {
+    public Supplier(String name, String email, String phoneNumber) {
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
-        this.description = description;
     }
 
     /**
@@ -84,14 +86,14 @@ public class Supplier {
     public String getPhoneNumber() {
         return phoneNumber;
     }
-    
+
     /**
-     * Returns the description of the supplier
+     * Returns the set of products of a supplier
      * 
-     * @return the description of the supplier 
+     * @return set of supplier products
      */
-    public String getDescription(){
-        return description;
+    public Set<SupplierProduct> getSupplierProducts() {
+        return supplierProducts;
     }
 
     /**
@@ -122,12 +124,12 @@ public class Supplier {
     }
     
     /**
-     * Sets the description of the supplier.
+     * Sets the products associated with a supplier.
      * 
-     * @param description the description of the supplier
+     * @param supplierProducts Set of supplier products to be set
      */
-    public void setDescription(String description){
-        this.description = description;
+    public void setSupplierProducts(Set<SupplierProduct> supplierProducts){
+        this.supplierProducts = supplierProducts;
     }
 
     /**
@@ -137,7 +139,7 @@ public class Supplier {
      */
     @Override
     public String toString() {
-        return "Supplier{" + "name=" + name + ", email=" + email + ", phoneNumber=" + phoneNumber + ", Description=" + description + '}';
+        return "Supplier{" + "name=" + name + ", email=" + email + ", phoneNumber=" + phoneNumber + '}';
     }
      
     /**

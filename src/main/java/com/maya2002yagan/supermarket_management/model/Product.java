@@ -42,6 +42,8 @@ public class Product {
     private Category category;
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ProductWarehouse> productWarehouses;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<SupplierProduct> supplierProducts;
     
     /**
      * Default constructor
@@ -128,6 +130,15 @@ public class Product {
     public Set<ProductWarehouse> getProductWarehouses() {
         return productWarehouses;
     }
+    
+    /**
+     * Returns the set of products of a supplier
+     * 
+     * @return set of supplier products
+     */
+    public Set<SupplierProduct> getSupplierProducts(){
+        return supplierProducts;
+    }
 
     /**
      * Sets the name of the product.
@@ -181,6 +192,15 @@ public class Product {
      */
     public void setProductWarehouses(Set<ProductWarehouse> productWarehouses) {
         this.productWarehouses = productWarehouses;
+    }
+    
+    /**
+     * Sets the products associated with a supplier.
+     * 
+     * @param supplierProducts Set of supplier products to be set
+     */
+    public void setSupplierProducts(Set<SupplierProduct> supplierProducts){
+        this.supplierProducts = supplierProducts;
     }
 
     /**
