@@ -81,21 +81,8 @@ public class AddProductToWarehouseController implements Initializable {
         spinnerAmount.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, Integer.MAX_VALUE, 1));
         populateCategoryMenu();
         setupEventHandlers();
-        initializeModalPane();
     }
     
-    /**
-     * Sets the warehouse where products will be added.
-     *
-     * @param warehouse The warehouse to which products will be added.
-     */
-    private void initializeModalPane() {
-        StackPane root = stackPane;
-        modalPane = new ModalPane();
-        modalPane.setId("modalPane");
-        root.getChildren().add(modalPane);
-    }
-
     /**
      * Sets the warehouse where products will be added.
      *
