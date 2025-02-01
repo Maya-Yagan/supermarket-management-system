@@ -108,6 +108,10 @@ public class HomePageController implements Initializable {
         navigateToPage("/fxml/WarehouseManagement.fxml", "Warehouse Management");
     }
     
+    private void gotToSupplierManagement(){
+        navigateToPage("/fxml/SupplierManagement.fxml", "Supplier Management");
+    }
+    
     /**
      * Logs out the user and navigates to the sign-in page.
      *
@@ -137,6 +141,7 @@ public class HomePageController implements Initializable {
                 new Sidebar.SidebarItem("Product Management", Feather.SHOPPING_BAG, this::goToProductManagement, null),
                 new Sidebar.SidebarItem("Employee Management", Feather.USERS, this::goToUserManagement, null),
                 new Sidebar.SidebarItem("Warehouse Management", Feather.DISC, this::goToWarehouseManagement, null),
+                new Sidebar.SidebarItem("Supplier Management", Feather.BOX, this::gotToSupplierManagement, null),
                 new Sidebar.SidebarItem("Log out", Feather.LOG_OUT, this::logout, null)
         );
         sidebar = Sidebar.createSidebar(sidebarItems, toggleButton);

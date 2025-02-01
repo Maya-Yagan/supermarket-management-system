@@ -9,6 +9,7 @@ import com.maya2002yagan.supermarket_management.model.Category;
 import com.maya2002yagan.supermarket_management.model.Product;
 import com.maya2002yagan.supermarket_management.model.ProductWarehouse;
 import com.maya2002yagan.supermarket_management.model.Warehouse;
+import com.maya2002yagan.supermarket_management.util.FormHelper;
 import com.maya2002yagan.supermarket_management.util.ShowAlert;
 import java.io.IOException;
 import java.net.URL;
@@ -100,7 +101,12 @@ public class WarehouseProductsController implements Initializable {
         configureTableColumns();
         // Bind the product list to the table view
         productTableView.setItems(productObservableList);
-        addProductButton.setOnAction(event -> openAddProductForm(warehouse));
+        addProductButton.setOnAction(event -> FormHelper.openForm("/fxml/AddProductToWarehouse.fxml", 
+                (AddProductToWarehouseController controller) -> {
+                    controller.setModalPane(modalPane);
+                    controller.setWarehouse(warehouse);
+                    controller.setOnCloseAction(() -> loadProducts());
+                }, modalPane));
         backButton.setOnAction(event -> goBack());
         productTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         productTableView.getStyleClass().add(Tweaks.EDGE_TO_EDGE);
@@ -275,26 +281,6 @@ public class WarehouseProductsController implements Initializable {
                     .filter(product -> product.getCategory().equals(selectedCategory))
                     .toList();
         productObservableList.addAll(products);
-    }
-    
-    /**
-     * Opens the form to add a new product to the warehouse.
-     * 
-     * @param warehouse The warehouse to add the product to
-     */
-    private void openAddProductForm(Warehouse warehouse) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AddProductToWarehouse.fxml"));
-            Parent root = loader.load();
-            AddProductToWarehouseController addController = loader.getController();
-            addController.setModalPane(modalPane);
-            addController.setWarehouse(warehouse);
-            modalPane.setContent(root);
-            modalPane.show(root);
-            addController.setOnCloseAction(() -> loadProducts());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
     
     /**

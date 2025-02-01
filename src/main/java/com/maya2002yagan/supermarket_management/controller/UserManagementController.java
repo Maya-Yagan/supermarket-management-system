@@ -5,11 +5,9 @@ import atlantafx.base.theme.Tweaks;
 import com.maya2002yagan.supermarket_management.model.Role;
 import com.maya2002yagan.supermarket_management.model.User;
 import com.maya2002yagan.supermarket_management.dao.UserDAO;
-import java.io.IOException;
+import com.maya2002yagan.supermarket_management.util.FormHelper;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -62,7 +60,7 @@ public class UserManagementController implements Initializable {
     private Button addUserButton;
     @FXML
     private StackPane stackPane;
-    private UserDAO userDAO = new UserDAO();
+    private final UserDAO userDAO = new UserDAO();
     private ModalPane modalPane;
     private final ObservableList<User> userObservableList = FXCollections.observableArrayList();
 
@@ -76,14 +74,24 @@ public class UserManagementController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         configureTableColumns();
-        addUserButton.setOnAction(event -> openAddUserModal());
+        addUserButton.setOnAction(event -> FormHelper.openForm("/fxml/AddUserForm.fxml", 
+                (AddUserController controller) -> {
+                    controller.setModalPane(modalPane);
+                    controller.setOnCloseAction(() -> loadUserData());
+                }, modalPane));
         userTableView.setItems(userObservableList);
         userTableView.setRowFactory(tv -> {
             TableRow<User> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if(event.getClickCount() == 2 && (!row.isEmpty())){
                     User selectedUser = row.getItem();
-                    openEditUserModal(selectedUser);
+                    //openEditUserModal(selectedUser);
+                    FormHelper.openForm("/fxml/EditUserForm.fxml", 
+                            (EditUserFormController controller) -> {
+                                controller.setUser(selectedUser);
+                                controller.setModalPane(modalPane);
+                                controller.setOnCloseAction(() -> loadUserData());
+                            }, modalPane);
                 }
             });
             return row;
@@ -99,26 +107,6 @@ public class UserManagementController implements Initializable {
         modalPane = new ModalPane();
         modalPane.setId("modalPane");
         root.getChildren().add(modalPane);
-    }
-    
-    /**
-     * Opens a modal dialog to edit a selected user.
-     * 
-     * @param user the User object to be edited
-     */
-    private void openEditUserModal(User user){
-        try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EditUserForm.fxml"));
-            Parent root = loader.load();
-            EditUserFormController editController = loader.getController();
-            editController.setUser(user);
-            editController.setModalPane(modalPane);
-            modalPane.setContent(root);
-            modalPane.show(root);
-            editController.setOnCloseAction(() -> loadUserData());
-        } catch (IOException e){
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -168,23 +156,6 @@ public class UserManagementController implements Initializable {
         userObservableList.clear();
         if (users != null) {
             userObservableList.addAll(users);
-        }
-    }
-    
-    /**
-     * Opens a modal dialog to add a new user.
-     */
-    private void openAddUserModal() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AddUserForm.fxml"));
-            Parent root = loader.load();
-            AddUserController addController = loader.getController();
-            addController.setModalPane(modalPane);
-            modalPane.setContent(root);
-            modalPane.show(root);
-            addController.setOnCloseAction(() -> loadUserData());
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

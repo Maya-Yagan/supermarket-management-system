@@ -5,16 +5,14 @@ import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Tweaks;
 import com.maya2002yagan.supermarket_management.dao.CategoryDAO;
 import com.maya2002yagan.supermarket_management.model.Category;
+import com.maya2002yagan.supermarket_management.util.ShowAlert;
 import java.net.URL;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -128,7 +126,14 @@ public class EditCategoriesController implements Initializable {
                     deleteButton.getStyleClass().add(Styles.DANGER);
                     deleteButton.setOnAction(event -> {
                         Category category = getTableView().getItems().get(getIndex());
-                        showDeleteConfirmation(category);
+                        ShowAlert.showDeleteConfirmation(category,
+                                "Delete Confirmation",
+                                "Are you sure you want to delete this category?",
+                                "This action cannot be undone",
+                                (Category c) -> {
+                                    categoryDAO.deleteCategory(c.getId());
+                                    categoryList.remove(c);
+                                });
                     });
                 }
                 @Override
@@ -139,26 +144,6 @@ public class EditCategoriesController implements Initializable {
                 }
             };
         });
-    }
-    
-    /**
-     * Displays a confirmation dialog before deleting a category.
-     *
-     * This method shows a confirmation alert when the delete button is clicked. If the user confirms, 
-     * the category is deleted from the database and removed from the table view.
-     *
-     * @param category The category to be deleted.
-     */
-    private void showDeleteConfirmation(Category category){
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Delete Confirmation");
-        alert.setHeaderText("Are you sure you want to delete this category?");
-        alert.setContentText("This action cannot be undone");
-        Optional<ButtonType> result = alert.showAndWait();
-        if(result.isPresent() && result.get() == ButtonType.OK){
-            categoryDAO.deleteCategory(category.getId());
-            categoryList.remove(category);
-        }
     }
     
     /**

@@ -5,7 +5,7 @@ import atlantafx.base.theme.Tweaks;
 import com.maya2002yagan.supermarket_management.dao.WarehouseDAO;
 import com.maya2002yagan.supermarket_management.model.ProductWarehouse;
 import com.maya2002yagan.supermarket_management.model.Warehouse;
-import java.io.IOException;
+import com.maya2002yagan.supermarket_management.util.FormHelper;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -14,9 +14,7 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -68,7 +66,10 @@ public class WarehouseManagementController implements Initializable {
             row.setOnMouseClicked(event -> {
                 if(event.getClickCount() == 2 && (!row.isEmpty())){
                     Warehouse selectedWarehouse = row.getItem();
-                    openWarehouseProductsModal(selectedWarehouse);
+                    FormHelper.openForm("/fxml/WarehouseProducts.fxml",
+                            (WarehouseProductsController controller) -> {
+                                controller.setWarehouse(selectedWarehouse);
+                            }, modalPane);
                 }
             });
             return row;
@@ -129,7 +130,11 @@ public class WarehouseManagementController implements Initializable {
      */
     @FXML
     private void addWarehouse(){
-        openAddWarehouseForm();
+        FormHelper.openForm("/fxml/AddWarehouse.fxml", 
+            (AddWarehouseController controller) -> {
+                controller.setModalPane(modalPane);
+                controller.setOnCloseAction(() -> loadData());
+            }, modalPane);
     }
     
     /**
@@ -137,58 +142,10 @@ public class WarehouseManagementController implements Initializable {
      */
     @FXML
     private void editWarehouse(){
-        openEditWarehouseForm();
-    }
-    
-    /**
-     * Opens the "Add Warehouse" form in a modal pane.
-     */
-    private void openAddWarehouseForm(){
-        try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AddWarehouse.fxml"));
-            Parent root = loader.load();
-            AddWarehouseController addController = loader.getController();
-            addController.setModalPane(modalPane);
-            modalPane.setContent(root);
-            modalPane.show(root);
-            addController.setOnCloseAction(() -> loadData());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    
-    /**
-     * Opens the "Edit Warehouse" form in a modal pane.
-     */
-    private void openEditWarehouseForm(){
-        try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EditWarehouse.fxml"));
-            Parent root = loader.load();
-            EditWarehouseController editController = loader.getController();
-            editController.setModalPane(modalPane);
-            modalPane.setContent(root);
-            modalPane.show(root);
-            editController.setOnCloseAction(() -> loadData());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    
-    /**
-     * Opens a modal to display the products stored in the selected warehouse.
-     * 
-     * @param warehouse The selected warehouse to view products for.
-     */
-    private void openWarehouseProductsModal(Warehouse warehouse){
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/WarehouseProducts.fxml"));
-            Parent root = loader.load();
-            WarehouseProductsController warehouseProductsController = loader.getController();
-            warehouseProductsController.setWarehouse(warehouse);
-            modalPane.setContent(root);
-            modalPane.show(root);
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
+        FormHelper.openForm("/fxml/EditWarehouse.fxml", 
+            (EditWarehouseController controller) -> {
+                controller.setModalPane(modalPane);
+                controller.setOnCloseAction(() -> loadData());
+            }, modalPane);
     }
 }

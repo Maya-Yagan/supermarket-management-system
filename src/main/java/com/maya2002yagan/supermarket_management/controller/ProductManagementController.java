@@ -6,6 +6,7 @@ import com.maya2002yagan.supermarket_management.dao.CategoryDAO;
 import com.maya2002yagan.supermarket_management.dao.ProductDAO;
 import com.maya2002yagan.supermarket_management.model.Product;
 import com.maya2002yagan.supermarket_management.model.Category;
+import com.maya2002yagan.supermarket_management.util.FormHelper;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -78,16 +79,37 @@ public class ProductManagementController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         configureTableColumns();
-        addProductButton.setOnAction(event -> openAddProductForm());
-        addCategoryButton.setOnAction(event -> openAddCategoryForm());
-        editCategoriesButton.setOnAction(event -> openEditCategories());
+        addProductButton.setOnAction(event -> FormHelper.openForm("/fxml/AddProductForm.fxml",
+                (AddProductFormController controller) -> {
+                    controller.setModalPane(modalPane);
+                    controller.setOnCloseAction(() -> handleCloseAction());
+                }, modalPane));
+        
+        addCategoryButton.setOnAction(event -> FormHelper.openForm("/fxml/AddCategory.fxml",
+                (AddCategoryController controller) -> {
+                    controller.setModalPane(modalPane);
+                    controller.setOnCloseAction(() -> loadCategories());
+                }, modalPane));
+        
+        editCategoriesButton.setOnAction(event -> FormHelper.openForm("/fxml/EditCategories.fxml", 
+                (EditCategoriesController controller) -> {
+                    controller.setModalPane(modalPane);
+                    controller.setOnCloseAction(() -> loadCategories());
+                }, modalPane));
+        
         productTableView.setItems(productObservableList);
         productTableView.setRowFactory(tv -> {
             TableRow<Product> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if(event.getClickCount() == 2 && (!row.isEmpty())){
                     Product selectedProduct = row.getItem();
-                    openEditProductModal(selectedProduct);
+                    FormHelper.openForm("/fxml/EditProductForm.fxml", 
+                            (EditProductFormController controller) -> {
+                                controller.setProduct(selectedProduct);
+                                controller.setModalPane(modalPane);
+                                controller.setOnCloseAction(() -> 
+                                        handleCategorySelection(selectedProduct.getCategory()));
+                            }, modalPane);
                 }
             });
             return row;
@@ -160,48 +182,6 @@ public class ProductManagementController implements Initializable {
     }
     
     /**
-     * Opens the product edit modal for the selected product.
-     * 
-     * This method loads the edit product form and displays it in a modal window.
-     * 
-     * @param product The product to be edited.
-     */
-    private void openEditProductModal(Product product){
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EditProductForm.fxml"));
-            Parent root = loader.load();
-            EditProductFormController editController = loader.getController();
-            editController.setProduct(product);
-            editController.setModalPane(modalPane);
-            modalPane.setContent(root);
-            modalPane.show(root);
-            editController.setOnCloseAction(() -> handleCategorySelection(product.getCategory()));
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
-        
-    }
-    
-    /**
-     * Opens the add product form in a modal window.
-     * 
-     * This method loads the add product form and displays it in a modal window.
-     */
-    private void openAddProductForm() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AddProductForm.fxml"));
-            Parent root = loader.load();
-            AddProductFormController addController = loader.getController();
-            addController.setModalPane(modalPane);
-            modalPane.setContent(root);
-            modalPane.show(root);
-            addController.setOnCloseAction(() -> handleCloseAction());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    
-    /**
      * Handles the close action after a new product is added.
      * 
      * This method refreshes the product list after adding a new product by selecting the appropriate category.
@@ -212,43 +192,5 @@ public class ProductManagementController implements Initializable {
                 Category selectedCategory = categoryDAO.getCategoryByName(selectedCategoryName);
                 handleCategorySelection(selectedCategory);
             }
-    }
-    
-    /**
-     * Opens the add category form in a modal window.
-     * 
-     * This method loads the add category form and displays it in a modal window.
-     */
-    private void openAddCategoryForm(){
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AddCategory.fxml"));
-            Parent root = loader.load();
-            AddCategoryController addController = loader.getController();
-            addController.setModalPane(modalPane);
-            modalPane.setContent(root);
-            modalPane.show(root);
-            addController.setOnCloseAction(() -> loadCategories());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    
-    /**
-     * Opens the edit categories form in a modal window.
-     * 
-     * This method loads the edit categories form and displays it in a modal window.
-     */
-    private void openEditCategories(){
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EditCategories.fxml"));
-            Parent root = loader.load();
-            EditCategoriesController editController = loader.getController();
-            editController.setModalPane(modalPane);
-            modalPane.setContent(root);
-            modalPane.show(root);
-            editController.setOnCloseAction(() -> loadCategories());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

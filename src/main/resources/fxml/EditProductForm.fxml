@@ -46,7 +46,6 @@
                   <Font size="23.0" />
                </font>
             </Label>
-            <Label fx:id="warningLabel" textFill="RED" GridPane.columnIndex="1" />
             <DatePicker fx:id="productionDatePicker" promptText="MM/DD/YYYY" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <Button fx:id="saveButton" mnemonicParsing="false" onAction="#handleSave" styleClass="accent" text="Save" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="6">
                <GridPane.margin>

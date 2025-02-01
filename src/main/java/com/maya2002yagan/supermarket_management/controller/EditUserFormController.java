@@ -5,6 +5,7 @@ import com.maya2002yagan.supermarket_management.model.Role;
 import com.maya2002yagan.supermarket_management.dao.RoleDAO;
 import com.maya2002yagan.supermarket_management.model.User;
 import com.maya2002yagan.supermarket_management.dao.UserDAO;
+import com.maya2002yagan.supermarket_management.util.ShowAlert;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -238,17 +239,15 @@ public class EditUserFormController implements Initializable {
      */
     @FXML
     private void handleDelete(){
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Delete User");
-        alert.setHeaderText("Are you sure you want to delete this user?");
-        alert.setContentText("This action cannot be undone.");
-        alert.showAndWait().ifPresent(response -> {
-            if(response == ButtonType.OK){
-                userDAO.deleteUser(user.getId());
-                if(onCloseAction != null) onCloseAction.run();
-                closeForm();
-            }
-        });
+        ShowAlert.showDeleteConfirmation(user,
+                "Delete User",
+                "Are you sure you want to delete this user?",
+                "This action cannot be undone.",
+                (User u) -> {
+                    userDAO.deleteUser(u.getId());
+                    if(onCloseAction != null) onCloseAction.run();
+                    closeForm();
+                });
     }
     
     /**

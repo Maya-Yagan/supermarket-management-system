@@ -5,14 +5,13 @@ import com.maya2002yagan.supermarket_management.dao.CategoryDAO;
 import com.maya2002yagan.supermarket_management.dao.ProductDAO;
 import com.maya2002yagan.supermarket_management.model.Category;
 import com.maya2002yagan.supermarket_management.model.Product;
+import com.maya2002yagan.supermarket_management.util.ShowAlert;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Set;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
@@ -132,17 +131,15 @@ public class EditProductFormController implements Initializable {
      */
     @FXML
     private void handleDelete(){
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Delete Product");
-        alert.setHeaderText("Are you sure you want to delete this product?");
-        alert.setContentText("This action cannot be undone");
-        alert.showAndWait().ifPresent(response -> {
-            if(response == ButtonType.OK){
-                productDAO.deleteProduct(product.getId());
-                if(onCloseAction != null) onCloseAction.run();
-                closeForm();
-            }
-        });
+        ShowAlert.showDeleteConfirmation(product,
+                "Delete Product",
+                "Are you sure you want to delete this product?",
+                "This action cannot be undone",
+                (Product p) -> {
+                    productDAO.deleteProduct(p.getId());
+                    if(onCloseAction != null) onCloseAction.run();
+                    closeForm();
+                });
     }
     
     /**

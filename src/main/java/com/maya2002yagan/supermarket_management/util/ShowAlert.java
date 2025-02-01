@@ -1,6 +1,9 @@
 package com.maya2002yagan.supermarket_management.util;
 
+import java.util.Optional;
+import java.util.function.Consumer;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 /**
  *
@@ -16,5 +19,15 @@ public class ShowAlert {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+    
+    public  static <T> void showDeleteConfirmation(T entity, String title, String headerText, String contentText, Consumer<T> onConfirmAction){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(headerText);
+        alert.setContentText(contentText);
+        Optional<ButtonType> result = alert.showAndWait();
+        if(result.isPresent() && result.get() == ButtonType.OK)
+            onConfirmAction.accept(entity);
     }
 }

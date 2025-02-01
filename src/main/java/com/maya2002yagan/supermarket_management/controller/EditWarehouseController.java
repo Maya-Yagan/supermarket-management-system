@@ -7,7 +7,6 @@ import com.maya2002yagan.supermarket_management.dao.WarehouseDAO;
 import com.maya2002yagan.supermarket_management.model.Warehouse;
 import com.maya2002yagan.supermarket_management.util.ShowAlert;
 import java.net.URL;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,7 +14,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -156,7 +154,14 @@ public class EditWarehouseController implements Initializable {
                     deleteButton.getStyleClass().add(Styles.DANGER);
                     deleteButton.setOnAction(event -> {
                         Warehouse warehouse = getTableView().getItems().get(getIndex());
-                        showDeleteConfirmation(warehouse);
+                        ShowAlert.showDeleteConfirmation(warehouse,
+                                "Delete Warehouse",
+                                "Are you sure you want to delete this warehouse?",
+                                "This action cannot be undone",
+                                (Warehouse w) -> {
+                                    warehouseDAO.deleteWarehouse(w.getId());
+                                    warehouseList.remove(w);
+                                });
                     });
                 }
                 @Override
@@ -167,26 +172,6 @@ public class EditWarehouseController implements Initializable {
                 }
             };
         });
-    }
-    
-    /**
-     * Displays a confirmation dialog for deleting a warehouse.
-     *
-     * Prompts the user with a confirmation alert. If confirmed, deletes the 
-     * warehouse from the database and removes it from the table view.
-     *
-     * @param warehouse The warehouse to be deleted.
-     */
-    private void showDeleteConfirmation(Warehouse warehouse){
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Delete Confirmation");
-        alert.setHeaderText("Are you sure you want to delete this warehouse?");
-        alert.setContentText("This action cannot be undone");
-        Optional<ButtonType> result = alert.showAndWait();
-        if(result.isPresent() && result.get() == ButtonType.OK){
-            warehouseDAO.deleteWarehouse(warehouse.getId());
-            warehouseList.remove(warehouse);
-        }
     }
     
     /**
