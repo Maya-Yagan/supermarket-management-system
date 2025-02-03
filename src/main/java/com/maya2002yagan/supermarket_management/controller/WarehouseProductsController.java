@@ -14,7 +14,6 @@ import com.maya2002yagan.supermarket_management.util.ShowAlert;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -26,7 +25,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
@@ -233,7 +231,14 @@ public class WarehouseProductsController implements Initializable {
                     deleteButton.getStyleClass().add(Styles.DANGER);
                     deleteButton.setOnAction(event -> {
                         Product product = getTableView().getItems().get(getIndex());
-                        showDeleteConfirmation(product);
+                        ShowAlert.showDeleteConfirmation(product,
+                                "Delete Confirmation",
+                                "Are you sure you want to delete this product?",
+                                "This action cannot be undone",
+                                (Product p) -> {
+                                    warehouseDAO.deleteProdcutFromWarehouse(warehouse, product);
+                                    productObservableList.remove(product);
+                                });
                     });
                 }
                 @Override
@@ -321,22 +326,5 @@ public class WarehouseProductsController implements Initializable {
             label1.setLayoutX(categoryMenuButton.getLayoutX() + newValue.doubleValue() + 150);
             label2.setLayoutX(categoryMenuButton.getLayoutX() + newValue.doubleValue() + 150);
         });
-    }
-    
-    /**
-    * Displays a confirmation dialog to delete a product from the warehouse.
-    * 
-    * @param product The product to be deleted from the warehouse.
-    */
-    private void showDeleteConfirmation(Product product){
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Delete Confirmation");
-        alert.setHeaderText("Are you sure you want to delete this product?");
-        alert.setContentText("This action cannot be undone");
-        Optional<ButtonType> result = alert.showAndWait();
-        if(result.isPresent() && result.get() == ButtonType.OK){
-            warehouseDAO.deleteProdcutFromWarehouse(warehouse, product);
-            productObservableList.remove(product);
-        }
     }
 }

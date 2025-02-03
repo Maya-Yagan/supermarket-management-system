@@ -29,5 +29,6 @@
         <mapping class="com.maya2002yagan.supermarket_management.model.Warehouse"/>
         <mapping class="com.maya2002yagan.supermarket_management.model.ProductWarehouse"/>
         <mapping class="com.maya2002yagan.supermarket_management.model.Supplier"/>
+        <mapping class="com.maya2002yagan.supermarket_management.model.SupplierProduct"/>
     </session-factory>
 </hibernate-configuration>

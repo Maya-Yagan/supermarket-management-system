@@ -1,8 +1,12 @@
 package com.maya2002yagan.supermarket_management.dao;
 
+import com.maya2002yagan.supermarket_management.model.Product;
 import com.maya2002yagan.supermarket_management.model.Supplier;
+import com.maya2002yagan.supermarket_management.model.SupplierProduct;
 import com.maya2002yagan.supermarket_management.util.HibernateUtil;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -49,6 +53,23 @@ public class SupplierDAO {
             return null;
         }
     }
+    
+    /**
+     * Retrieves a list of products provided by a specific supplier.
+     * 
+     * @param supplier The supplier that offers the products
+     * @return List of products provided by a supplier
+     */
+    public List<Product> getSupplierProducts(Supplier supplier){
+        try(Session session = HibernateUtil.getSessionFactory().openSession()){
+            Query<Product> query = session.createQuery("SELECT p FROM Product p JOIN FETCH p.supplierProducts sp WHERE sp.supplier = :supplier", Product.class);
+            query.setParameter("supplier", supplier);
+            return query.getResultList();
+        } catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    } 
     
     /**
      * Retrieves all distinct suppliers from the database
