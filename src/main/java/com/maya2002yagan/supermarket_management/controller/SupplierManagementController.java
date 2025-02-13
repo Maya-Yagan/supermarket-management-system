@@ -19,17 +19,22 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import org.kordamp.ikonli.feather.Feather;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 /**
- * FXML Controller class
+ * FXML Controller class for managing suppliers in the supermarket management system.
+ * Handles supplier listing, editing, deleting and adding. 
  *
  * @author Maya Yagan
  */
@@ -54,31 +59,21 @@ public class SupplierManagementController implements Initializable {
     private Supplier supplier;
     
     /**
-     * Initializes the controller class.
+     * Initializes the controller class, setting up the table, event handlers, and modal pane
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         configureTableColumns();
         setupDeleteColumn();
+        setupRowInteractions();
         loadSuppliers();
         setupEventHandlers();
         initializeModalPane();
-        // Define behavior for double-clicking a row
-        suppliersTable.setRowFactory(tv -> {
-            TableRow<Supplier> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
-                if(event.getClickCount() == 2 && (!row.isEmpty())){
-                    Supplier selectedSupplier = row.getItem();
-                    FormHelper.openForm("/fxml/SupplierProducts.fxml",
-                            (SupplierProductsController controller) -> {
-                                controller.setSupplier(selectedSupplier);
-                            }, modalPane);
-                }
-            });
-            return row;
-        });
     }    
     
+    /**
+     * Configures table columns by setting up property bindings and cell factories
+     */
     private void configureTableColumns(){
         suppliersTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         suppliersTable.getStyleClass().add(Tweaks.EDGE_TO_EDGE);
@@ -86,7 +81,6 @@ public class SupplierManagementController implements Initializable {
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
         phoneNumberColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
-        //i need to find a way to display the categories of the supplier in a drop down in the column Category
         categoryColumn.setCellFactory(column -> new TableCell<Supplier, String>(){
             private final ComboBox<String> comboBox = new ComboBox<>();
             
@@ -101,7 +95,6 @@ public class SupplierManagementController implements Initializable {
                 else{
                     Supplier supplier = getTableRow().getItem();
                     List<String> categories = fetchSupplierCategories(supplier);
-                    //comboBox.setItems(FXCollections.observableArrayList(categories));
                     if(categories.isEmpty()){
                         setGraphic(null);
                         setText("No Category");
@@ -121,12 +114,18 @@ public class SupplierManagementController implements Initializable {
         });
     }
     
+    /**
+     * Loads supplier data from the database into the table
+     */
     private void loadSuppliers(){
         supplierObservableList.clear();
         supplierObservableList.addAll(supplierDAO.getSuppliers());
         suppliersTable.setItems(supplierObservableList);
     }
     
+    /**
+     * Sets up event handlers for buttons
+     */
     private void setupEventHandlers(){
         addSupplierButton.setOnAction(event -> FormHelper.openForm("/fxml/AddSupplier.fxml",
                 (AddSupplierController controller) -> {
@@ -134,6 +133,66 @@ public class SupplierManagementController implements Initializable {
                     controller.setOnCloseAction(() -> loadSuppliers());
                 }, modalPane));
         //makeOrderButton.setOnAction(event -> openForm("/fxml/MakeOrder.fxml"));
+    }
+    
+    /**
+     * Configures row interactions, including right-click and double-click actions
+     */
+    private void setupRowInteractions(){
+        suppliersTable.setRowFactory(tv -> {
+            TableRow<Supplier> row = new TableRow<>();
+            ContextMenu contextMenu = createContextMenu(row);
+            row.setContextMenu(contextMenu);
+            row.setOnMouseClicked(event -> handleRowClick(event, row));
+            return row;
+        });
+    }
+    
+    /**
+     * Creates a context menu for a table row
+     * 
+     * @param row The table row to attach the context menu to
+     * @return The configured context menu
+     */
+    private ContextMenu createContextMenu(TableRow<Supplier> row){
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem editSupplier = new MenuItem("Edit this supplier");
+        editSupplier.setOnAction(event -> {
+            Supplier selectedSupplier = row.getItem();
+            if(selectedSupplier != null)
+                FormHelper.openForm("/fxml/EditSupplier.fxml",
+                        (EditSupplierController controller) -> {
+                            controller.setSupplier(selectedSupplier);
+                            controller.setModalPane(modalPane);
+                            controller.setOnCloseAction(() -> loadSuppliers());
+                        }, modalPane);
+        });
+        contextMenu.getItems().add(editSupplier);
+        return contextMenu;
+    }
+    
+    /**
+     * Handles row click events, including right-click for context menu and 
+     * double-click to open supplier products details
+     * 
+     * @param event The mouse event
+     * @param row The clicked table row
+     */
+    private void handleRowClick(MouseEvent event, TableRow<Supplier> row){
+        if(row.isEmpty()) return;
+        
+        if(event.getButton() == MouseButton.SECONDARY)
+            row.getContextMenu().show(row, event.getScreenX(), event.getScreenY());
+        else
+            row.getContextMenu().hide();
+        
+        if(event.getClickCount() == 2 && event.getButton() == MouseButton.PRIMARY){
+            Supplier selectedSupplier = row.getItem();
+            FormHelper.openForm("/fxml/SupplierProducts.fxml",
+                    (SupplierProductsController controller) -> {
+                        controller.setSupplier(selectedSupplier);
+                    }, modalPane);
+        }
     }
     
     /**
@@ -146,6 +205,12 @@ public class SupplierManagementController implements Initializable {
         root.getChildren().add(modalPane);
     }
     
+    /**
+     * Fetches the list of categories for a given supplier
+     * 
+     * @param supplier The supplier whose categories are retrieved
+     * @return A list of category names
+     */
     private List<String> fetchSupplierCategories(Supplier supplier){
         List<Product> products = supplierDAO.getSupplierProducts(supplier);
         if(products != null){
@@ -157,6 +222,9 @@ public class SupplierManagementController implements Initializable {
         return Collections.emptyList();
     }
     
+    /**
+     * Sets up the delete button with delete buttons for each row
+     */
     private void setupDeleteColumn(){
         deleteColumn.setCellFactory(column -> {
             return new TableCell<Supplier, Void>(){
@@ -166,13 +234,14 @@ public class SupplierManagementController implements Initializable {
                     deleteButton.setOnAction(event -> {
                         Supplier supplier = getTableView().getItems().get(getIndex());
                         ShowAlert.showDeleteConfirmation(supplier,
-                                "Delete Confirmation",
-                                "Are you sure you want to delete this supplier?",
-                                "This action cannot be undone",
-                                (Supplier s) -> {
-                                    supplierDAO.deleteSupplier(s.getId());
-                                    supplierObservableList.remove(supplier);
-                                });
+                            "Delete Confirmation",
+                            "Are you sure you want to delete this supplier?",
+                            "This action cannot be undone",
+                            (Supplier s) -> {
+                                supplierDAO.deleteSupplier(s.getId());
+                                supplierObservableList.remove(supplier);
+                            }
+                        );
                     });
                 }
                 @Override
