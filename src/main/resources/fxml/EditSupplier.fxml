@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<StackPane fx:id="stackPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="256.0" prefWidth="365.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya2002yagan.supermarket_management.controller.EditSupplierController">
+   <children>
+      <GridPane alignment="CENTER" hgap="5.0" prefHeight="281.0" prefWidth="392.0" style="-fx-padding: 20;" vgap="5.0">
+         <columnConstraints>
+            <ColumnConstraints maxWidth="151.33332316080728" minWidth="139.33333333333334" prefWidth="139.33333333333334" />
+            <ColumnConstraints maxWidth="208.66666666666663" minWidth="188.66667683919272" prefWidth="192.6666259765625" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints maxHeight="37.333343505859375" minHeight="10.0" prefHeight="33.333343505859375" />
+            <RowConstraints maxHeight="48.0" minHeight="34.66667683919271" prefHeight="34.66667683919271" />
+            <RowConstraints maxHeight="39.333312988281264" minHeight="10.0" prefHeight="34.666656494140625" />
+            <RowConstraints maxHeight="40.66666666666666" minHeight="10.0" prefHeight="33.99997965494791" />
+            <RowConstraints maxHeight="40.66666666666666" minHeight="10.0" prefHeight="30.0" />
+            <RowConstraints maxHeight="40.66666666666666" minHeight="8.666656494140625" prefHeight="8.666656494140625" />
+            <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+         </rowConstraints>
+         <children>
+            <Label text="Supplier Name:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <TextField fx:id="nameField" promptText="Supplier Name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Button fx:id="saveButton" styleClass="accent" text="Save" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <GridPane.margin>
+                  <Insets right="45.0" />
+               </GridPane.margin>
+            </Button>
+            <Button fx:id="cancelButton" text="Cancel" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
+            <Text fill="#455079" strokeType="OUTSIDE" strokeWidth="0.0" text="Edit Supplier">
+               <font>
+                  <Font size="23.0" />
+               </font>
+            </Text>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Email:" GridPane.rowIndex="2" />
+            <TextField fx:id="emailField" promptText="Supplier Email" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Phone Number:" GridPane.rowIndex="3" />
+            <TextField fx:id="phoneNumberField" promptText="Phone Number" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+         </children>
+      </GridPane>
+   </children>
+</StackPane>
