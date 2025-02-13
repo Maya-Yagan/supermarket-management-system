@@ -19,7 +19,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.StackPane;
 
 /**
  * Controller class for adding products to a warehouse.
@@ -33,8 +32,6 @@ import javafx.scene.layout.StackPane;
  */
 public class AddProductToWarehouseController implements Initializable {
 
-    @FXML
-    private StackPane stackPane;
     @FXML
     private TableView<Product> productsTable;
     @FXML
@@ -198,7 +195,7 @@ public class AddProductToWarehouseController implements Initializable {
             warehouse.getProductWarehouses().add(newProductWarehouse);
         }
         warehouseDAO.updateWarehouse(warehouse);
-        ShowAlert.showAlert(Alert.AlertType.INFORMATION, "Success", "The product amount was successfully updated.");
+        ShowAlert.showAlert(Alert.AlertType.INFORMATION, "Success", "The product was added successfully.");
         if(onCloseAction != null) onCloseAction.run();
         closeModal();
     }
