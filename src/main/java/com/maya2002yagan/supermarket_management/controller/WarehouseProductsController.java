@@ -70,7 +70,7 @@ public class WarehouseProductsController implements Initializable {
     @FXML
     private TableColumn<Product, Void> deleteColumn;
     @FXML
-    private Button addProductButton, backButton;
+    private Button addProductButton, backButton, orderButton;
     @FXML
     private MenuButton categoryMenuButton;
     @FXML
@@ -105,6 +105,8 @@ public class WarehouseProductsController implements Initializable {
                     controller.setWarehouse(warehouse);
                     controller.setOnCloseAction(() -> loadProducts());
                 }, modalPane));
+        orderButton.setOnAction(event -> FormHelper.openForm("/fxml/OrderManagement.fxml",
+                (OrderManagementController controller) -> {}, modalPane));
         backButton.setOnAction(event -> goBack());
         productTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         productTableView.getStyleClass().add(Tweaks.EDGE_TO_EDGE);
@@ -321,10 +323,9 @@ public class WarehouseProductsController implements Initializable {
     private void setupDynamicLayoutAdjustment(){
         categoryMenuButton.widthProperty().addListener((observable, oldValue, newValue) -> {
             addProductButton.setLayoutX(categoryMenuButton.getLayoutX() + newValue.doubleValue() + 10);
-        });
-        categoryMenuButton.widthProperty().addListener((observable, oldValue, newValue) -> {
-            label1.setLayoutX(categoryMenuButton.getLayoutX() + newValue.doubleValue() + 150);
-            label2.setLayoutX(categoryMenuButton.getLayoutX() + newValue.doubleValue() + 150);
+            orderButton.setLayoutX(categoryMenuButton.getLayoutX() + newValue.doubleValue() + 120);
+            label1.setLayoutX(categoryMenuButton.getLayoutX() + newValue.doubleValue() + 250);
+            label2.setLayoutX(categoryMenuButton.getLayoutX() + newValue.doubleValue() + 250);
         });
     }
 }

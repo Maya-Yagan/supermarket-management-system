@@ -11,9 +11,11 @@ import com.maya2002yagan.supermarket_management.model.Supplier;
 import com.maya2002yagan.supermarket_management.model.SupplierProduct;
 import com.maya2002yagan.supermarket_management.util.ShowAlert;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -24,6 +26,8 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 /**
@@ -44,7 +48,7 @@ public class AddProductToSupplierController implements Initializable {
     @FXML
     private TableColumn<Product, String> nameColumn;
     @FXML
-    private TableColumn<Product, String> priceColumn;
+    private TableColumn<Product, Boolean> selectColumn;
     @FXML
     private MenuButton categoryMenuButton;
     @FXML 
@@ -54,9 +58,10 @@ public class AddProductToSupplierController implements Initializable {
     private final ProductDAO productDAO = new ProductDAO();
     private final SupplierDAO SupplierDAO = new SupplierDAO();
     private final ObservableList<Product> productObservableList = FXCollections.observableArrayList();
+    private final Map<Product, SimpleBooleanProperty> selectedProducts = new HashMap<>();
+    private final Map<Product, Float> productsPrice = new HashMap<>();
     
     private Supplier supplier;
-    private Product selectedProduct;
     private Category selectedCategory;
     private Runnable onCloseAction;
     private ModalPane modalPane;
@@ -80,17 +85,56 @@ public class AddProductToSupplierController implements Initializable {
         productsTable.setItems(productObservableList);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        priceColumn.setCellValueFactory(cellData -> {
+        setupSelectColumn();
+    }
+    
+    /**
+     * Sets up the select column with checkboxes.
+     */
+    private void setupSelectColumn(){
+        productsTable.setEditable(true);
+        selectColumn.setEditable(true);
+        selectColumn.setCellValueFactory(cellData -> {
             Product product = cellData.getValue();
-            if (supplier == null) {
-                return new SimpleStringProperty("Unavailable");
-            }
-            SupplierProduct supplierProduct = supplier.getSupplierProducts().stream()
-                    .filter(sp -> sp.getProduct().equals(product))
-                    .findFirst()
-                    .orElse(null);
-            return new SimpleStringProperty(supplierProduct != null ? String.valueOf(supplierProduct.getPrice()) : "Unavailable");
+            SimpleBooleanProperty selectedProperty =
+                    selectedProducts.computeIfAbsent(product, p -> {
+                        SimpleBooleanProperty prop = new SimpleBooleanProperty(false);
+                        prop.addListener((obs, oldVal, newVal) -> {
+                            if(newVal){
+                                TextInputDialog dialog = new TextInputDialog("0.0");
+                                dialog.setTitle("Enter the Supplier Price");
+                                dialog.setHeaderText("Enter the supplier price for " + product.getName());
+                                dialog.setContentText("Price:");
+                                
+                                Optional<String> result = dialog.showAndWait();
+                                if(result.isPresent()){
+                                    try{
+                                        float price = Float.parseFloat(result.get());
+                                        if(price <= 0){
+                                            prop.set(false);
+                                            ShowAlert.showAlert(Alert.AlertType.ERROR,
+                                                    "Invalid Input", "The price must be greater than zero");
+                                        }
+                                        else
+                                            productsPrice.put(product, price);
+                                            
+                                    } catch(NumberFormatException e){
+                                        prop.set(false);
+                                        ShowAlert.showAlert(Alert.AlertType.ERROR,
+                                                "Invalid Input", "Please enter a valid number");
+                                    }
+                                }
+                                else //the dialog was cancelled
+                                    prop.set(false);
+                            }
+                            else //remove the product price if unchecked
+                                productsPrice.remove(product);
+                        });
+                        return prop;
+                    });
+            return selectedProperty;
         });
+        selectColumn.setCellFactory(CheckBoxTableCell.forTableColumn(selectColumn));
     }
 
     /**
@@ -111,9 +155,6 @@ public class AddProductToSupplierController implements Initializable {
     private void setupEventHandlers(){
         saveButton.setOnAction(event -> saveProductToSupplier());
         cancelButton.setOnAction(event -> closeModal());
-        productsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            selectedProduct = newSelection;
-        });
     }
     
     /**
@@ -140,21 +181,40 @@ public class AddProductToSupplierController implements Initializable {
      * Saves the selected product to the supplier.
      */
     private void saveProductToSupplier(){
-        if(selectedProduct == null){
-            ShowAlert.showAlert(Alert.AlertType.WARNING, "No Product Selected", "Please select a product to add.");
+        boolean anySelected = false;
+        for(Map.Entry<Product, SimpleBooleanProperty> entry : selectedProducts.entrySet()){
+            if(entry.getValue().get()){
+                anySelected = true;
+                Product product = entry.getKey();
+                
+                if(!productsPrice.containsKey(product)){
+                    ShowAlert.showAlert(Alert.AlertType.WARNING,
+                            "Missing Price", 
+                           "Please enter a valid suppleir price for " + product.getName());
+                    return;
+                }
+                
+                Optional<SupplierProduct> existingSupplierProduct = supplier.getSupplierProducts()
+                        .stream()
+                        .filter(sp -> sp.getProduct().equals(product))
+                        .findFirst();
+                if(!existingSupplierProduct.isPresent()){
+                    float supplierPrice = productsPrice.get(product);
+                    SupplierProduct newSupplierProduct = new SupplierProduct(product, supplier, supplierPrice);
+                    supplier.getSupplierProducts().add(newSupplierProduct);
+                }
+            }
+        }
+        if(!anySelected){
+            ShowAlert.showAlert(Alert.AlertType.WARNING,
+                    "No Product Selected",
+                    "Please select at least one product to add");
             return;
         }
-        
-        Optional<SupplierProduct> existingSupplierProduct = supplier.getSupplierProducts()
-                .stream()
-                .filter(sp -> sp.getProduct().equals(selectedProduct))
-                .findFirst();
-        if(!existingSupplierProduct.isPresent()){
-            SupplierProduct newSupplierProduct = new SupplierProduct(selectedProduct, supplier, 0);
-            supplier.getSupplierProducts().add(newSupplierProduct);
-        }
         SupplierDAO.updateSupplier(supplier);
-        ShowAlert.showAlert(Alert.AlertType.INFORMATION, "Success", "The product was successfully added.");
+        ShowAlert.showAlert(Alert.AlertType.INFORMATION,
+                "Success",
+                "The selected products were added successfully.");
         if(onCloseAction != null) onCloseAction.run();
         closeModal();
     }

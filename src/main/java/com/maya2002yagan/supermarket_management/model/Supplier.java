@@ -31,6 +31,8 @@ public class Supplier {
     private String phoneNumber;
     @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<SupplierProduct> supplierProducts;
+    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL, orphanRemoval =  true)
+    private Set<Order> orders;
     
     /**
      * Default constructor
@@ -95,6 +97,15 @@ public class Supplier {
     public Set<SupplierProduct> getSupplierProducts() {
         return supplierProducts;
     }
+    
+    /**
+     * Returns the set of orders of the supplier
+     * 
+     * @return set of supplier orders
+     */
+    public Set<Order> getOrders(){
+        return orders;
+    }
 
     /**
      * Sets the name of the supplier.
@@ -131,6 +142,10 @@ public class Supplier {
     public void setSupplierProducts(Set<SupplierProduct> supplierProducts){
         this.supplierProducts = supplierProducts;
     }
+    
+    public void setOrders(Set<Order> orders){
+        this.orders = orders;
+    }
 
     /**
      * Returns a string representation of the supplier,
@@ -139,7 +154,7 @@ public class Supplier {
      */
     @Override
     public String toString() {
-        return "Supplier{" + "name=" + name + ", email=" + email + ", phoneNumber=" + phoneNumber + '}';
+        return name;
     }
      
     /**

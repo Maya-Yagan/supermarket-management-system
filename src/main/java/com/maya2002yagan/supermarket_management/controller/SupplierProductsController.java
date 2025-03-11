@@ -310,8 +310,6 @@ public class SupplierProductsController implements Initializable {
     private void setupDynamicLayoutAdjustment(){
         categoryMenuButton.widthProperty().addListener((observable, oldValue, newValue) -> {
             addProductButton.setLayoutX(categoryMenuButton.getLayoutX() + newValue.doubleValue() + 10);
-        });
-        categoryMenuButton.widthProperty().addListener((observable, oldValue, newValue) -> {
             label1.setLayoutX(categoryMenuButton.getLayoutX() + newValue.doubleValue() + 150);
             label2.setLayoutX(categoryMenuButton.getLayoutX() + newValue.doubleValue() + 150);
         });

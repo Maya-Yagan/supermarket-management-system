@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<StackPane fx:id="stackPane" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya2002yagan.supermarket_management.controller.OrderManagementController">
+   <children>
+      <AnchorPane fx:id="AnchorPane">
+         <children>
+            <TableView fx:id="ordersTableView" layoutX="38.0" layoutY="121.0" prefHeight="359.0" prefWidth="607.0" AnchorPane.bottomAnchor="96.0" AnchorPane.leftAnchor="37.0" AnchorPane.rightAnchor="44.0" AnchorPane.topAnchor="121.0">
+               <columns>
+                  <TableColumn fx:id="addToOrderColumn" prefWidth="110.66667938232422" text="Add to Order" />
+                  <TableColumn fx:id="supplierColumn" prefWidth="88.00004577636719" text="Supplier" />
+                  <TableColumn fx:id="productColumn" prefWidth="92.0" text="Product" />
+                  <TableColumn fx:id="priceColumn" prefWidth="66.66668701171875" text="Price" />
+               </columns>
+               <styleClass>
+                  <String fx:value="bordered" />
+                  <String fx:value="striped" />
+               </styleClass>
+            </TableView>
+            <Text fill="#455079" layoutX="32.0" layoutY="57.0" text="Order Management" textAlignment="CENTER" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="429.4072265625" AnchorPane.topAnchor="28.943359375">
+               <font>
+                  <Font size="26.0" />
+               </font>
+            </Text>
+            <Button fx:id="ordersButton" layoutX="314.0" layoutY="80.0" mnemonicParsing="false" styleClass="accent" text="Display Orders" AnchorPane.topAnchor="80.0" />
+            <MenuButton fx:id="categoryMenuButton" layoutX="37.0" layoutY="82.0" mnemonicParsing="false" styleClass="accent" text="All Categories" AnchorPane.leftAnchor="37.0" AnchorPane.topAnchor="80.0">
+            </MenuButton>
+            <Label layoutX="37.0" layoutY="499.0" text="Total price:" AnchorPane.bottomAnchor="57.66666666666663" AnchorPane.leftAnchor="37.0" />
+            <Label fx:id="totalPrice" layoutX="130.0" layoutY="499.0" text="0" AnchorPane.bottomAnchor="57.66666666666663" AnchorPane.leftAnchor="130.0" />
+            <Button fx:id="saveOrderButton" layoutX="528.0" layoutY="499.0" mnemonicParsing="false" styleClass="accent" text="Save the Order" AnchorPane.bottomAnchor="41.66666666666663" AnchorPane.rightAnchor="44.6666666666667" />
+            <MenuButton fx:id="supplierMenuButton" layoutX="179.0" layoutY="80.0" mnemonicParsing="false" styleClass="accent" text="All Suppliers" AnchorPane.topAnchor="80.0">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Action 1" />
+                <MenuItem mnemonicParsing="false" text="Action 2" />
+              </items>
+            </MenuButton>
+         </children>
+      </AnchorPane>
+   </children>
+</StackPane>

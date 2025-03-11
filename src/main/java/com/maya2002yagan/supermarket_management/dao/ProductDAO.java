@@ -59,7 +59,7 @@ public class ProductDAO {
      */
     public Set<Product> getProductsByCategory(Category category) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<Product> query = session.createQuery("FROM Product p WHERE p.category = :category", Product.class);
+            Query<Product> query = session.createQuery("SELECT DISTINCT p FROM Product p LEFT JOIN FETCH p.supplierProducts WHERE p.category = :category", Product.class);
             query.setParameter("category", category);
             return new HashSet<>(query.getResultList());
         } catch (Exception e) {
@@ -75,7 +75,7 @@ public class ProductDAO {
      */
     public Set<Product> getProducts(){
         try (Session session = HibernateUtil.getSessionFactory().openSession()){
-            Query<Product> query = session.createQuery("SELECT DISTINCT p FROM Product p", Product.class);
+            Query<Product> query = session.createQuery("SELECT DISTINCT p FROM Product p LEFT JOIN FETCH p.supplierProducts", Product.class);
             return new HashSet<>(query.getResultList());
         } catch (Exception e) {
             e.printStackTrace();

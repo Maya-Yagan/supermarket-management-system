@@ -2,15 +2,8 @@ package com.maya2002yagan.supermarket_management.model;
 
 import java.time.LocalDate;
 import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import java.util.Set;
+import javax.persistence.*;
 import org.mindrot.jbcrypt.BCrypt;
 
 /**
@@ -61,6 +54,8 @@ public class User {
     private Boolean isPartTime;
     @Column(name = "isFullTime")
     private Boolean isFullTime;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Order> orders;
     
     /**
      * Default constructor for the User class.
@@ -263,6 +258,15 @@ public class User {
     public Boolean getIsFullTime() {
         return isFullTime;
     }
+    
+    /**
+     * Returns a set of the orders of the user
+     * 
+     * @return the user orders
+     */
+    public Set<Order> getOrders(){
+        return orders;
+    }
 
     /**
      * Sets the unique identifier for the user.
@@ -430,6 +434,15 @@ public class User {
         if(isPartTime) return "Part time";
         else if(isFullTime) return "Full time";
         else return "Unspecified";
+    }
+    
+    /**
+     * Sets the orders of the user
+     * 
+     * @param orders the set of orders to be set
+     */
+    public void setOrders(Set<Order> orders){
+        this.orders = orders;
     }
 
     /**

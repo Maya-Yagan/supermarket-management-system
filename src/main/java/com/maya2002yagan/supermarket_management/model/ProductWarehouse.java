@@ -14,6 +14,7 @@ import javax.persistence.*;
 public class ProductWarehouse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
 
     @ManyToOne

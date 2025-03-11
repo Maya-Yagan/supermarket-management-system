@@ -132,7 +132,8 @@ public class SupplierManagementController implements Initializable {
                     controller.setModalPane(modalPane);
                     controller.setOnCloseAction(() -> loadSuppliers());
                 }, modalPane));
-        //makeOrderButton.setOnAction(event -> openForm("/fxml/MakeOrder.fxml"));
+        makeOrderButton.setOnAction(event -> FormHelper.openForm("/fxml/OrderManagement.fxml",
+                (OrderManagementController controller) -> {}, modalPane));
     }
     
     /**
