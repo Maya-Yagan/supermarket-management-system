@@ -10,6 +10,7 @@ import com.maya2002yagan.supermarket_management.util.FormHelper;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Set;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -49,6 +50,8 @@ public class ProductManagementController implements Initializable {
     @FXML
     private TableColumn<Product, String> discountsColumn;
     @FXML
+    private TableColumn<Product, String> unitColumn;
+    @FXML
     private Button addProductButton;
     @FXML
     private Button addCategoryButton;
@@ -59,6 +62,7 @@ public class ProductManagementController implements Initializable {
     @FXML
     private StackPane stackPane;
     private ModalPane modalPane;
+    private Category selectedCategory;
     private final CategoryDAO categoryDAO = new CategoryDAO();
     private final ProductDAO productDAO = new ProductDAO();
     private final ObservableList<Product> productObservableList = FXCollections.observableArrayList();
@@ -76,45 +80,13 @@ public class ProductManagementController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         configureTableColumns();
-        addProductButton.setOnAction(event -> FormHelper.openForm("/fxml/AddProductForm.fxml",
-                (AddProductFormController controller) -> {
-                    controller.setModalPane(modalPane);
-                    controller.setOnCloseAction(() -> handleCloseAction());
-                }, modalPane));
-        
-        addCategoryButton.setOnAction(event -> FormHelper.openForm("/fxml/AddCategory.fxml",
-                (AddCategoryController controller) -> {
-                    controller.setModalPane(modalPane);
-                    controller.setOnCloseAction(() -> loadCategories());
-                }, modalPane));
-        
-        editCategoriesButton.setOnAction(event -> FormHelper.openForm("/fxml/EditCategories.fxml", 
-                (EditCategoriesController controller) -> {
-                    controller.setModalPane(modalPane);
-                    controller.setOnCloseAction(() -> loadCategories());
-                }, modalPane));
-        
-        productTableView.setItems(productObservableList);
-        productTableView.setRowFactory(tv -> {
-            TableRow<Product> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
-                if(event.getClickCount() == 2 && (!row.isEmpty())){
-                    Product selectedProduct = row.getItem();
-                    FormHelper.openForm("/fxml/EditProductForm.fxml", 
-                            (EditProductFormController controller) -> {
-                                controller.setProduct(selectedProduct);
-                                controller.setModalPane(modalPane);
-                                controller.setOnCloseAction(() -> 
-                                        handleCategorySelection(selectedProduct.getCategory()));
-                            }, modalPane);
-                }
-            });
-            return row;
-        });
-        productTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        productTableView.getStyleClass().add(Tweaks.EDGE_TO_EDGE);
+        populateTable();
+        setupEventHandlers();
         loadCategories();
         initializeModalPane();
+        setupDynamicLayoutAdjustment();
+        productTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        productTableView.getStyleClass().add(Tweaks.EDGE_TO_EDGE);
     }
     
     /**
@@ -136,8 +108,16 @@ public class ProductManagementController implements Initializable {
      */
     private void loadCategories() {
         categoryMenuButton.getItems().clear();
+        MenuItem allCategoriesItem = new MenuItem("All Categories");
+        categoryMenuButton.setText("All Categories");
+        allCategoriesItem.setOnAction(event -> {
+            selectedCategory = null;
+            categoryMenuButton.setText("All Categories");
+            populateTable();
+        });
+        categoryMenuButton.getItems().add(allCategoriesItem);
+        
         Set<Category> categories = categoryDAO.getCategories();
-
         if (categories != null) {
             for (Category category : categories) {
                 MenuItem menuItem = new MenuItem(category.getName());
@@ -147,6 +127,12 @@ public class ProductManagementController implements Initializable {
         }
     }
     
+    private void populateTable(){
+        Set<Product> products = productDAO.getProducts();
+        productObservableList.clear();
+        if(products != null) productObservableList.addAll(products);
+    }
+    
     /**
      * Configures the table columns for displaying product information.
      * 
@@ -154,11 +140,54 @@ public class ProductManagementController implements Initializable {
      * such as ID, name, price, production date, and expiration date.
      */
     private void configureTableColumns(){
+        productTableView.setItems(productObservableList);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         productionDate.setCellValueFactory(new PropertyValueFactory<>("productionDate"));
         expirationDateColumn.setCellValueFactory(new PropertyValueFactory<>("expirationDate"));
+        unitColumn.setCellValueFactory(cellData -> {
+                return new SimpleStringProperty(cellData.getValue().getUnit().getFullName());    
+        });
+    }
+    
+    /**
+     * Sets up event handlers for button and row clicks
+     */
+    private void setupEventHandlers(){
+        addProductButton.setOnAction(event -> FormHelper.openForm("/fxml/AddProductForm.fxml",
+                (AddProductFormController controller) -> {
+                    controller.setModalPane(modalPane);
+                    controller.setOnCloseAction(() -> handleCloseAction());
+                }, modalPane));
+        
+        addCategoryButton.setOnAction(event -> FormHelper.openForm("/fxml/AddCategory.fxml",
+                (AddCategoryController controller) -> {
+                    controller.setModalPane(modalPane);
+                    controller.setOnCloseAction(() -> loadCategories());
+                }, modalPane));
+        
+        editCategoriesButton.setOnAction(event -> FormHelper.openForm("/fxml/EditCategories.fxml", 
+                (EditCategoriesController controller) -> {
+                    controller.setModalPane(modalPane);
+                    controller.setOnCloseAction(() -> loadCategories());
+                }, modalPane));
+        productTableView.setRowFactory(tv -> {
+            TableRow<Product> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if(event.getClickCount() == 2 && (!row.isEmpty())){
+                    Product selectedProduct = row.getItem();
+                    FormHelper.openForm("/fxml/EditProductForm.fxml", 
+                            (EditProductFormController controller) -> {
+                                controller.setProduct(selectedProduct);
+                                controller.setModalPane(modalPane);
+                                controller.setOnCloseAction(() -> 
+                                        handleCategorySelection(selectedProduct.getCategory()));
+                            }, modalPane);
+                }
+            });
+            return row;
+        });
     }
 
     /**
@@ -185,9 +214,18 @@ public class ProductManagementController implements Initializable {
      */
     private void handleCloseAction(){
         String selectedCategoryName = categoryMenuButton.getText();
-            if (!selectedCategoryName.equals("Category")) { 
-                Category selectedCategory = categoryDAO.getCategoryByName(selectedCategoryName);
-                handleCategorySelection(selectedCategory);
+            if (!selectedCategoryName.equals("All Categories")) { 
+                handleCategorySelection(
+                        categoryDAO.getCategoryByName(selectedCategoryName)
+                );
             }
+    }
+    
+    private void setupDynamicLayoutAdjustment(){
+        categoryMenuButton.widthProperty().addListener((obs, oldVal, newVal) -> {
+            addCategoryButton.setLayoutX(categoryMenuButton.getLayoutX() + newVal.doubleValue() + 10);
+            editCategoriesButton.setLayoutX(categoryMenuButton.getLayoutX() + newVal.doubleValue() + 130);
+            addProductButton.setLayoutX(categoryMenuButton.getLayoutX() + newVal.doubleValue() + 260);
+        });
     }
 }

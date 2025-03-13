@@ -5,6 +5,7 @@ import com.maya2002yagan.supermarket_management.dao.CategoryDAO;
 import com.maya2002yagan.supermarket_management.dao.ProductDAO;
 import com.maya2002yagan.supermarket_management.model.Category;
 import com.maya2002yagan.supermarket_management.model.Product;
+import com.maya2002yagan.supermarket_management.model.ProductUnit;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -44,7 +45,7 @@ public class AddProductFormController implements Initializable {
     private DatePicker expirationDatePicker;
     
     @FXML
-    private MenuButton categoryMenuButton;
+    private MenuButton categoryMenuButton, unitMenuButton;
     
     @FXML
     private Label warningLabel;
@@ -59,7 +60,8 @@ public class AddProductFormController implements Initializable {
     private ModalPane modalPane;
     private final CategoryDAO categoryDAO = new CategoryDAO();
     private final ProductDAO productDAO = new ProductDAO();
-    private Category selectedCategory = null;
+    private Category selectedCategory;
+    private ProductUnit selectedUnit;
     
     /**
      * Initializes the controller class.
@@ -70,9 +72,24 @@ public class AddProductFormController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         loadCategories();
+        loadProductUnits();
         saveButton.setOnAction(event -> saveProduct());
         cancelButton.setOnAction(event -> closeForm());
     }    
+    
+    /**
+     * Loads the product units
+     */
+    private void loadProductUnits(){
+        for(ProductUnit unit : ProductUnit.values()){
+            MenuItem menuItem = new MenuItem(unit.getFullName());
+            menuItem.setOnAction(event -> {
+                selectedUnit = unit;
+                unitMenuButton.setText(unit.getFullName());
+            });
+            unitMenuButton.getItems().add(menuItem);
+        }
+    }
     
     /**
      * Loads categories from the database and populates the category selection menu.
@@ -132,7 +149,7 @@ public class AddProductFormController implements Initializable {
         LocalDate expirationDate = expirationDatePicker.getValue();
 
         // Check if any fields are empty
-        if (name.isEmpty() || priceText.isEmpty() || productionDate == null || expirationDate == null || selectedCategory == null) {
+        if (name.isEmpty() || priceText.isEmpty() || productionDate == null || expirationDate == null || selectedCategory == null || selectedUnit == null) {
             warningLabel.setText("Please fill in all fields.");
             return;
         }
@@ -159,6 +176,7 @@ public class AddProductFormController implements Initializable {
         product.setProductionDate(productionDate);
         product.setExpirationDate(expirationDate);
         product.setCategory(selectedCategory);
+        product.setUnit(selectedUnit);
 
         // Insert the product into the database
         productDAO.insertProduct(product);

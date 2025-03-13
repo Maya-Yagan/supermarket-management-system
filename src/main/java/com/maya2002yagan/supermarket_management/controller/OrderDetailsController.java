@@ -28,7 +28,7 @@ public class OrderDetailsController implements Initializable {
     @FXML
     private TableView<OrderProduct> orderDetailsTable;
     @FXML
-    private TableColumn<OrderProduct, String> productColumn;
+    private TableColumn<OrderProduct, String> productColumn, unitColumn;
     @FXML
     private TableColumn<OrderProduct, Float> priceColumn;
     @FXML
@@ -67,6 +67,10 @@ public class OrderDetailsController implements Initializable {
         
         amountColumn.setCellValueFactory(cellData -> 
             new SimpleIntegerProperty(cellData.getValue().getAmount()).asObject()
+        );
+        
+        unitColumn.setCellValueFactory(cellData -> 
+                new SimpleStringProperty(cellData.getValue().getProduct().getUnit().getFullName())
         );
     }
     

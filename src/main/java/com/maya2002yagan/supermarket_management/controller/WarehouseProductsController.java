@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -67,6 +68,8 @@ public class WarehouseProductsController implements Initializable {
     private TableColumn<Product, String> expirationDateColumn;
     @FXML
     private TableColumn<Product, String> amountColumn;
+    @FXML
+    private TableColumn<Product, String> unitColumn;
     @FXML
     private TableColumn<Product, Void> deleteColumn;
     @FXML
@@ -147,6 +150,9 @@ public class WarehouseProductsController implements Initializable {
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         productionDate.setCellValueFactory(new PropertyValueFactory<>("productionDate"));
         expirationDateColumn.setCellValueFactory(new PropertyValueFactory<>("expirationDate"));
+        unitColumn.setCellValueFactory(cellData -> {
+                return new SimpleStringProperty(cellData.getValue().getUnit().getShortName());    
+        });
         amountColumn.setCellValueFactory(data -> {
             Product product = data.getValue();
             return warehouse.getProductWarehouses()

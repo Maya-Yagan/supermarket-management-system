@@ -52,7 +52,7 @@ public class EditOrderController implements Initializable {
     @FXML
     private TableView orderDetailsTable;
     @FXML
-    private TableColumn<OrderProduct, String> productColumn;
+    private TableColumn<OrderProduct, String> productColumn, unitColumn;
     @FXML
     private TableColumn<OrderProduct, Float> priceColumn;
     @FXML
@@ -135,6 +135,10 @@ public class EditOrderController implements Initializable {
         amountColumn.setCellValueFactory(cellData -> 
                 new SimpleIntegerProperty(cellData.getValue().getAmount()).asObject()
         );
+        
+        unitColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getProduct().getUnit().getFullName())
+        );
     }
     
     /**
@@ -215,7 +219,9 @@ public class EditOrderController implements Initializable {
                 TextInputDialog dialog = new TextInputDialog(String.valueOf(orderProduct.getAmount()));
                 dialog.setTitle("Enter the Amount");
                 dialog.setHeaderText("Enter the amount for " + orderProduct.getProduct().getName());
-                dialog.setContentText("Amount:");
+                dialog.setContentText("Amount(" + 
+                                        orderProduct.getProduct()
+                                        .getUnit().getShortName() + "):");
                 
                 Optional<String> result = dialog.showAndWait();
                 if(result.isPresent()){

@@ -12,8 +12,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-
-<StackPane style="-fx-background-color: white;" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="292.0" prefWidth="641.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya2002yagan.supermarket_management.controller.EditProductFormController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="292.0" prefWidth="641.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya2002yagan.supermarket_management.controller.EditProductFormController">
    <children>
       <GridPane alignment="CENTER" hgap="10" prefHeight="353.0" prefWidth="656.0" style="-fx-padding: 20;" vgap="10">
          <columnConstraints>
@@ -54,6 +53,8 @@
             </Button>
             <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handleCancel" text="Cancel" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
             <Button mnemonicParsing="false" onAction="#handleDelete" styleClass="danger" text="Delete" GridPane.rowIndex="6" />
+            <MenuButton fx:id="unitMenuButton" mnemonicParsing="false" text="Select" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+            <Label text="Product Unit" GridPane.columnIndex="2" GridPane.rowIndex="4" />
          </children>
       </GridPane>
    </children>

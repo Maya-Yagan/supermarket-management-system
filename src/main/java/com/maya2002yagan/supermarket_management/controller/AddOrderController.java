@@ -116,7 +116,8 @@ public class AddOrderController implements Initializable {
                                 dialog.setTitle("Enter the Amount");
                                 dialog.setHeaderText("Enter the amount for " +
                                         supplierProduct.getProduct().getName());
-                                dialog.setContentText("Amount:");
+                                dialog.setContentText("Amount(" + supplierProduct.getProduct()
+                                        .getUnit().getShortName() + "):");
 
                                 Optional<String> result = dialog.showAndWait();
                                 if(result.isPresent()){

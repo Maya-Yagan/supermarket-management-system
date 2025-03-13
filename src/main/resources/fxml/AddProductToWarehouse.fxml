@@ -21,6 +21,7 @@
                   <TableColumn fx:id="idColumn" prefWidth="75.0" text="ID" />
                   <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" />
                   <TableColumn fx:id="priceColumn" prefWidth="75.0" text="Price" />
+                  <TableColumn fx:id="unitColumn" prefWidth="75.0" text="Unit" />
                   <TableColumn fx:id="productionDateColumn" prefWidth="148.66668701171875" text="Production Date" />
                   <TableColumn fx:id="expirationDateColumn" prefWidth="227.33334350585938" text="Expiration Date" />
                </columns>

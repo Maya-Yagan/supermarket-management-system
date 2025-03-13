@@ -45,6 +45,8 @@ public class AddProductToWarehouseController implements Initializable {
     @FXML
     private TableColumn<Product, String> expirationDateColumn;
     @FXML
+    private TableColumn<Product, String> unitColumn;
+    @FXML
     private MenuButton categoryMenuButton;
     @FXML
     private Button saveButton;
@@ -100,6 +102,7 @@ public class AddProductToWarehouseController implements Initializable {
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         productionDateColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getProductionDate().toString()));
         expirationDateColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getExpirationDate().toString()));
+        unitColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUnit().getShortName()));
     }
 
     /**

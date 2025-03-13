@@ -56,7 +56,7 @@ public class SupplierProductsController implements Initializable {
     @FXML
     private TableColumn<SupplierProduct, String> nameColumn;
     @FXML
-    private TableColumn<SupplierProduct, String> priceColumn;
+    private TableColumn<SupplierProduct, String> priceColumn, unitColumn;
     @FXML
     private  TableColumn<SupplierProduct, Void> deleteColumn;
     @FXML
@@ -105,6 +105,7 @@ public class SupplierProductsController implements Initializable {
                 else
                     return new SimpleStringProperty(String.valueOf(cellData.getValue().getPrice()));
         });
+        unitColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProduct().getUnit().getFullName()));
     }
     
     /**

@@ -18,6 +18,7 @@
                   <TableColumn fx:id="productColumn" prefWidth="136.66665267944336" text="Product" />
                   <TableColumn fx:id="priceColumn" prefWidth="89.33334350585938" text="Price" />
                   <TableColumn fx:id="amountColumn" prefWidth="111.33332824707031" text="Amount" />
+                  <TableColumn fx:id="unitColumn" prefWidth="111.33332824707031" text="Unit" />
                </columns>
                <styleClass>
                   <String fx:value="bordered" />

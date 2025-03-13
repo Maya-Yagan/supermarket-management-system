@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -46,7 +47,7 @@ public class AddProductToSupplierController implements Initializable {
     @FXML
     private TableColumn<Product, Integer> idColumn;
     @FXML
-    private TableColumn<Product, String> nameColumn;
+    private TableColumn<Product, String> nameColumn, unitColumn;
     @FXML
     private TableColumn<Product, Boolean> selectColumn;
     @FXML
@@ -85,6 +86,7 @@ public class AddProductToSupplierController implements Initializable {
         productsTable.setItems(productObservableList);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        unitColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUnit().getShortName()));
         setupSelectColumn();
     }
     

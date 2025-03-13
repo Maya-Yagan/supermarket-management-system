@@ -98,6 +98,7 @@ public class ProductDAO {
             p.setProductionDate(product.getProductionDate());
             p.setExpirationDate(product.getExpirationDate());
             p.setCategory(product.getCategory());
+            p.setUnit(product.getUnit());
             session.update(p);
             transaction.commit();
         } catch (Exception e){

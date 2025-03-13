@@ -6,6 +6,8 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -46,6 +48,9 @@ public class Product {
     private Set<SupplierProduct> supplierProducts;
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OrderProduct> orderProducts;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "unit")
+    private ProductUnit unit;
     
     /**
      * Default constructor
@@ -62,12 +67,13 @@ public class Product {
      * @param expirationDate Expiration date of the product
      * @param category Category to which the product belongs
      */
-    public Product(String name, float price, LocalDate productionDate, LocalDate expirationDate, Category category) {
+    public Product(String name, float price, LocalDate productionDate, LocalDate expirationDate, Category category, ProductUnit unit) {
         this.name = name;
         this.price = price;
         this.productionDate = productionDate;
         this.expirationDate = expirationDate;
         this.category = category;
+        this.unit = unit;
     }
 
     /**
@@ -149,6 +155,23 @@ public class Product {
      */
     public Set<OrderProduct> getOrderProducts(){
         return orderProducts;
+    }
+    
+    /**
+     * Returns the unit of the product.
+     * 
+     * @return the unit of the product
+     */
+    public ProductUnit getUnit() {
+        return unit;
+    }
+
+    /**
+     * Sets the unit of a product
+     * @param unit the unit to be set
+     */
+    public void setUnit(ProductUnit unit) {
+        this.unit = unit;
     }
 
     /**

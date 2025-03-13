@@ -5,6 +5,7 @@ import com.maya2002yagan.supermarket_management.dao.CategoryDAO;
 import com.maya2002yagan.supermarket_management.dao.ProductDAO;
 import com.maya2002yagan.supermarket_management.model.Category;
 import com.maya2002yagan.supermarket_management.model.Product;
+import com.maya2002yagan.supermarket_management.model.ProductUnit;
 import com.maya2002yagan.supermarket_management.util.ShowAlert;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -42,7 +43,7 @@ public class EditProductFormController implements Initializable {
     private DatePicker expirationDatePicker;
     
     @FXML
-    private MenuButton categoryMenuButton;
+    private MenuButton categoryMenuButton, unitMenuButton;
     
     @FXML
     private Label warningLabel;
@@ -56,6 +57,7 @@ public class EditProductFormController implements Initializable {
     private final CategoryDAO categoryDAO = new CategoryDAO();
     private final ProductDAO productDAO = new ProductDAO();
     private Category selectedCategory;
+    private ProductUnit selectedUnit;
     
     /**
      * Initializes the controller class.
@@ -66,6 +68,7 @@ public class EditProductFormController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loadCategories();
+        loadProductUnits();
     }
 
     /**
@@ -110,6 +113,17 @@ public class EditProductFormController implements Initializable {
         }
     }
     
+    private void loadProductUnits(){
+        for(ProductUnit unit : ProductUnit.values()){
+            MenuItem menuItem = new MenuItem(unit.getFullName());
+            menuItem.setOnAction(event -> {
+                selectedUnit = unit;
+                unitMenuButton.setText(unit.getFullName());
+            });
+            unitMenuButton.getItems().add(menuItem);
+        }
+    }
+    
     /**
      * Populates the form fields with the selected product's data.
      */
@@ -122,7 +136,9 @@ public class EditProductFormController implements Initializable {
         expirationDatePicker.setValue(product.getExpirationDate());
         
         selectedCategory = product.getCategory();
+        selectedUnit = product.getUnit();
         categoryMenuButton.setText(selectedCategory.toString());
+        unitMenuButton.setText(selectedUnit.getFullName());
     }
     
     /**
@@ -155,6 +171,7 @@ public class EditProductFormController implements Initializable {
         product.setProductionDate(productionDatePicker.getValue());
         product.setExpirationDate(expirationDatePicker.getValue());
         product.setCategory(selectedCategory);
+        product.setUnit(selectedUnit);
         
         productDAO.updateProduct(product);
         if(onCloseAction != null) onCloseAction.run();

@@ -20,6 +20,7 @@
                   <TableColumn fx:id="selectColumn" prefWidth="136.66665267944336" text="Select Product(s)" />
                   <TableColumn fx:id="idColumn" prefWidth="89.33334350585938" text="ID" />
                   <TableColumn fx:id="nameColumn" prefWidth="111.33332824707031" text="Name" />
+                  <TableColumn fx:id="unitColumn" prefWidth="111.33332824707031" text="Unit" />
                </columns>
                <styleClass>
                   <String fx:value="bordered" />
