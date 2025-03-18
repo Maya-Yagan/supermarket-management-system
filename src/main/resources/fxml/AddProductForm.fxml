@@ -34,8 +34,6 @@
              <Font size="23.0" />
           </font>
        </Label>
-       <!--This is the warning label to warn the user they forgot to fill some fields-->
-       <Label fx:id="warningLabel" textFill="RED" GridPane.columnIndex="1" />
        <DatePicker fx:id="productionDatePicker" prefHeight="36.0" prefWidth="158.0" promptText="MM/DD/YYYY" GridPane.columnIndex="1" GridPane.rowIndex="3" />
        <Button fx:id="saveButton" mnemonicParsing="false" styleClass="accent" text="Save" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="6">
           <GridPane.margin>

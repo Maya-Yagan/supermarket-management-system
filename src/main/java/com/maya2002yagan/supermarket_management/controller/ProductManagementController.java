@@ -145,7 +145,12 @@ public class ProductManagementController implements Initializable {
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         productionDate.setCellValueFactory(new PropertyValueFactory<>("productionDate"));
-        expirationDateColumn.setCellValueFactory(new PropertyValueFactory<>("expirationDate"));
+        expirationDateColumn.setCellValueFactory(cellData -> {
+            if(cellData.getValue().getExpirationDate() == null)
+                return new SimpleStringProperty("No Expiry Date");
+            else
+                return new SimpleStringProperty(cellData.getValue().getExpirationDate().toString());
+        });
         unitColumn.setCellValueFactory(cellData -> {
                 return new SimpleStringProperty(cellData.getValue().getUnit().getFullName());    
         });

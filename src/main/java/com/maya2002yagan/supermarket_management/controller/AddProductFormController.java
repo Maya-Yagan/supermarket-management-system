@@ -6,6 +6,7 @@ import com.maya2002yagan.supermarket_management.dao.ProductDAO;
 import com.maya2002yagan.supermarket_management.model.Category;
 import com.maya2002yagan.supermarket_management.model.Product;
 import com.maya2002yagan.supermarket_management.model.ProductUnit;
+import com.maya2002yagan.supermarket_management.util.ShowAlert;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -18,6 +19,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 import java.util.Set;
+import javafx.scene.control.Alert;
 
 
 /**
@@ -46,9 +48,6 @@ public class AddProductFormController implements Initializable {
     
     @FXML
     private MenuButton categoryMenuButton, unitMenuButton;
-    
-    @FXML
-    private Label warningLabel;
     
     @FXML
     private Button saveButton;
@@ -139,9 +138,6 @@ public class AddProductFormController implements Initializable {
      * is run, and the form is closed.
      */
     private void saveProduct() {
-        // Clear previous warnings
-        warningLabel.setText("");
-
         // Collect and validate form inputs
         String name = productNameField.getText();
         String priceText = priceField.getText();
@@ -149,8 +145,8 @@ public class AddProductFormController implements Initializable {
         LocalDate expirationDate = expirationDatePicker.getValue();
 
         // Check if any fields are empty
-        if (name.isEmpty() || priceText.isEmpty() || productionDate == null || expirationDate == null || selectedCategory == null || selectedUnit == null) {
-            warningLabel.setText("Please fill in all fields.");
+        if (name.isEmpty() || priceText.isEmpty() || productionDate == null || selectedCategory == null || selectedUnit == null) {
+            ShowAlert.showAlert(Alert.AlertType.WARNING, "Missing Fields","Please fill in all fields.");
             return;
         }
 
@@ -159,17 +155,16 @@ public class AddProductFormController implements Initializable {
         try {
             price = Float.parseFloat(priceText);
         } catch (NumberFormatException e) {
-            warningLabel.setText("Invalid price format.");
+            ShowAlert.showAlert(Alert.AlertType.ERROR, "Invalid Price", "Invalid price format.");
             return;
         }
 
         // Check if the expiration date is before the production date
-        if (expirationDate.isBefore(productionDate)) {
-            warningLabel.setText("Expiration date invalid. ");
+        if (expirationDate != null && expirationDate.isBefore(productionDate)) {
+            ShowAlert.showAlert(Alert.AlertType.ERROR, "Invalid Date", "Expiration date is invalid.");
             return;
         }
 
-        // Create the new Product object and set its properties
         Product product = new Product();
         product.setName(name);
         product.setPrice(price);
@@ -177,14 +172,9 @@ public class AddProductFormController implements Initializable {
         product.setExpirationDate(expirationDate);
         product.setCategory(selectedCategory);
         product.setUnit(selectedUnit);
-
-        // Insert the product into the database
+        
         productDAO.insertProduct(product);
-        
-        // Run the onCloseAction if it's defined
         if(onCloseAction != null) onCloseAction.run();
-        
-        // Close the form after saving the product
         closeForm();
     }
 

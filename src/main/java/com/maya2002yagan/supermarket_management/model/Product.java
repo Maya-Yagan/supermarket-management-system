@@ -37,7 +37,7 @@ public class Product {
     private float price;
     @Column(name = "productionDate")
     private LocalDate productionDate;
-    @Column(name = "expirationDate")
+    @Column(name = "expirationDate", nullable = true)
     private LocalDate expirationDate;
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
@@ -66,12 +66,29 @@ public class Product {
      * @param productionDate Production date of the product
      * @param expirationDate Expiration date of the product
      * @param category Category to which the product belongs
+     * @param unit Unit of the product 
      */
     public Product(String name, float price, LocalDate productionDate, LocalDate expirationDate, Category category, ProductUnit unit) {
         this.name = name;
         this.price = price;
         this.productionDate = productionDate;
         this.expirationDate = expirationDate;
+        this.category = category;
+        this.unit = unit;
+    }
+    
+    /**
+     * Constructor without the expiry date
+     * @param name Name of the product
+     * @param price Price of the product
+     * @param productionDate Production date of the product
+     * @param category Category to which the product belongs
+     * @param unit Unit of the product
+     */
+    public Product(String name, float price, LocalDate productionDate, Category category, ProductUnit unit) {
+        this.name = name;
+        this.price = price;
+        this.productionDate = productionDate;
         this.category = category;
         this.unit = unit;
     }

@@ -8,7 +8,6 @@ package com.maya2002yagan.supermarket_management.model;
 public enum ProductUnit {
     PIECES("Piece", "pcs"),
     KILOGRAMS("Kilogram", "kg"),
-    GRAMS("Gram", "gr"),
     LITERS("Liter", "L");
     
     private final String fullName;
