@@ -15,6 +15,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -56,7 +57,9 @@ public class SupplierProductsController implements Initializable {
     @FXML
     private TableColumn<SupplierProduct, String> nameColumn;
     @FXML
-    private TableColumn<SupplierProduct, String> priceColumn, unitColumn;
+    private TableColumn<SupplierProduct, String> unitColumn;
+    @FXML
+    private TableColumn<SupplierProduct, Double> priceColumn; //this was previouly of type String instead of double
     @FXML
     private  TableColumn<SupplierProduct, Void> deleteColumn;
     @FXML
@@ -98,13 +101,7 @@ public class SupplierProductsController implements Initializable {
         productTableView.getStyleClass().add(Tweaks.EDGE_TO_EDGE);
         nameColumn.setCellValueFactory(cellData ->
             new SimpleStringProperty(cellData.getValue().getProduct().getName()));
-        priceColumn.setCellValueFactory(cellData -> {
-                //new SimpleObjectProperty<>(cellData.getValue().getPrice())
-                if(cellData.getValue().getPrice() == 0 || cellData.getValue() == null)
-                    return new SimpleStringProperty("Unavailable");
-                else
-                    return new SimpleStringProperty(String.valueOf(cellData.getValue().getPrice()));
-        });
+        priceColumn.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getPrice()).asObject());
         unitColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProduct().getUnit().getFullName()));
     }
     
@@ -206,16 +203,15 @@ public class SupplierProductsController implements Initializable {
      */
     private void setupColumnForEditing(){
         priceColumn.setCellFactory(
-                TextFieldTableCell.forTableColumn(new StringConverter<String>(){
+                TextFieldTableCell.forTableColumn(new StringConverter<Double>(){
                         @Override
-                        public String toString(String object) {
-                            return object != null ? object : "";
+                        public String toString(Double object) {
+                            return object != null ? String.format("%.2f", object) : "";
                         }
-
                         @Override
-                        public String fromString(String string) {
+                        public Double fromString(String string) {
                             try{
-                                return string;
+                                return Double.valueOf(string);
                             } catch(NumberFormatException e){
                                 ShowAlert.showAlert(Alert.AlertType.ERROR, "Invalid Input", "Please enter a valid decimal number.");
                                 return null;
@@ -225,9 +221,9 @@ public class SupplierProductsController implements Initializable {
         
         priceColumn.setOnEditCommit(event -> {
             SupplierProduct product = event.getRowValue();
-            String newPriceStr = event.getNewValue().toString();
+            Double newPrice = event.getNewValue();
+            
             try{
-                float newPrice = Float.parseFloat(newPriceStr);
                 if(newPrice < 0){
                     ShowAlert.showAlert(Alert.AlertType.ERROR, "Invalid Input", "The price cannot be negative.");
                     productTableView.refresh();
@@ -241,7 +237,7 @@ public class SupplierProductsController implements Initializable {
                         .orElse(null);
                 
                 if(supplierProduct != null){
-                    supplierProduct.setPrice(newPrice);
+                    supplierProduct.setPrice(newPrice.floatValue());
                     supplierDAO.updateSupplier(supplier);
                     Supplier refreshedSupplier = supplierDAO.getSupplierById(supplier.getId());
                     supplier.setSupplierProducts(refreshedSupplier.getSupplierProducts());

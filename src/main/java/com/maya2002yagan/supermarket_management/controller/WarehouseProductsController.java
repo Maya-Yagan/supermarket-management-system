@@ -67,7 +67,7 @@ public class WarehouseProductsController implements Initializable {
     @FXML
     private TableColumn<Product, String> expirationDateColumn;
     @FXML
-    private TableColumn<Product, String> amountColumn;
+    private TableColumn<Product, Integer> amountColumn;
     @FXML
     private TableColumn<Product, String> unitColumn;
     @FXML
@@ -149,7 +149,12 @@ public class WarehouseProductsController implements Initializable {
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         productionDate.setCellValueFactory(new PropertyValueFactory<>("productionDate"));
-        expirationDateColumn.setCellValueFactory(new PropertyValueFactory<>("expirationDate"));
+        expirationDateColumn.setCellValueFactory(cellData -> {
+            if(cellData.getValue().getExpirationDate() == null)
+                return new SimpleStringProperty("No Expiry Date");
+            else
+                return new SimpleStringProperty(cellData.getValue().getExpirationDate().toString());
+        });
         unitColumn.setCellValueFactory(cellData -> {
                 return new SimpleStringProperty(cellData.getValue().getUnit().getShortName());    
         });
@@ -158,9 +163,9 @@ public class WarehouseProductsController implements Initializable {
             return warehouse.getProductWarehouses()
                     .stream()
                     .filter(pw -> pw.getProduct().equals(product))
-                    .map(pw -> new ReadOnlyObjectWrapper<>(String.valueOf(pw.getAmount())))
+                    .map(pw -> new ReadOnlyObjectWrapper<>(pw.getAmount()))
                     .findFirst()
-                    .orElse(new ReadOnlyObjectWrapper("0"));
+                    .orElse(new ReadOnlyObjectWrapper(0));
         });
     }
     
@@ -168,24 +173,28 @@ public class WarehouseProductsController implements Initializable {
      * Configures the amount column for in-line editing of product quantities.
      */
     private void setupColumnForEditing() {
-        amountColumn.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<String>() {
+        amountColumn.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<Integer>() {
             @Override
-            public String toString(String object) {
-                return object;
+            public String toString(Integer object) {
+                return object != null ? object.toString() : "";
             }
 
             @Override
-            public String fromString(String string) {
-                return string;
+            public Integer fromString(String string) {
+                try{
+                    return Integer.valueOf(string);
+                } catch(NumberFormatException e){
+                    ShowAlert.showAlert(Alert.AlertType.ERROR, "Invalid Input", "Please enter a valid number.");
+                    return null;
+                }
             }
         }));
 
         amountColumn.setOnEditCommit(event -> {
             Product product = event.getRowValue();
-            String newAmountStr = event.getNewValue();
-
+            Integer newAmount = event.getNewValue();
+            
             try {
-                int newAmount = Integer.parseInt(newAmountStr);
                 if (newAmount < 0) {
                     ShowAlert.showAlert(Alert.AlertType.ERROR, "Invalid Input", "The amount cannot be negative.");
                     productTableView.refresh();

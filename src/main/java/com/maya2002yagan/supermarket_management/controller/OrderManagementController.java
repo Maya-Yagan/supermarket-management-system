@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -37,6 +38,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextInputDialog;
@@ -56,7 +58,9 @@ public class OrderManagementController implements Initializable {
     @FXML
     private TableColumn<SupplierProduct, Boolean> addToOrderColumn;
     @FXML
-    private TableColumn<SupplierProduct, String> supplierColumn, productColumn, priceColumn;
+    private TableColumn<SupplierProduct, String> supplierColumn, productColumn;
+    @FXML
+    private TableColumn<SupplierProduct, Double> priceColumn;
     @FXML
     private Button ordersButton, saveOrderButton;
     @FXML
@@ -104,8 +108,19 @@ public class OrderManagementController implements Initializable {
         );
         
         priceColumn.setCellValueFactory(cellData -> 
-                new SimpleStringProperty(Float.toString(cellData.getValue().getPrice()))
+                new SimpleDoubleProperty(cellData.getValue().getPrice()).asObject()
         );
+        
+        priceColumn.setCellFactory(column -> new TableCell<SupplierProduct, Double>(){
+            @Override
+            protected void updateItem(Double price, boolean empty){
+                super.updateItem(price, empty);
+                if(empty || price == null)
+                    setText(null);
+                else
+                    setText(String.format("%.2f", price));
+            }
+        });
         setupAddColumn();
     }
     

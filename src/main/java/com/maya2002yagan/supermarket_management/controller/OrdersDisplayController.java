@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -33,6 +34,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -54,7 +56,7 @@ public class OrdersDisplayController implements Initializable {
     @FXML
     private TableColumn<Order, String> orderColumn, supplierColumn, orderDateColumn, deliveryDateColumn;
     @FXML
-    private TableColumn<Order, Float> priceColumn;
+    private TableColumn<Order, Double> priceColumn;
     @FXML
     private Button goBackButton;
     @FXML
@@ -96,9 +98,21 @@ public class OrdersDisplayController implements Initializable {
                     ? new SimpleStringProperty("Awaiting Delivery") 
                     : new SimpleStringProperty(String.valueOf(cellData.getValue().getDeliveryDate()));
         });
-        priceColumn.setCellValueFactory(cellData -> 
-                new SimpleFloatProperty(getPrice(cellData.getValue())).asObject()
-        );
+        priceColumn.setCellValueFactory(cellData -> {
+            double price = getPrice(cellData.getValue());
+            return new SimpleDoubleProperty(price).asObject();
+        });
+        
+        priceColumn.setCellFactory(column -> new TableCell<Order, Double>(){
+            @Override
+            protected void updateItem(Double price, boolean empty){
+                super.updateItem(price, empty);
+                if(empty || price == null)
+                    setText(null);
+                else
+                    setText(String.format("%.2f", price));
+            }
+        });
     }
     
     private float getPrice(Order order){

@@ -6,6 +6,7 @@ import com.maya2002yagan.supermarket_management.model.OrderProduct;
 import com.maya2002yagan.supermarket_management.model.SupplierProduct;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -15,6 +16,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
@@ -30,7 +32,7 @@ public class OrderDetailsController implements Initializable {
     @FXML
     private TableColumn<OrderProduct, String> productColumn, unitColumn;
     @FXML
-    private TableColumn<OrderProduct, Float> priceColumn;
+    private TableColumn<OrderProduct, Double> priceColumn;
     @FXML
     private TableColumn<OrderProduct, Integer> amountColumn;
     @FXML
@@ -62,7 +64,7 @@ public class OrderDetailsController implements Initializable {
         
         priceColumn.setCellValueFactory(cellData -> {
             float price = getSupplierPrice(cellData.getValue());
-            return new SimpleFloatProperty(price).asObject();
+            return new SimpleDoubleProperty(price).asObject();
         });
         
         amountColumn.setCellValueFactory(cellData -> 
@@ -72,6 +74,17 @@ public class OrderDetailsController implements Initializable {
         unitColumn.setCellValueFactory(cellData -> 
                 new SimpleStringProperty(cellData.getValue().getProduct().getUnit().getFullName())
         );
+        
+        priceColumn.setCellFactory(column -> new TableCell<OrderProduct, Double>(){
+            @Override
+            protected void updateItem(Double price, boolean empty){
+                super.updateItem(price, empty);
+                if(empty || price == null)
+                    setText(null);
+                else
+                    setText(String.format("%.2f", price));
+            }
+        });
     }
     
     private void populateTable(){
