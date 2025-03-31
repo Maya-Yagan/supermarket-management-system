@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+
+<StackPane fx:id="stackPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="385.0" prefWidth="430.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.order.controller.AddProductToOrderController">
+   <children>
+      <AnchorPane prefHeight="418.0" prefWidth="442.0">
+         <children>
+            <TableView fx:id="productsTable" layoutX="32.0" layoutY="115.33333333333333" prefHeight="245.0" prefWidth="376.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="22.0" AnchorPane.rightAnchor="22.0" AnchorPane.topAnchor="115.0">
+               <columns>
+                  <TableColumn fx:id="addToOrderColumn" prefWidth="136.66665267944336" text="Add to Order" />
+                  <TableColumn fx:id="productColumn" prefWidth="111.33332824707031" text="Product" />
+                  <TableColumn fx:id="priceColumn" prefWidth="136.66665267944336" text="Price" />
+               </columns>
+               <styleClass>
+                  <String fx:value="bordered" />
+                  <String fx:value="striped" />
+               </styleClass>
+            </TableView>
+            <Label layoutX="32.0" layoutY="21.0" text="Add Products to Order" textFill="#455079" AnchorPane.leftAnchor="22.0">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <MenuButton fx:id="categoryMenuButton" layoutX="32.0" layoutY="68.0" mnemonicParsing="false" styleClass="accent" text="Category" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="68.0">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Action 1" />
+                <MenuItem mnemonicParsing="false" text="Action 2" />
+              </items>
+            </MenuButton>
+         </children>
+      </AnchorPane>
+   </children>
+</StackPane>

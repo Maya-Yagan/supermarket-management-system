@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckMenuItem?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<StackPane fx:id="stackPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="407.0" prefWidth="681.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.user.controller.EditUserController">
+   <children>
+      <GridPane alignment="CENTER" hgap="10" prefHeight="449.0" prefWidth="680.0" style="-fx-padding: 20;" vgap="10">
+         <columnConstraints>
+            <ColumnConstraints maxWidth="160.66668701171875" minWidth="146.66668701171875" prefWidth="152.66667683919272" />
+            <ColumnConstraints maxWidth="206.66664632161462" minWidth="192.66664632161462" prefWidth="197.33332316080728" />
+            <ColumnConstraints />
+            <ColumnConstraints />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints maxHeight="34.33332824707031" minHeight="10.0" prefHeight="27.999994913736977" />
+            <RowConstraints maxHeight="38.000005086263016" minHeight="30.666671752929688" prefHeight="38.000005086263016" />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" />
+            <RowConstraints />
+            <RowConstraints />
+         </rowConstraints>
+         <children>
+            <Label text="First Name:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <TextField fx:id="firstNameField" promptText="First Name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label text="Last Name:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <TextField fx:id="lastNameField" promptText="Last Name" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+            <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <TextField fx:id="emailField" promptText="Email" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label text="Phone Number:" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+            <atlantafx.base.controls.MaskTextField mask="(999) 999 99 99" promptText="(XXX) XXX XX XX"  fx:id="phoneNumberField" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+            <Label text="TC Number:" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+            <atlantafx.base.controls.MaskTextField fx:id="tcNumberField" mask="99999999999" promptText="99999999999" GridPane.columnIndex="3" GridPane.rowIndex="6"/>
+            <Label text="Birth Date:" GridPane.rowIndex="4" />
+            <DatePicker fx:id="birthDatePicker" promptText="MM/DD/YYYY" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Label text="Gender:" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+            <MenuButton fx:id="genderMenuButton" text="Select" GridPane.columnIndex="3" GridPane.rowIndex="4">
+               <items>
+                  <MenuItem fx:id="maleMenuItem" mnemonicParsing="false" text="Male" />
+                  <MenuItem fx:id="femaleMenuItem" mnemonicParsing="false" text="Female" />
+               </items>
+            </MenuButton>
+            <Label text="Salary:" GridPane.rowIndex="6" />
+            <TextField fx:id="salaryField" promptText="Salary" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <Label text="Position(s):" GridPane.rowIndex="7" />
+            <MenuButton fx:id="positionMenuButton" text="Select" GridPane.columnIndex="1" GridPane.rowIndex="7">
+               <items>
+                  <CheckMenuItem fx:id="managerCheckMenuItem" text="Manager" />
+                  <CheckMenuItem fx:id="accountantCheckMenuItem" text="Accountant" />
+                  <CheckMenuItem fx:id="depotEmployeeCheckMenuItem" text="Depot Employee" />
+                  <CheckMenuItem fx:id="cashierCheckMenuItem" text="Cashier" />
+               </items>
+            </MenuButton>
+            <Label text="Password:" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+            <PasswordField fx:id="passwordField" promptText="Password" GridPane.columnIndex="3" GridPane.rowIndex="7" />
+            <Label text="Employment Type:" GridPane.rowIndex="8" />
+            <MenuButton fx:id="employmentTypeMenu" text="Part/Full time" GridPane.columnIndex="1" GridPane.rowIndex="8">
+               <items>
+                  <MenuItem fx:id="partTimeMenuItem" text="Part time" />
+                  <MenuItem fx:id="fullTimeMenuItem" text="Full time" />
+               </items>
+            </MenuButton>
+            <Button fx:id="saveButton" onAction="#handleSave" styleClass="accent" text="Save" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="9">
+               <GridPane.margin>
+                  <Insets right="30.0" />
+               </GridPane.margin></Button>
+            <Button fx:id="cancelButton" onAction="#handleCancel" text="Cancel" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="9" />
+            <Label GridPane.columnIndex="1" />
+            <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#handleDelete" styleClass="danger" text="Delete User" textAlignment="CENTER" GridPane.halignment="LEFT" GridPane.rowIndex="9" />
+            <Text fill="#455079" strokeType="OUTSIDE" strokeWidth="0.0" text="Edit Employee">
+               <font>
+                  <Font size="23.0" />
+               </font>
+            </Text>
+         </children>
+      </GridPane>
+   </children>
+</StackPane>

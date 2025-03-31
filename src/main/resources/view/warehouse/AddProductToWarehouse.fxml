@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<StackPane fx:id="stackPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="419.0" prefWidth="642.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.warehouse.controller.AddProductToWarehouseController">
+   <children>
+      <AnchorPane prefHeight="418.0" prefWidth="648.0">
+         <children>
+            <TableView fx:id="productsTable" layoutX="46.0" layoutY="123.0" prefHeight="235.0" prefWidth="573.0">
+               <columns>
+                  <TableColumn fx:id="idColumn" prefWidth="75.0" text="ID" />
+                  <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" />
+                  <TableColumn fx:id="priceColumn" prefWidth="75.0" text="Price" />
+                  <TableColumn fx:id="unitColumn" prefWidth="75.0" text="Unit" />
+                  <TableColumn fx:id="productionDateColumn" prefWidth="148.66668701171875" text="Production Date" />
+                  <TableColumn fx:id="expirationDateColumn" prefWidth="227.33334350585938" text="Expiration Date" />
+               </columns>
+               <styleClass>
+                  <String fx:value="bordered" />
+                  <String fx:value="striped" />
+               </styleClass>
+            </TableView>
+            <Text fill="#455079" layoutX="38.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Add Product to Warehouse">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Text>
+            <MenuButton fx:id="categoryMenuButton" layoutX="435.0" layoutY="37.0" mnemonicParsing="false" text="Category" />
+            <Button fx:id="saveButton" layoutX="476.0" layoutY="373.0" mnemonicParsing="false" styleClass="accent" text="Save" />
+            <Button fx:id="cancelButton" layoutX="553.0" layoutY="373.0" mnemonicParsing="false" text="Cancel" />
+            <Spinner fx:id="spinnerAmount" editable="true" layoutX="435.0" layoutY="78.0" />
+            <Text layoutX="364.0" layoutY="101.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Amount:" />
+            <Text layoutX="361.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Category:" />
+            <Label layoutX="43.0" layoutY="77.0" text="Choose a category first, then a product" textFill="#a3a1a1">
+                <graphic>
+                    <org.kordamp.ikonli.javafx.FontIcon iconLiteral="fth-info" />
+                </graphic>
+                <contentDisplay>LEFT</contentDisplay>
+                <graphicTextGap>5</graphicTextGap>
+            </Label>    
+            <Label layoutX="46.0" layoutY="96.0" text="from the table and enter the amount." textFill="#a3a1a1" />
+         </children>
+      </AnchorPane>
+   </children>
+</StackPane>

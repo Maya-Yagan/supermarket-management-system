@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<StackPane fx:id="stackPane" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.order.controller.OrderManagementController">
+   <children>
+      <AnchorPane fx:id="AnchorPane">
+         <children>
+            <TableView fx:id="ordersTableView" layoutX="38.0" layoutY="104.0" prefHeight="443.0" prefWidth="615.0" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="37.0" AnchorPane.rightAnchor="36.0" AnchorPane.topAnchor="104.0">
+               <columns>
+                  <TableColumn fx:id="orderColumn" prefWidth="87.99999368190765" text="Order" />
+                  <TableColumn fx:id="supplierColumn" prefWidth="104.00001525878906" text="Supplier" />
+                  <TableColumn fx:id="priceColumn" prefWidth="84.0" text="Price" />
+                  <TableColumn fx:id="orderDateColumn" prefWidth="96.0" text="Order Date" />
+                  <TableColumn fx:id="deliveryDateColumn" prefWidth="113.3333740234375" text="Delivery Date" />
+               </columns>
+               <styleClass>
+                  <String fx:value="bordered" />
+                  <String fx:value="striped" />
+               </styleClass>
+            </TableView>
+            <Text fill="#455079" layoutX="32.0" layoutY="57.0" text="Orders Management" textAlignment="CENTER" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="429.4072265625" AnchorPane.topAnchor="29.0">
+               <font>
+                  <Font size="26.0" />
+               </font>
+            </Text>
+            <Label contentDisplay="LEFT" graphicTextGap="5" layoutX="37.0" layoutY="76.0" text="Right-Click a row for more actions" textFill="#a3a1a1">
+               <graphic>
+                  <org.kordamp.ikonli.javafx.FontIcon iconLiteral="fth-info" />
+               </graphic>
+            </Label>
+            <Button fx:id="addOrderButton" layoutX="578.0" layoutY="58.0" mnemonicParsing="false" styleClass="accent" text="Add Order" AnchorPane.rightAnchor="36.0" AnchorPane.topAnchor="58.0" />
+         </children>
+      </AnchorPane>
+   </children>
+</StackPane>
