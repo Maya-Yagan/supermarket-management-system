@@ -11,8 +11,8 @@ import com.maya_yagan.sms.warehouse.model.ProductWarehouse;
 import com.maya_yagan.sms.supplier.model.Supplier;
 import com.maya_yagan.sms.supplier.model.SupplierProduct;
 import com.maya_yagan.sms.warehouse.model.Warehouse;
-import com.maya_yagan.sms.util.FormHelper;
-import com.maya_yagan.sms.util.ShowAlert;
+import com.maya_yagan.sms.util.ViewUtil;
+import com.maya_yagan.sms.util.AlertUtil;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
@@ -71,7 +71,7 @@ public class OrderManagementController implements Initializable {
         configureTableColumns();
         populateTable();
         setupRowInteractions();
-        addOrderButton.setOnAction(event -> FormHelper.openForm(
+        addOrderButton.setOnAction(event -> ViewUtil.displayView(
                 "/view/order/AddOrder.fxml",
                 (AddOrderController controller) -> {
                 }, modalPane));
@@ -161,7 +161,7 @@ public class OrderManagementController implements Initializable {
         orderDetails.setOnAction(event -> {
             selectedOrder = row.getItem();
             if(selectedOrder != null)
-                FormHelper.openForm("/view/order/OrderProducts.fxml",
+                ViewUtil.displayView("/view/order/OrderProducts.fxml",
                         (OrderProductsController controller) -> {
                             controller.setModalPane(modalPane);
                             controller.setOrder(selectedOrder);
@@ -171,7 +171,7 @@ public class OrderManagementController implements Initializable {
         contextMenu.getItems().add(deleteOrder);
         deleteOrder.setOnAction(event -> {
             selectedOrder = row.getItem();
-            ShowAlert.showDeleteConfirmation(selectedOrder,
+            AlertUtil.showDeleteConfirmation(selectedOrder,
                     "Delete Order", 
                     "Are you sure you want to delete this order?",
                     "This action cannot be undone", 
@@ -193,7 +193,7 @@ public class OrderManagementController implements Initializable {
             editOrder.setOnAction(event -> {
                 selectedOrder = row.getItem();
                 if(selectedOrder != null)
-                    FormHelper.openForm("/view/order/EditOrder.fxml",
+                    ViewUtil.displayView("/view/order/EditOrder.fxml",
                             (EditOrderController controller) -> {
                                 controller.setModalPane(modalPane);
                                 controller.setOrder(selectedOrder);
@@ -229,13 +229,13 @@ public class OrderManagementController implements Initializable {
                     order.setDeliveryDate(LocalDate.now());
                     orderDAO.updateOrder(order);
                     ordersTableView.refresh();
-                    ShowAlert.showAlert(Alert.AlertType.INFORMATION, 
+                    AlertUtil.showAlert(Alert.AlertType.INFORMATION, 
                             "Success", 
                            "Order's products have been added to warehouse:" +
                             selectedWarehose.getName());
                 }
                 else{
-                    ShowAlert.showAlert(Alert.AlertType.WARNING, 
+                    AlertUtil.showAlert(Alert.AlertType.WARNING, 
                             "No Enough Space in The Warehouse",
                             "This warehouse doesn't have enough capacity for this order. Please choose another warehouse.");
                     showWarehouseChoiceDialog(order);

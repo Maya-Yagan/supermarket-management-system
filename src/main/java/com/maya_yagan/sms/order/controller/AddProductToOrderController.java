@@ -11,8 +11,8 @@ import com.maya_yagan.sms.order.model.OrderProduct;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.supplier.model.Supplier;
 import com.maya_yagan.sms.supplier.model.SupplierProduct;
-import com.maya_yagan.sms.util.FormHelper;
-import com.maya_yagan.sms.util.ShowAlert;
+import com.maya_yagan.sms.util.ViewUtil;
+import com.maya_yagan.sms.util.AlertUtil;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -125,14 +125,14 @@ public class AddProductToOrderController implements Initializable {
                                         int amount = Integer.parseInt(result.get());
                                         if(amount <= 0){
                                             prop.set(false);
-                                            ShowAlert.showAlert(Alert.AlertType.ERROR,
+                                            AlertUtil.showAlert(Alert.AlertType.ERROR,
                                                     "Invalid Input", "Amount must be greater than zero");
                                         } 
                                         else
                                             productsAmount.put(supplierProduct, amount);
                                     } catch(NumberFormatException e){
                                         prop.set(false);
-                                        ShowAlert.showAlert(Alert.AlertType.ERROR,
+                                        AlertUtil.showAlert(Alert.AlertType.ERROR,
                                                 "Invalid Input", "Please enter a valid number");
                                     }
                                 }
@@ -215,7 +215,7 @@ public class AddProductToOrderController implements Initializable {
         }
         
         if(selectedItems.isEmpty()){
-            ShowAlert.showAlert(Alert.AlertType.INFORMATION,
+            AlertUtil.showAlert(Alert.AlertType.INFORMATION,
                     "No Products Selected",
                     "Please select at least one product to order");
             return;
@@ -254,13 +254,13 @@ public class AddProductToOrderController implements Initializable {
         summaryLabel.setStyle("-fx-font-weight: bold;");
         grid.add(summaryLabel, 0, row, 4, 1);
         
-        Optional<ButtonType> result = FormHelper.showCustomDialog(
+        Optional<ButtonType> result = ViewUtil.showCustomDialog(
                 "Confirm Order",
                 "Please review the order details below and click OK to save the order",
                 grid);
         if(result.isPresent() && result.get() == ButtonType.OK){
             if(order == null){
-                ShowAlert.showAlert(Alert.AlertType.ERROR, 
+                AlertUtil.showAlert(Alert.AlertType.ERROR, 
                         "No Order", "No order is currently being edited.");
                 return;
             }

@@ -12,7 +12,7 @@ import javafx.scene.control.ButtonType;
  * 
  * @author Maya Yagan
  */
-public class ShowAlert {
+public class AlertUtil {
     public static void showAlert(Alert.AlertType type, String title, String message) {
         Alert alert = new Alert(type);
         alert.setTitle(title);

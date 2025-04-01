@@ -12,8 +12,8 @@ import com.maya_yagan.sms.order.model.OrderProduct;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.supplier.model.Supplier;
 import com.maya_yagan.sms.supplier.model.SupplierProduct;
-import com.maya_yagan.sms.util.FormHelper;
-import com.maya_yagan.sms.util.ShowAlert;
+import com.maya_yagan.sms.util.ViewUtil;
+import com.maya_yagan.sms.util.AlertUtil;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -189,7 +189,7 @@ public class AddOrderController implements Initializable {
     }
     
     private void setupEventHandlers(){
-        ordersButton.setOnAction(event -> FormHelper.openForm(
+        ordersButton.setOnAction(event -> ViewUtil.displayView(
                 "/view/order/OrderManagement.fxml",
                 (OrderManagementController controller) -> {
                     
@@ -205,7 +205,7 @@ public class AddOrderController implements Initializable {
         }
         
         if(selectedItems.isEmpty()){
-            ShowAlert.showAlert(Alert.AlertType.INFORMATION,
+            AlertUtil.showAlert(Alert.AlertType.INFORMATION,
                     "No Products Selected",
                     "Please select at least one product to order");
             return;
@@ -244,7 +244,7 @@ public class AddOrderController implements Initializable {
         summaryLabel.setStyle("-fx-font-weight: bold;");
         grid.add(summaryLabel, 0, row, 4, 1);
         
-        Optional<ButtonType> result = FormHelper.showCustomDialog(
+        Optional<ButtonType> result = ViewUtil.showCustomDialog(
                 "Confirm Order",
                 "Please review the order details below and click OK to save the order",
                 grid);
@@ -263,7 +263,7 @@ public class AddOrderController implements Initializable {
             }
             order.setOrderProducts(orderProducts);
             orderDAO.insertOrder(order);
-            ShowAlert.showAlert(Alert.AlertType.INFORMATION, "Order Saved",
+            AlertUtil.showAlert(Alert.AlertType.INFORMATION, "Order Saved",
                     "The order has been saved successfully");
             selectedProducts.clear(); 
             productsAmount.clear();
@@ -296,14 +296,14 @@ public class AddOrderController implements Initializable {
                                         int amount = Integer.parseInt(result.get());
                                         if(amount <= 0){
                                             prop.set(false);
-                                            ShowAlert.showAlert(Alert.AlertType.ERROR,
+                                            AlertUtil.showAlert(Alert.AlertType.ERROR,
                                                     "Invalid Input", "Amount must be greater than zero");
                                         } 
                                         else
                                             productsAmount.put(supplierProduct, amount);
                                     } catch(NumberFormatException e){
                                         prop.set(false);
-                                        ShowAlert.showAlert(Alert.AlertType.ERROR,
+                                        AlertUtil.showAlert(Alert.AlertType.ERROR,
                                                 "Invalid Input", "Please enter a valid number");
                                     }
                                 }

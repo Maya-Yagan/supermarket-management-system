@@ -9,7 +9,7 @@ import com.maya_yagan.sms.product.model.Category;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.supplier.model.Supplier;
 import com.maya_yagan.sms.supplier.model.SupplierProduct;
-import com.maya_yagan.sms.util.ShowAlert;
+import com.maya_yagan.sms.util.AlertUtil;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -114,7 +114,7 @@ public class AddProductToSupplierController implements Initializable {
                                         float price = Float.parseFloat(result.get());
                                         if(price <= 0){
                                             prop.set(false);
-                                            ShowAlert.showAlert(Alert.AlertType.ERROR,
+                                            AlertUtil.showAlert(Alert.AlertType.ERROR,
                                                     "Invalid Input", "The price must be greater than zero");
                                         }
                                         else
@@ -122,7 +122,7 @@ public class AddProductToSupplierController implements Initializable {
                                             
                                     } catch(NumberFormatException e){
                                         prop.set(false);
-                                        ShowAlert.showAlert(Alert.AlertType.ERROR,
+                                        AlertUtil.showAlert(Alert.AlertType.ERROR,
                                                 "Invalid Input", "Please enter a valid number");
                                     }
                                 }
@@ -190,7 +190,7 @@ public class AddProductToSupplierController implements Initializable {
                 Product product = entry.getKey();
                 
                 if(!productsPrice.containsKey(product)){
-                    ShowAlert.showAlert(Alert.AlertType.WARNING,
+                    AlertUtil.showAlert(Alert.AlertType.WARNING,
                             "Missing Price", 
                            "Please enter a valid suppleir price for " + product.getName());
                     return;
@@ -208,13 +208,13 @@ public class AddProductToSupplierController implements Initializable {
             }
         }
         if(!anySelected){
-            ShowAlert.showAlert(Alert.AlertType.WARNING,
+            AlertUtil.showAlert(Alert.AlertType.WARNING,
                     "No Product Selected",
                     "Please select at least one product to add");
             return;
         }
         SupplierDAO.updateSupplier(supplier);
-        ShowAlert.showAlert(Alert.AlertType.INFORMATION,
+        AlertUtil.showAlert(Alert.AlertType.INFORMATION,
                 "Success",
                 "The selected products were added successfully.");
         if(onCloseAction != null) onCloseAction.run();

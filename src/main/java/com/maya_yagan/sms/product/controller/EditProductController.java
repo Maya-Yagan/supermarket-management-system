@@ -6,7 +6,7 @@ import com.maya_yagan.sms.product.dao.ProductDAO;
 import com.maya_yagan.sms.product.model.Category;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.product.model.ProductUnit;
-import com.maya_yagan.sms.util.ShowAlert;
+import com.maya_yagan.sms.util.AlertUtil;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -147,7 +147,7 @@ public class EditProductController implements Initializable {
      */
     @FXML
     private void handleDelete(){
-        ShowAlert.showDeleteConfirmation(product,
+        AlertUtil.showDeleteConfirmation(product,
                 "Delete Product",
                 "Are you sure you want to delete this product?",
                 "This action cannot be undone",

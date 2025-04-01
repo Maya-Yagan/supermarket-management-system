@@ -8,7 +8,7 @@ import com.maya_yagan.sms.product.dao.CategoryDAO;
 import com.maya_yagan.sms.product.dao.ProductDAO;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.product.model.Category;
-import com.maya_yagan.sms.util.FormHelper;
+import com.maya_yagan.sms.util.ViewUtil;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -162,19 +162,19 @@ public class ProductManagementController implements Initializable {
      * Sets up event handlers for button and row clicks
      */
     private void setupEventHandlers(){
-        addProductButton.setOnAction(event -> FormHelper.openForm("/view/product/AddProduct.fxml",
+        addProductButton.setOnAction(event -> ViewUtil.displayView("/view/product/AddProduct.fxml",
                 (AddProductController controller) -> {
                     controller.setModalPane(modalPane);
                     controller.setOnCloseAction(() -> handleCloseAction());
                 }, modalPane));
         
-        addCategoryButton.setOnAction(event -> FormHelper.openForm("/view/product/AddCategory.fxml",
+        addCategoryButton.setOnAction(event -> ViewUtil.displayView("/view/product/AddCategory.fxml",
                 (AddCategoryController controller) -> {
                     controller.setModalPane(modalPane);
                     controller.setOnCloseAction(() -> loadCategories());
                 }, modalPane));
         
-        editCategoriesButton.setOnAction(event -> FormHelper.openForm("/view/product/EditCategories.fxml", 
+        editCategoriesButton.setOnAction(event -> ViewUtil.displayView("/view/product/EditCategories.fxml", 
                 (EditCategoriesController controller) -> {
                     controller.setModalPane(modalPane);
                     controller.setOnCloseAction(() -> loadCategories());
@@ -184,7 +184,7 @@ public class ProductManagementController implements Initializable {
             row.setOnMouseClicked(event -> {
                 if(event.getClickCount() == 2 && (!row.isEmpty())){
                     Product selectedProduct = row.getItem();
-                    FormHelper.openForm("/view/product/EditProduct.fxml", 
+                    ViewUtil.displayView("/view/product/EditProduct.fxml", 
                             (EditProductController controller) -> {
                                 controller.setProduct(selectedProduct);
                                 controller.setModalPane(modalPane);

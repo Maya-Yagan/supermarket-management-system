@@ -8,7 +8,7 @@ import com.maya_yagan.sms.product.model.Category;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.warehouse.model.ProductWarehouse;
 import com.maya_yagan.sms.warehouse.model.Warehouse;
-import com.maya_yagan.sms.util.ShowAlert;
+import com.maya_yagan.sms.util.AlertUtil;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -167,7 +167,7 @@ public class AddProductToWarehouseController implements Initializable {
      */
     private void saveProductToWarehouse() {
         if (selectedProduct == null) {
-            ShowAlert.showAlert(Alert.AlertType.WARNING, "No Product Selected", "Please select a product to add.");
+            AlertUtil.showAlert(Alert.AlertType.WARNING, "No Product Selected", "Please select a product to add.");
             return;
         }
 
@@ -177,9 +177,9 @@ public class AddProductToWarehouseController implements Initializable {
         int remainingCapacity = warehouse.getCapacity() - currentUsage;
         if(amountToAdd > remainingCapacity){
             if(remainingCapacity == 0) 
-                ShowAlert.showAlert(Alert.AlertType.ERROR, "Warehouse Full", "The warehouse is already full. No more products can be added.");
+                AlertUtil.showAlert(Alert.AlertType.ERROR, "Warehouse Full", "The warehouse is already full. No more products can be added.");
             else
-                ShowAlert.showAlert(Alert.AlertType.ERROR, "Capacity Exceeded", "The entered amount exceeds the remaining warehouse capacity. Remaining capacity: " + remainingCapacity);
+                AlertUtil.showAlert(Alert.AlertType.ERROR, "Capacity Exceeded", "The entered amount exceeds the remaining warehouse capacity. Remaining capacity: " + remainingCapacity);
             return;
         }
         
@@ -198,7 +198,7 @@ public class AddProductToWarehouseController implements Initializable {
             warehouse.getProductWarehouses().add(newProductWarehouse);
         }
         warehouseDAO.updateWarehouse(warehouse);
-        ShowAlert.showAlert(Alert.AlertType.INFORMATION, "Success", "The product was added successfully.");
+        AlertUtil.showAlert(Alert.AlertType.INFORMATION, "Success", "The product was added successfully.");
         if(onCloseAction != null) onCloseAction.run();
         closeModal();
     }

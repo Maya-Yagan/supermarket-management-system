@@ -7,7 +7,7 @@ import com.maya_yagan.sms.order.dao.OrderDAO;
 import com.maya_yagan.sms.order.model.Order;
 import com.maya_yagan.sms.order.model.OrderProduct;
 import com.maya_yagan.sms.supplier.model.SupplierProduct;
-import com.maya_yagan.sms.util.ShowAlert;
+import com.maya_yagan.sms.util.AlertUtil;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
@@ -229,7 +229,7 @@ public class EditOrderController implements Initializable {
                     try{
                         int amount = Integer.parseInt(result.get());
                         if(amount <= 0)
-                            ShowAlert.showAlert(Alert.AlertType.ERROR,
+                            AlertUtil.showAlert(Alert.AlertType.ERROR,
                                     "Invalid Input", "Amount must be greater than zero");
                         else{
                             orderProduct.setAmount(amount);
@@ -238,7 +238,7 @@ public class EditOrderController implements Initializable {
                             updateTotals();
                         }
                     } catch(NumberFormatException e){
-                        ShowAlert.showAlert(Alert.AlertType.ERROR,
+                        AlertUtil.showAlert(Alert.AlertType.ERROR,
                                 "Invalid Input",
                                 "Please enter a valid number");
                     }
@@ -250,7 +250,7 @@ public class EditOrderController implements Initializable {
         deleteMenuItem.setOnAction(event -> {
             orderProduct = row.getItem();
             if(order.getOrderProducts().size() == 1){
-                ShowAlert.showDeleteConfirmation(order, 
+                AlertUtil.showDeleteConfirmation(order, 
                         "Delete Last Product", 
                         "Deleting this product will also delete the order.",
                         "Are you sure you want to proceed?",
@@ -261,7 +261,7 @@ public class EditOrderController implements Initializable {
                         });
             }
             else{
-                ShowAlert.showDeleteConfirmation(orderProduct,
+                AlertUtil.showDeleteConfirmation(orderProduct,
                     "Delete Product From Order",
                 "Are you sure you want to delete this product from the order?",
                 "This action cannot be undone",

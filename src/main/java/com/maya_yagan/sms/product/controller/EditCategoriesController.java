@@ -5,7 +5,7 @@ import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Tweaks;
 import com.maya_yagan.sms.product.dao.CategoryDAO;
 import com.maya_yagan.sms.product.model.Category;
-import com.maya_yagan.sms.util.ShowAlert;
+import com.maya_yagan.sms.util.AlertUtil;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -126,7 +126,7 @@ public class EditCategoriesController implements Initializable {
                     deleteButton.getStyleClass().add(Styles.DANGER);
                     deleteButton.setOnAction(event -> {
                         Category category = getTableView().getItems().get(getIndex());
-                        ShowAlert.showDeleteConfirmation(category,
+                        AlertUtil.showDeleteConfirmation(category,
                                 "Delete Confirmation",
                                 "Are you sure you want to delete this category?",
                                 "This action cannot be undone",

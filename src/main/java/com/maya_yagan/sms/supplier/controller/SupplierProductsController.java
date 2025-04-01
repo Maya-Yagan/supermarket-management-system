@@ -9,8 +9,8 @@ import com.maya_yagan.sms.supplier.dao.SupplierDAO;
 import com.maya_yagan.sms.product.model.Category;
 import com.maya_yagan.sms.supplier.model.Supplier;
 import com.maya_yagan.sms.supplier.model.SupplierProduct;
-import com.maya_yagan.sms.util.FormHelper;
-import com.maya_yagan.sms.util.ShowAlert;
+import com.maya_yagan.sms.util.ViewUtil;
+import com.maya_yagan.sms.util.AlertUtil;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -110,7 +110,7 @@ public class SupplierProductsController implements Initializable {
      * Sets up handlers for clicking buttons
      */
     private void setupEventHandlers(){
-        addProductButton.setOnAction(event -> FormHelper.openForm("/view/supplier/AddProductToSupplier.fxml",
+        addProductButton.setOnAction(event -> ViewUtil.displayView("/view/supplier/AddProductToSupplier.fxml",
                 (AddProductToSupplierController controller) -> {
                     controller.setModalPane(modalPane);
                     controller.setSupplier(supplier);
@@ -179,7 +179,7 @@ public class SupplierProductsController implements Initializable {
                     deleteButton.getStyleClass().add(Styles.DANGER);
                     deleteButton.setOnAction(event -> {
                         SupplierProduct supplierProduct = getTableView().getItems().get(getIndex());
-                        ShowAlert.showDeleteConfirmation(supplierProduct,
+                        AlertUtil.showDeleteConfirmation(supplierProduct,
                                 "Delete Confirmation",
                                 "Are you sure you want to delete this product?",
                                 "This action cannot be undone",
@@ -203,8 +203,7 @@ public class SupplierProductsController implements Initializable {
      * Configures the price column for in-line editing of supplier product.
      */
     private void setupColumnForEditing(){
-        priceColumn.setCellFactory(
-                TextFieldTableCell.forTableColumn(new StringConverter<Double>(){
+        priceColumn.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<Double>(){
                         @Override
                         public String toString(Double object) {
                             return object != null ? String.format("%.2f", object) : "";
@@ -214,7 +213,7 @@ public class SupplierProductsController implements Initializable {
                             try{
                                 return Double.valueOf(string);
                             } catch(NumberFormatException e){
-                                ShowAlert.showAlert(Alert.AlertType.ERROR, "Invalid Input", "Please enter a valid decimal number.");
+                                AlertUtil.showAlert(Alert.AlertType.ERROR, "Invalid Input", "Please enter a valid decimal number.");
                                 return null;
                             }
                         }
@@ -226,7 +225,7 @@ public class SupplierProductsController implements Initializable {
             
             try{
                 if(newPrice < 0){
-                    ShowAlert.showAlert(Alert.AlertType.ERROR, "Invalid Input", "The price cannot be negative.");
+                    AlertUtil.showAlert(Alert.AlertType.ERROR, "Invalid Input", "The price cannot be negative.");
                     productTableView.refresh();
                     return;
                 }
@@ -255,10 +254,10 @@ public class SupplierProductsController implements Initializable {
                     if (index != -1)
                         productObservableList.set(index, supplierProduct);
 
-                    ShowAlert.showAlert(Alert.AlertType.INFORMATION, "Success", "The price has been updated successfully.");
+                    AlertUtil.showAlert(Alert.AlertType.INFORMATION, "Success", "The price has been updated successfully.");
                 }
             } catch(NumberFormatException e){
-                ShowAlert.showAlert(Alert.AlertType.ERROR, "Invalid Input", "Please enter a valid number for the price.");
+                AlertUtil.showAlert(Alert.AlertType.ERROR, "Invalid Input", "Please enter a valid number for the price.");
                 productTableView.refresh();
             }
         });

@@ -3,7 +3,7 @@ package com.maya_yagan.sms.warehouse.controller;
 import atlantafx.base.controls.ModalPane;
 import com.maya_yagan.sms.warehouse.dao.WarehouseDAO;
 import com.maya_yagan.sms.warehouse.model.Warehouse;
-import com.maya_yagan.sms.util.ShowAlert;
+import com.maya_yagan.sms.util.AlertUtil;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -80,7 +80,7 @@ public class AddWarehouseController implements Initializable {
         String name = nameField.getText();
         Integer capacity = Integer.valueOf(capacityField.getText());
         if(name.isEmpty() || capacity == 0){
-            ShowAlert.showAlert(Alert.AlertType.ERROR, "Empty Fields", "Please fill all fields");
+            AlertUtil.showAlert(Alert.AlertType.ERROR, "Empty Fields", "Please fill all fields");
             return;
         }
         Warehouse warehouse = new Warehouse();

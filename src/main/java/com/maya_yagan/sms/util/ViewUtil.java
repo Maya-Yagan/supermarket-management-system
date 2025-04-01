@@ -15,10 +15,10 @@ import javafx.scene.layout.StackPane;
  *
  * @author maya2
  */
-public class FormHelper {
-    public static <T> void openForm(String path, Consumer<T> controllerConsumer, ModalPane modalPane) {
+public class ViewUtil {
+    public static <T> void displayView(String path, Consumer<T> controllerConsumer, ModalPane modalPane) {
         try {
-            FXMLLoader loader = new FXMLLoader(FormHelper.class.getResource(path));
+            FXMLLoader loader = new FXMLLoader(ViewUtil.class.getResource(path));
             Parent root = loader.load();
             T controller = loader.getController();
             controllerConsumer.accept(controller);

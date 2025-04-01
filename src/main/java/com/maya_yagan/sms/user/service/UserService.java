@@ -4,11 +4,12 @@ import com.maya_yagan.sms.user.dao.RoleDAO;
 import com.maya_yagan.sms.user.dao.UserDAO;
 import com.maya_yagan.sms.user.model.Role;
 import com.maya_yagan.sms.user.model.User;
-import com.maya_yagan.sms.util.ShowAlert;
+import com.maya_yagan.sms.util.ExceptionUtil;
+import com.maya_yagan.sms.util.ValidationService;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
-import javafx.scene.control.Alert;
 
 /**
  *
@@ -17,18 +18,52 @@ import javafx.scene.control.Alert;
 public class UserService {
     private final UserDAO userDAO = new UserDAO();
     private final RoleDAO roleDAO = new RoleDAO();
+    private final ValidationService validationService = new ValidationService();
     
-    public User createUser(String firstName, String lastName, String tcNumber, LocalDate birthDate, String gender,
+    public boolean createUser(String firstName, String lastName, String tcNumber, LocalDate birthDate, String gender,
                        String email, String phoneNumber, String password, String salaryText, 
-                       List<String> selectedPositions, boolean isPartTime, boolean isFullTime) {
+                       Set<String> selectedPositions, boolean isPartTime, boolean isFullTime) {
         float salary = parseSalary(salaryText);
-        if(salary < 0) return null;
-        
-        List<Role> roles = getRolesByNames(selectedPositions);
+        Set<Role> roles = getRolesByNames(selectedPositions);
         User newUser = new User(firstName, lastName, tcNumber, birthDate, gender, email, phoneNumber, salary, password, roles, isPartTime, isFullTime);
-        
-        if(!validateUser(newUser)) return null;
-        return newUser;
+        validationService.validateUser(newUser);
+        return addUser(newUser);
+    }
+    
+    public void updateUserData(User user,
+                                String firstName,
+                                String lastName,
+                                String email,
+                                String phoneNumber,
+                                String tcNumber,
+                                String salaryText,
+                                LocalDate birthDate,
+                                String gender,
+                                String employmentType,
+                                Set<String> selectedPositions,
+                                String password) {
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setEmail(email);
+        user.setPhoneNumber(phoneNumber);
+        user.setTcNumber(tcNumber);
+        user.setBirthDate(birthDate);
+        user.setSalary(parseSalary(salaryText));
+        user.setGender(gender);
+        if("Full time".equals(employmentType)){
+            user.setIsFullTime(true);
+            user.setIsPartTime(false);
+        }
+        else if("Part time".equals(employmentType)){
+            user.setIsFullTime(false);
+            user.setIsPartTime(true);
+        }
+        user.getRoles().clear();
+        user.getRoles().addAll(getRolesByNames(selectedPositions));
+        if(password != null && !password.isEmpty())
+            user.setPasswordWithoutHashing(password);
+        validationService.validateUser(user);
+        updateUser(user);
     }
     
     public List<User> getAllUsers(){
@@ -39,30 +74,18 @@ public class UserService {
         return userDAO.insertUser(user);
     }
     
-    public boolean validateUser(User user){
-        if (user.getFirstName().isEmpty() || user.getLastName().isEmpty() ||
-            user.getEmail().isEmpty() || user.getPhoneNumber().isEmpty() ||
-            user.getPassword().isEmpty() || user.getTcNumber().isEmpty() ||
-            user.getBirthDate() == null || user.getGender() == null ||
-            user.getRoles().isEmpty()){
-            ShowAlert.showAlert(Alert.AlertType.WARNING,
-                    "Empty Field Warning",
-                   "Please fill all fields.");
-            return false;
-        }
-        if (!user.getEmail().matches("^[\\w.%+-]+@[\\w.-]+\\.[a-z]{2,}$")){ 
-            ShowAlert.showAlert(Alert.AlertType.WARNING,
-                    "Invalid Email",
-                   "Please enter valid email format");
-            return false;
-        }
-        return true;
+    public void updateUser(User user){
+        userDAO.updateUser(user);
     }
     
-    public List<Role> getRolesByNames(List<String> roleNames){
+    public void deleteUser(int id){
+        userDAO.deleteUser(id);
+    }
+    
+    public Set<Role> getRolesByNames(Set<String> roleNames){
         return roleNames.stream()
                 .map(roleDAO::getRoleByName)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
     
     public void initializeRole(){
@@ -81,10 +104,7 @@ public class UserService {
         try{
             return Float.parseFloat(salaryText);
         } catch(NumberFormatException e){
-            ShowAlert.showAlert(Alert.AlertType.WARNING,
-                    "Invalid Salary",
-                   "Please enter a valid number for salary.");
-            return -1f;
+            throw new ExceptionUtil("Please enter a valid number for salary", "INVALID_SALARY");
         }
     }
     

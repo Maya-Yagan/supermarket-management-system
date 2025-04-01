@@ -51,7 +51,7 @@ public class User {
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private List<Role> roles;
+    private Set<Role> roles;
     @Column(name = "isPartTime")
     private Boolean isPartTime;
     @Column(name = "isFullTime")
@@ -75,7 +75,7 @@ public class User {
      * @param password the user's password
      * @param roles the roles assigned to the user
      */
-    public User(String firstName, String lastName, String email, String password, List<Role> roles) {
+    public User(String firstName, String lastName, String email, String password, Set<Role> roles) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -99,7 +99,7 @@ public class User {
      * @param isPartTime indicates if the user is part-time
      * @param isFullTime indicates if the user is full-time
      */
-    public User(String firstName, String lastName, String tcNumber, LocalDate birthDate, String gender, String email, String phoneNumber, float salary, String password, List<Role> roles, Boolean isPartTime, Boolean isFullTime) {
+    public User(String firstName, String lastName, String tcNumber, LocalDate birthDate, String gender, String email, String phoneNumber, float salary, String password, Set<Role> roles, Boolean isPartTime, Boolean isFullTime) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.tcNumber = tcNumber;
@@ -239,7 +239,7 @@ public class User {
      * 
      * @return the list of roles
      */
-    public List<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
@@ -399,7 +399,7 @@ public class User {
      * 
      * @param roles the list of roles to set
      */
-    public void setRoles(List<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 

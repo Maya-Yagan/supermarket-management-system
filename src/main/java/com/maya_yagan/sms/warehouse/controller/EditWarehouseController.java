@@ -5,7 +5,7 @@ import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Tweaks;
 import com.maya_yagan.sms.warehouse.dao.WarehouseDAO;
 import com.maya_yagan.sms.warehouse.model.Warehouse;
-import com.maya_yagan.sms.util.ShowAlert;
+import com.maya_yagan.sms.util.AlertUtil;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -133,7 +133,7 @@ public class EditWarehouseController implements Initializable {
                 warehouseDAO.updateWarehouse(warehouse);
             }
             else{
-                ShowAlert.showAlert(Alert.AlertType.ERROR, "Invalid Input", "Invalid capacity. Enter a valid number.");
+                AlertUtil.showAlert(Alert.AlertType.ERROR, "Invalid Input", "Invalid capacity. Enter a valid number.");
                 warehouseTableView.refresh();
             }
         });
@@ -154,7 +154,7 @@ public class EditWarehouseController implements Initializable {
                     deleteButton.getStyleClass().add(Styles.DANGER);
                     deleteButton.setOnAction(event -> {
                         Warehouse warehouse = getTableView().getItems().get(getIndex());
-                        ShowAlert.showDeleteConfirmation(warehouse,
+                        AlertUtil.showDeleteConfirmation(warehouse,
                                 "Delete Warehouse",
                                 "Are you sure you want to delete this warehouse?",
                                 "This action cannot be undone",

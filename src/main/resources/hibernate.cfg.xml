@@ -14,10 +14,6 @@
         <!-- SQL Dialect -->
         <property name="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</property>
 
-        <!-- Echo all executed SQL to stdout -->
-        <property name="hibernate.show_sql">true</property>
-        <property name="hibernate.format_sql">true</property>
-
         <!-- Automatically drop and recreate the database schema on startup -->
         <property name="hibernate.hbm2ddl.auto">update</property>
 

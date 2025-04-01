@@ -8,7 +8,7 @@ import com.maya_yagan.sms.product.model.Category;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.supplier.model.Supplier;
 import com.maya_yagan.sms.supplier.model.SupplierProduct;
-import com.maya_yagan.sms.util.ShowAlert;
+import com.maya_yagan.sms.util.AlertUtil;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.ResourceBundle;
@@ -109,7 +109,7 @@ public class AddSupplierController implements Initializable {
         String email = emailField.getText();
         String phoneNumber = phoneNumberField.getText();
         if(name.isEmpty() || email.isEmpty() || phoneNumber.isEmpty() || selectedCategory == null){
-            ShowAlert.showAlert(Alert.AlertType.WARNING, "Empty fields!", "Please fill in all fields.");
+            AlertUtil.showAlert(Alert.AlertType.WARNING, "Empty fields!", "Please fill in all fields.");
             return;
         }
         Supplier supplier = new Supplier();
@@ -134,7 +134,7 @@ public class AddSupplierController implements Initializable {
             }
         }
         if(supplierProducts.isEmpty()){
-            ShowAlert.showAlert(Alert.AlertType.WARNING, "No products selected!", "Please select at least one product.");
+            AlertUtil.showAlert(Alert.AlertType.WARNING, "No products selected!", "Please select at least one product.");
             return;
         }
         supplier.setSupplierProducts(supplierProducts);

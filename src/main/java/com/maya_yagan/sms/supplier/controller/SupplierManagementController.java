@@ -9,8 +9,8 @@ import com.maya_yagan.sms.order.controller.AddOrderController;
 import com.maya_yagan.sms.supplier.dao.SupplierDAO;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.supplier.model.Supplier;
-import com.maya_yagan.sms.util.FormHelper;
-import com.maya_yagan.sms.util.ShowAlert;
+import com.maya_yagan.sms.util.ViewUtil;
+import com.maya_yagan.sms.util.AlertUtil;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -130,12 +130,12 @@ public class SupplierManagementController implements Initializable {
      * Sets up event handlers for buttons
      */
     private void setupEventHandlers(){
-        addSupplierButton.setOnAction(event -> FormHelper.openForm("/view/supplier/AddSupplier.fxml",
+        addSupplierButton.setOnAction(event -> ViewUtil.displayView("/view/supplier/AddSupplier.fxml",
                 (AddSupplierController controller) -> {
                     controller.setModalPane(modalPane);
                     controller.setOnCloseAction(() -> loadSuppliers());
                 }, modalPane));
-        makeOrderButton.setOnAction(event -> FormHelper.openForm("/view/order/OrderManagement.fxml",
+        makeOrderButton.setOnAction(event -> ViewUtil.displayView("/view/order/OrderManagement.fxml",
                 (AddOrderController controller) -> {}, modalPane));
     }
     
@@ -164,7 +164,7 @@ public class SupplierManagementController implements Initializable {
         editSupplier.setOnAction(event -> {
             Supplier selectedSupplier = row.getItem();
             if(selectedSupplier != null)
-                FormHelper.openForm("/view/supplier/EditSupplier.fxml",
+                ViewUtil.displayView("/view/supplier/EditSupplier.fxml",
                         (EditSupplierController controller) -> {
                             controller.setSupplier(selectedSupplier);
                             controller.setModalPane(modalPane);
@@ -192,7 +192,7 @@ public class SupplierManagementController implements Initializable {
         
         if(event.getClickCount() == 2 && event.getButton() == MouseButton.PRIMARY){
             Supplier selectedSupplier = row.getItem();
-            FormHelper.openForm("/view/supplier/SupplierProducts.fxml",
+            ViewUtil.displayView("/view/supplier/SupplierProducts.fxml",
                     (SupplierProductsController controller) -> {
                         controller.setSupplier(selectedSupplier);
                     }, modalPane);
@@ -237,7 +237,7 @@ public class SupplierManagementController implements Initializable {
                     deleteButton.getStyleClass().add(Styles.DANGER);
                     deleteButton.setOnAction(event -> {
                         Supplier supplier = getTableView().getItems().get(getIndex());
-                        ShowAlert.showDeleteConfirmation(supplier,
+                        AlertUtil.showDeleteConfirmation(supplier,
                             "Delete Confirmation",
                             "Are you sure you want to delete this supplier?",
                             "This action cannot be undone",

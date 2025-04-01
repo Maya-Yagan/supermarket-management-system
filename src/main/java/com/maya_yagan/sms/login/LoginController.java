@@ -3,6 +3,7 @@ package com.maya_yagan.sms.login;
 import atlantafx.base.controls.PasswordTextField;
 import com.maya_yagan.sms.util.HibernateUtil;
 import com.maya_yagan.sms.user.model.User;
+import com.maya_yagan.sms.util.ValidationService;
 import java.io.IOException;
 import javafx.scene.text.Text;
 import javafx.scene.control.TextField;
@@ -29,17 +30,12 @@ import org.kordamp.ikonli.javafx.FontIcon;
  * @author Maya Yagan
  */
 public class LoginController implements Initializable {
-    @FXML
-    private TextField emailField;
-
-    @FXML
-    private PasswordTextField passwordField;
-
-    @FXML
-    private Button loginButton;
-
-    @FXML
-    private Text statusText;
+    @FXML private TextField emailField;
+    @FXML private PasswordTextField passwordField;
+    @FXML private Button loginButton;
+    @FXML private Text statusText;
+    
+    private final ValidationService validationService = new ValidationService();
     private final Session session = HibernateUtil.getSessionFactory().openSession();
     
     /**
@@ -55,7 +51,7 @@ public class LoginController implements Initializable {
         passwordField.setOnAction(event -> loginButton.fire());
         emailField.setOnAction(event -> passwordField.requestFocus());
         emailField.textProperty().addListener((obs, old, newVal) -> {
-            if (newVal.matches("^[\\w.%+-]+@[\\w.-]+\\.[a-z]{2,}$")) 
+            if (validationService.isValidEmail(newVal)) 
                 emailField.setStyle("-fx-border-color: green;"); // Valid input
             else 
                 emailField.setStyle("-fx-border-color: red;");   // Invalid input

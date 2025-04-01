@@ -85,7 +85,7 @@
                   <Insets right="45.0" />
                </GridPane.margin>
             </Button>
-            <Button fx:id="cancelButton" onAction="#handleCancel" text="Cancel" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="9" />
+            <Button fx:id="cancelButton" onAction="#close" text="Cancel" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="9" />
             <Text fill="#455079" strokeType="OUTSIDE" strokeWidth="0.0" text="Add Employee">
                <font>
                   <Font size="23.0" />

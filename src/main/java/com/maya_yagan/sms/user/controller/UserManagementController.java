@@ -1,12 +1,11 @@
 package com.maya_yagan.sms.user.controller;
 
-import com.maya_yagan.sms.user.controller.AddUserController;
 import atlantafx.base.controls.ModalPane;
 import atlantafx.base.theme.Tweaks;
 import com.maya_yagan.sms.user.model.Role;
 import com.maya_yagan.sms.user.model.User;
 import com.maya_yagan.sms.user.service.UserService;
-import com.maya_yagan.sms.util.FormHelper;
+import com.maya_yagan.sms.util.ViewUtil;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -20,7 +19,6 @@ import java.util.List;
 import java.util.Objects;
 import javafx.scene.control.Button;
 import java.util.ResourceBundle;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableRow;
@@ -33,36 +31,22 @@ import javafx.scene.layout.StackPane;
  */
 public class UserManagementController implements Initializable {
 
-    @FXML
-    private TableView<User> userTableView;
-    @FXML
-    private TableColumn<User, String> firstNameColumn, lastNameColumn, genderColumn, positionColumn, partFullTimeColumn, emailColumn, phoneColumn, tcNumberColumn;
-    @FXML
-    private TableColumn<User, Float> salaryColumn;
-    @FXML
-    private TableColumn<User, LocalDate> startDateColumn;
-    @FXML
-    private TableColumn<User, Integer> ageColumn;
-    @FXML
-    private Button addUserButton;
-    @FXML
-    private StackPane stackPane;
+    @FXML private TableView<User> userTableView;
+    @FXML private TableColumn<User, String> firstNameColumn, lastNameColumn, genderColumn, positionColumn, partFullTimeColumn, emailColumn, phoneColumn, tcNumberColumn;
+    @FXML private TableColumn<User, Float> salaryColumn;
+    @FXML private TableColumn<User, LocalDate> startDateColumn;
+    @FXML private TableColumn<User, Integer> ageColumn;
+    @FXML private Button addUserButton;
+    @FXML private StackPane stackPane;
     
+    private ModalPane modalPane;
     private final UserService userService = new UserService();
     private final ObservableList<User> userObservableList = FXCollections.observableArrayList();
-    private ModalPane modalPane;
 
-    /**
-     * Initializes the controller. It sets up the table columns and loads
-     * the user data from the database.
-     * 
-     * @param location  The location of the FXML resource.
-     * @param resources The resources to localize the root object.
-     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         userService.initializeRole();
-        modalPane = FormHelper.initializeModalPane(stackPane);
+        modalPane = ViewUtil.initializeModalPane(stackPane);
         configureTableColumns();
         setupTableRowClickListener();
         setupEventHandlers();
@@ -87,9 +71,9 @@ public class UserManagementController implements Initializable {
         
         positionColumn.setCellValueFactory(data -> {
             User user = data.getValue();
-            List<Role> roles = user.getRoles();
-            String roleNames = roles != null ? 
-                    roles.stream()
+            String roleNames = user.getRoles() != null ? 
+                    user.getRoles()
+                    .stream()
                     .map(Role::getName)
                     .filter(Objects::nonNull)
                     .reduce((a, b) -> a + ", " + b)
@@ -121,7 +105,7 @@ public class UserManagementController implements Initializable {
     }
     
     private void handleDoubleClick(User selectedUser){
-        FormHelper.openForm("/view/user/EditUser.fxml", 
+        ViewUtil.displayView("/view/user/EditUser.fxml", 
                         (EditUserController controller) -> {
                             controller.setUser(selectedUser);
                             controller.setModalPane(modalPane);
@@ -130,7 +114,7 @@ public class UserManagementController implements Initializable {
     }
     
     private void setupEventHandlers(){
-        addUserButton.setOnAction(event -> FormHelper.openForm("/view/user/AddUser.fxml", 
+        addUserButton.setOnAction(event -> ViewUtil.displayView("/view/user/AddUser.fxml", 
                 (AddUserController controller) -> {
                     controller.setModalPane(modalPane);
                     controller.setOnCloseAction(() -> loadUserData());

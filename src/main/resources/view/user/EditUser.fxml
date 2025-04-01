@@ -62,10 +62,10 @@
             <Label text="Position(s):" GridPane.rowIndex="7" />
             <MenuButton fx:id="positionMenuButton" text="Select" GridPane.columnIndex="1" GridPane.rowIndex="7">
                <items>
-                  <CheckMenuItem fx:id="managerCheckMenuItem" text="Manager" />
-                  <CheckMenuItem fx:id="accountantCheckMenuItem" text="Accountant" />
-                  <CheckMenuItem fx:id="depotEmployeeCheckMenuItem" text="Depot Employee" />
-                  <CheckMenuItem fx:id="cashierCheckMenuItem" text="Cashier" />
+                  <CheckMenuItem fx:id="managerCheckMenuItem" text="manager" />
+                  <CheckMenuItem fx:id="accountantCheckMenuItem" text="accountant" />
+                  <CheckMenuItem fx:id="depotEmployeeCheckMenuItem" text="warehouse worker" />
+                  <CheckMenuItem fx:id="cashierCheckMenuItem" text="cashier" />
                </items>
             </MenuButton>
             <Label text="Password:" GridPane.columnIndex="2" GridPane.rowIndex="7" />
@@ -81,7 +81,7 @@
                <GridPane.margin>
                   <Insets right="30.0" />
                </GridPane.margin></Button>
-            <Button fx:id="cancelButton" onAction="#handleCancel" text="Cancel" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="9" />
+            <Button fx:id="cancelButton" onAction="#close" text="Cancel" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="9" />
             <Label GridPane.columnIndex="1" />
             <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#handleDelete" styleClass="danger" text="Delete User" textAlignment="CENTER" GridPane.halignment="LEFT" GridPane.rowIndex="9" />
             <Text fill="#455079" strokeType="OUTSIDE" strokeWidth="0.0" text="Edit Employee">

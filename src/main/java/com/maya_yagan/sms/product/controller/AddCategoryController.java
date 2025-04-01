@@ -3,7 +3,7 @@ package com.maya_yagan.sms.product.controller;
 import atlantafx.base.controls.ModalPane;
 import com.maya_yagan.sms.product.dao.CategoryDAO;
 import com.maya_yagan.sms.product.model.Category;
-import com.maya_yagan.sms.util.ShowAlert;
+import com.maya_yagan.sms.util.AlertUtil;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -77,7 +77,7 @@ public class AddCategoryController implements Initializable {
         
         // Check if the name field is empty
         if(name.isEmpty()){
-            ShowAlert.showAlert(Alert.AlertType.ERROR, "Empty Fields", "Please fill all fields");
+            AlertUtil.showAlert(Alert.AlertType.ERROR, "Empty Fields", "Please fill all fields");
             return;
         }
         // Create a new Category object and set its name

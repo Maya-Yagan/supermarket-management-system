@@ -7,7 +7,7 @@ import atlantafx.base.theme.Tweaks;
 import com.maya_yagan.sms.warehouse.dao.WarehouseDAO;
 import com.maya_yagan.sms.warehouse.model.ProductWarehouse;
 import com.maya_yagan.sms.warehouse.model.Warehouse;
-import com.maya_yagan.sms.util.FormHelper;
+import com.maya_yagan.sms.util.ViewUtil;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -68,7 +68,7 @@ public class WarehouseManagementController implements Initializable {
             row.setOnMouseClicked(event -> {
                 if(event.getClickCount() == 2 && (!row.isEmpty())){
                     Warehouse selectedWarehouse = row.getItem();
-                    FormHelper.openForm("/view/warehouse/WarehouseProducts.fxml",
+                    ViewUtil.displayView("/view/warehouse/WarehouseProducts.fxml",
                             (WarehouseProductsController controller) -> {
                                 controller.setWarehouse(selectedWarehouse);
                             }, modalPane);
@@ -132,7 +132,7 @@ public class WarehouseManagementController implements Initializable {
      */
     @FXML
     private void addWarehouse(){
-        FormHelper.openForm("/view/warehouse/AddWarehouse.fxml", 
+        ViewUtil.displayView("/view/warehouse/AddWarehouse.fxml", 
             (AddWarehouseController controller) -> {
                 controller.setModalPane(modalPane);
                 controller.setOnCloseAction(() -> loadData());
@@ -144,7 +144,7 @@ public class WarehouseManagementController implements Initializable {
      */
     @FXML
     private void editWarehouse(){
-        FormHelper.openForm("/view/warehouse/EditWarehouse.fxml", 
+        ViewUtil.displayView("/view/warehouse/EditWarehouse.fxml", 
             (EditWarehouseController controller) -> {
                 controller.setModalPane(modalPane);
                 controller.setOnCloseAction(() -> loadData());

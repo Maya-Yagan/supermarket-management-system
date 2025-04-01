@@ -11,8 +11,8 @@ import com.maya_yagan.sms.product.model.Category;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.warehouse.model.ProductWarehouse;
 import com.maya_yagan.sms.warehouse.model.Warehouse;
-import com.maya_yagan.sms.util.FormHelper;
-import com.maya_yagan.sms.util.ShowAlert;
+import com.maya_yagan.sms.util.ViewUtil;
+import com.maya_yagan.sms.util.AlertUtil;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -104,13 +104,13 @@ public class WarehouseProductsController implements Initializable {
         configureTableColumns();
         // Bind the product list to the table view
         productTableView.setItems(productObservableList);
-        addProductButton.setOnAction(event -> FormHelper.openForm("/view/warehouse/AddProductToWarehouse.fxml", 
+        addProductButton.setOnAction(event -> ViewUtil.displayView("/view/warehouse/AddProductToWarehouse.fxml", 
                 (AddProductToWarehouseController controller) -> {
                     controller.setModalPane(modalPane);
                     controller.setWarehouse(warehouse);
                     controller.setOnCloseAction(() -> loadProducts());
                 }, modalPane));
-        orderButton.setOnAction(event -> FormHelper.openForm("/view/order/OrderManagement.fxml",
+        orderButton.setOnAction(event -> ViewUtil.displayView("/view/order/OrderManagement.fxml",
                 (AddOrderController controller) -> {}, modalPane));
         backButton.setOnAction(event -> goBack());
         productTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -186,7 +186,7 @@ public class WarehouseProductsController implements Initializable {
                 try{
                     return Integer.valueOf(string);
                 } catch(NumberFormatException e){
-                    ShowAlert.showAlert(Alert.AlertType.ERROR, "Invalid Input", "Please enter a valid number.");
+                    AlertUtil.showAlert(Alert.AlertType.ERROR, "Invalid Input", "Please enter a valid number.");
                     return null;
                 }
             }
@@ -198,7 +198,7 @@ public class WarehouseProductsController implements Initializable {
             
             try {
                 if (newAmount < 0) {
-                    ShowAlert.showAlert(Alert.AlertType.ERROR, "Invalid Input", "The amount cannot be negative.");
+                    AlertUtil.showAlert(Alert.AlertType.ERROR, "Invalid Input", "The amount cannot be negative.");
                     productTableView.refresh();
                     return;
                 }
@@ -209,9 +209,9 @@ public class WarehouseProductsController implements Initializable {
                 
                 if (newAmount > remainingCapacity) {
                     if (remainingCapacity == 0)
-                        ShowAlert.showAlert(Alert.AlertType.ERROR, "Warehouse Full", "The warehouse is already full. No more products can be added.");
+                        AlertUtil.showAlert(Alert.AlertType.ERROR, "Warehouse Full", "The warehouse is already full. No more products can be added.");
                     else 
-                        ShowAlert.showAlert(Alert.AlertType.ERROR, "Capacity Exceeded", 
+                        AlertUtil.showAlert(Alert.AlertType.ERROR, "Capacity Exceeded", 
                                   "The entered amount exceeds the remaining warehouse capacity. Remaining capacity: " + remainingCapacity);
                     productTableView.refresh();
                     return;
@@ -229,10 +229,10 @@ public class WarehouseProductsController implements Initializable {
                     Warehouse refreshedWarehouse = warehouseDAO.getWarehouseById(warehouse.getId());
                     warehouse.setProductWarehouses(refreshedWarehouse.getProductWarehouses());
                     productTableView.refresh();
-                    ShowAlert.showAlert(Alert.AlertType.INFORMATION, "Success", "The product amount was successfully updated.");
+                    AlertUtil.showAlert(Alert.AlertType.INFORMATION, "Success", "The product amount was successfully updated.");
                 }
             } catch (NumberFormatException e) {
-                ShowAlert.showAlert(Alert.AlertType.ERROR, "Invalid Input", "Please enter a valid number for the amount.");
+                AlertUtil.showAlert(Alert.AlertType.ERROR, "Invalid Input", "Please enter a valid number for the amount.");
                 productTableView.refresh();
             }
         });
@@ -250,7 +250,7 @@ public class WarehouseProductsController implements Initializable {
                     deleteButton.getStyleClass().add(Styles.DANGER);
                     deleteButton.setOnAction(event -> {
                         Product product = getTableView().getItems().get(getIndex());
-                        ShowAlert.showDeleteConfirmation(product,
+                        AlertUtil.showDeleteConfirmation(product,
                                 "Delete Confirmation",
                                 "Are you sure you want to delete this product?",
                                 "This action cannot be undone",

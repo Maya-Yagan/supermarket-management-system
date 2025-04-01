@@ -6,7 +6,7 @@ import com.maya_yagan.sms.product.dao.ProductDAO;
 import com.maya_yagan.sms.product.model.Category;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.product.model.ProductUnit;
-import com.maya_yagan.sms.util.ShowAlert;
+import com.maya_yagan.sms.util.AlertUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -146,7 +146,7 @@ public class AddProductController implements Initializable {
 
         // Check if any fields are empty
         if (name.isEmpty() || priceText.isEmpty() || productionDate == null || selectedCategory == null || selectedUnit == null) {
-            ShowAlert.showAlert(Alert.AlertType.WARNING, "Missing Fields","Please fill in all fields.");
+            AlertUtil.showAlert(Alert.AlertType.WARNING, "Missing Fields","Please fill in all fields.");
             return;
         }
 
@@ -155,13 +155,13 @@ public class AddProductController implements Initializable {
         try {
             price = Float.parseFloat(priceText);
         } catch (NumberFormatException e) {
-            ShowAlert.showAlert(Alert.AlertType.ERROR, "Invalid Price", "Invalid price format.");
+            AlertUtil.showAlert(Alert.AlertType.ERROR, "Invalid Price", "Invalid price format.");
             return;
         }
 
         // Check if the expiration date is before the production date
         if (expirationDate != null && expirationDate.isBefore(productionDate)) {
-            ShowAlert.showAlert(Alert.AlertType.ERROR, "Invalid Date", "Expiration date is invalid.");
+            AlertUtil.showAlert(Alert.AlertType.ERROR, "Invalid Date", "Expiration date is invalid.");
             return;
         }
 

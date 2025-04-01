@@ -3,7 +3,7 @@ package com.maya_yagan.sms.supplier.controller;
 import atlantafx.base.controls.ModalPane;
 import com.maya_yagan.sms.supplier.dao.SupplierDAO;
 import com.maya_yagan.sms.supplier.model.Supplier;
-import com.maya_yagan.sms.util.ShowAlert;
+import com.maya_yagan.sms.util.AlertUtil;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -70,7 +70,7 @@ public class EditSupplierController implements Initializable {
             supplier.setPhoneNumber(phoneNumberField.getText());
             supplierDAO.updateSupplier(supplier);
             if(onCloseAction != null) onCloseAction.run();
-            ShowAlert.showAlert(Alert.AlertType.INFORMATION, "Success", "Supplier information has been updated successfully.");
+            AlertUtil.showAlert(Alert.AlertType.INFORMATION, "Success", "Supplier information has been updated successfully.");
             closeForm();
         }
     }
