@@ -20,16 +20,19 @@ public class CategoryDAO {
      * Inserts a new category into the database.
      * 
      * @param category The category to be inserted
+     * @return 
      */
-    public void insertCategory(Category category){
+    public boolean insertCategory(Category category){
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()){
             transaction = session.beginTransaction();
             session.save(category);
             transaction.commit();
+            return true;
         } catch (Exception e) {
             if(transaction != null) transaction.rollback();
             e.printStackTrace();
+            return false;
         }
     }
     

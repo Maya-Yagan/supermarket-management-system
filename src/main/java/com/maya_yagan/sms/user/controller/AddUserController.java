@@ -1,7 +1,7 @@
 package com.maya_yagan.sms.user.controller;
 
 import com.maya_yagan.sms.util.ExceptionHandler;
-import com.maya_yagan.sms.util.ExceptionUtil;
+import com.maya_yagan.sms.util.CustomException;
 import javafx.fxml.FXML;
 
 /**
@@ -31,7 +31,7 @@ public class AddUserController extends BaseUserController {
                 if(onCloseAction != null) onCloseAction.run();
                 close();
             }
-        } catch(ExceptionUtil e){
+        } catch(CustomException e){
             ExceptionHandler.handleException(e);
         }
     }

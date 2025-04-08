@@ -33,12 +33,12 @@
                   <Font size="23.0" />
                </font>
             </Label>
-            <Button fx:id="saveButton" mnemonicParsing="false" styleClass="accent" text="Save" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4">
+            <Button fx:id="saveButton" onAction="#saveCategory"  mnemonicParsing="false" styleClass="accent" text="Save" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4">
                <GridPane.margin>
                   <Insets right="45.0" />
                </GridPane.margin>
             </Button>
-            <Button fx:id="cancelButton" mnemonicParsing="false" text="Cancel" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+            <Button fx:id="cancelButton" onAction="#close"  mnemonicParsing="false" text="Cancel" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
          </children>
       </GridPane>
    </children>

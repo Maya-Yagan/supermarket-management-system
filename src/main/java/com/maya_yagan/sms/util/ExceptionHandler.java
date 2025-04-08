@@ -7,7 +7,7 @@ import javafx.scene.control.Alert;
  * @author Maya Yagan
  */
 public class ExceptionHandler {
-    public static void handleException(ExceptionUtil exception){
+    public static void handleException(CustomException exception){
         String alertMessage, alertTitle;
         String errorCode = exception.getErrorCode() != null ?
                 exception.getErrorCode() : "UNKNOWN_ERROR";
@@ -21,8 +21,8 @@ public class ExceptionHandler {
                 alertTitle = "Invalid Email Format";
                 alertMessage = exception.getMessage();
                 break;
-            case "INVALID_SALARY":
-                alertTitle = "Invalid Salary";
+            case "INVALID_FLOAT":
+                alertTitle = "Invalid Format";
                 alertMessage = exception.getMessage();
                 break;
             case "INVALID_DATE":

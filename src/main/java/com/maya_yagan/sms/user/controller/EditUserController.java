@@ -2,7 +2,7 @@ package com.maya_yagan.sms.user.controller;
 
 import com.maya_yagan.sms.user.model.User;
 import com.maya_yagan.sms.util.ExceptionHandler;
-import com.maya_yagan.sms.util.ExceptionUtil;
+import com.maya_yagan.sms.util.CustomException;
 import com.maya_yagan.sms.util.AlertUtil;
 import javafx.fxml.FXML;
 
@@ -64,7 +64,7 @@ public class EditUserController extends BaseUserController {
             
             if(onCloseAction != null) onCloseAction.run();
             close();
-        } catch(ExceptionUtil e){
+        } catch(CustomException e){
             ExceptionHandler.handleException(e);
         }        
     }

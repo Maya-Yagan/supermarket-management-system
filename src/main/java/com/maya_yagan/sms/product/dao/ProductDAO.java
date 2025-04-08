@@ -22,15 +22,17 @@ public class ProductDAO {
      * 
      * @param product The product to be inserted
      */
-    public void insertProduct(Product product){
+    public boolean insertProduct(Product product){
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()){
             transaction = session.beginTransaction();
             session.save(product);
             transaction.commit();
+            return true;
         } catch (Exception e) {
             if(transaction != null) transaction.rollback();
             e.printStackTrace();
+            return false;
         }
     }
     

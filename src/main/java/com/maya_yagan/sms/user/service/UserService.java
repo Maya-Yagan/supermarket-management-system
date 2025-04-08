@@ -4,7 +4,6 @@ import com.maya_yagan.sms.user.dao.RoleDAO;
 import com.maya_yagan.sms.user.dao.UserDAO;
 import com.maya_yagan.sms.user.model.Role;
 import com.maya_yagan.sms.user.model.User;
-import com.maya_yagan.sms.util.ExceptionUtil;
 import com.maya_yagan.sms.util.ValidationService;
 import java.time.LocalDate;
 import java.util.List;
@@ -23,7 +22,7 @@ public class UserService {
     public boolean createUser(String firstName, String lastName, String tcNumber, LocalDate birthDate, String gender,
                        String email, String phoneNumber, String password, String salaryText, 
                        Set<String> selectedPositions, boolean isPartTime, boolean isFullTime) {
-        float salary = parseSalary(salaryText);
+        float salary = validationService.parseAndValidateFloat(salaryText, "salary");
         Set<Role> roles = getRolesByNames(selectedPositions);
         User newUser = new User(firstName, lastName, tcNumber, birthDate, gender, email, phoneNumber, salary, password, roles, isPartTime, isFullTime);
         validationService.validateUser(newUser);
@@ -48,7 +47,7 @@ public class UserService {
         user.setPhoneNumber(phoneNumber);
         user.setTcNumber(tcNumber);
         user.setBirthDate(birthDate);
-        user.setSalary(parseSalary(salaryText));
+        user.setSalary(validationService.parseAndValidateFloat(salaryText, "salary"));
         user.setGender(gender);
         if("Full time".equals(employmentType)){
             user.setIsFullTime(true);
@@ -97,14 +96,6 @@ public class UserService {
                 newRole.setPrivilegeLevel(determinePrivilegeLevel(roleName));
                 roleDAO.insertRole(newRole);
             }
-        }
-    }
-    
-    private float parseSalary(String salaryText){
-        try{
-            return Float.parseFloat(salaryText);
-        } catch(NumberFormatException e){
-            throw new ExceptionUtil("Please enter a valid number for salary", "INVALID_SALARY");
         }
     }
     

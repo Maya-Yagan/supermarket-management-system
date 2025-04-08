@@ -28,13 +28,13 @@ public class DateUtil {
                     try{
                         return LocalDate.parse(string, DATE_FORMATTER);
                     } catch(DateTimeParseException e){
-                    ExceptionHandler.handleException(new ExceptionUtil(
+                    ExceptionHandler.handleException(new CustomException(
                         "Invalid date format.\nPlease follow this format: DD.MM.YYYY",
                       "INVALID_DATE"));
                     return null;
                     }
                 }
-                ExceptionHandler.handleException(new ExceptionUtil(
+                ExceptionHandler.handleException(new CustomException(
                 "Date cannot be empty.", "EMPTY_FIELDS"));
                 return null;
             }

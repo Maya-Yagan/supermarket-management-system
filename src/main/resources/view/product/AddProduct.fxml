@@ -35,11 +35,11 @@
           </font>
        </Label>
        <DatePicker fx:id="productionDatePicker" prefHeight="36.0" prefWidth="158.0" promptText="MM/DD/YYYY" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-       <Button fx:id="saveButton" mnemonicParsing="false" styleClass="accent" text="Save" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="6">
+       <Button fx:id="saveButton" onAction="#saveProduct" mnemonicParsing="false" styleClass="accent" text="Save" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="6">
           <GridPane.margin>
              <Insets right="45.0" />
           </GridPane.margin></Button>
-       <Button fx:id="cancelButton" mnemonicParsing="false" text="Cancel" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
+       <Button fx:id="cancelButton" onAction="#close" mnemonicParsing="false" text="Cancel" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
          <MenuButton fx:id="unitMenuButton" mnemonicParsing="false" text="Select" GridPane.columnIndex="3" GridPane.rowIndex="4" />
          <Label text="Product Unit" GridPane.columnIndex="2" GridPane.rowIndex="4" />
 
