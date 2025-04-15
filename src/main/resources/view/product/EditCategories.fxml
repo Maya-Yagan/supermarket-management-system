@@ -50,7 +50,7 @@
                   <Insets />
                </GridPane.margin>
             </Label>
-            <Button fx:id="closeButton" mnemonicParsing="false" text="Close" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
+            <Button fx:id="closeButton" onAction="#close" mnemonicParsing="false" text="Close" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
                <GridPane.margin>
                   <Insets right="10.0" />
                </GridPane.margin>

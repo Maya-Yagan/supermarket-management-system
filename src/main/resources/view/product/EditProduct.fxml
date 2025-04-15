@@ -46,12 +46,12 @@
                </font>
             </Label>
             <DatePicker fx:id="productionDatePicker" promptText="MM/DD/YYYY" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <Button fx:id="saveButton" mnemonicParsing="false" onAction="#handleSave" styleClass="accent" text="Save" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="6">
+            <Button fx:id="saveButton" onAction="#handleSave" mnemonicParsing="false" styleClass="accent" text="Save" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="6">
                <GridPane.margin>
                   <Insets right="45.0" />
                </GridPane.margin>
             </Button>
-            <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handleCancel" text="Cancel" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
+            <Button fx:id="cancelButton" onAction="#close"  mnemonicParsing="false" text="Cancel" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
             <Button mnemonicParsing="false" onAction="#handleDelete" styleClass="danger" text="Delete" GridPane.rowIndex="6" />
             <MenuButton fx:id="unitMenuButton" mnemonicParsing="false" text="Select" GridPane.columnIndex="3" GridPane.rowIndex="4" />
             <Label text="Product Unit" GridPane.columnIndex="2" GridPane.rowIndex="4" />

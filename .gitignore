@@ -1,4 +1,4 @@
 target/
-
+.idea
 *.CLASS
 nb-configuration.xml

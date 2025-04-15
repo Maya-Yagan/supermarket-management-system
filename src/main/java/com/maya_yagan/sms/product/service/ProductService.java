@@ -23,22 +23,38 @@ public class ProductService {
     public Set<Product> getAllProducts(){
         return productDAO.getProducts();
     }
-   
-    public Set<Product> getProductsByCategory(Category category){
-        return productDAO.getProductsByCategory(category);
-    }
     
     public Set<Category> getAllCategories(){
         return categoryDAO.getCategories();
+    }
+   
+    public Set<Product> getProductsByCategory(Category category){
+        return productDAO.getProductsByCategory(category);
     }
     
     public Category getCategoryByName(String name){
         return categoryDAO.getCategoryByName(name);
     }
     
+    public void updateProduct(Product product){
+        productDAO.updateProduct(product);
+    }
+    
+    public void updateCategory(Category category){
+        categoryDAO.updateCategory(category);
+    }
+    
     public Set<ProductUnit> getProductUnits(){
         return new HashSet<>(Arrays.asList(ProductUnit.values()));
     } 
+    
+    public void deleteProduct(int id){
+        productDAO.deleteProduct(id);
+    }
+    
+    public void deleteCategory(int id){
+        categoryDAO.deleteCategory(id);
+    }
     
     public Set<Product> getFilteredProductsByCategory(String categoryName){
         if ("All Categories".equals(categoryName))
@@ -67,5 +83,23 @@ public class ProductService {
         category.setName(name);
         validationService.validateCategory(category);
         return categoryDAO.insertCategory(category);
+    }
+    
+    public void updateProductData(Product product, String name, String priceText, LocalDate productionDate,
+                           LocalDate expirationDate, Category category, ProductUnit unit){
+        product.setName(name);
+        product.setCategory(category);
+        product.setPrice(validationService.parseAndValidateFloat(priceText, "price"));
+        product.setProductionDate(productionDate);
+        product.setExpirationDate(expirationDate);
+        product.setUnit(unit);
+        validationService.validateProduct(product);
+        updateProduct(product);
+    }
+    
+    public void updateCategoryData(Category category, String name){
+        category.setName(name);
+        validationService.validateCategory(category);
+        updateCategory(category);
     }
 }

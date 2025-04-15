@@ -56,9 +56,6 @@ public class UserManagementController implements Initializable {
         userTableView.getStyleClass().add(Tweaks.EDGE_TO_EDGE);
     }
 
-    /**
-     * Configures the columns of the user table with the appropriate cell value factories.
-     */
     private void configureTableColumns() {
         firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
         lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
@@ -121,9 +118,6 @@ public class UserManagementController implements Initializable {
                 }, modalPane));
     }
     
-    /**
-     * Loads the user data and populates the table view.
-     */
     private void loadUserData() {
         List<User> users = userService.getAllUsers();
         userObservableList.setAll(users);

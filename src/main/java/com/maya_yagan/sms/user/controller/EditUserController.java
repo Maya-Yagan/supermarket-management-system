@@ -35,12 +35,8 @@ public class EditUserController extends BaseUserController {
         employmentTypeMenu.setText(selectedEmploymentType);
         selectedPositions.clear();
         user.getRoles().forEach(role -> {
-            System.out.println("Role from user in the forEach: " + role.getName());
-                selectedPositions.add(role.getName());
-                        }
-        );
-        System.out.println("Selected positions before calling set position method: " + selectedPositions);
-
+                selectedPositions.add(role.getName());         
+        });
         setPositionMenuSelection();
     }
   

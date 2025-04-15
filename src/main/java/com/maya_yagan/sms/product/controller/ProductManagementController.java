@@ -5,22 +5,18 @@ import atlantafx.base.theme.Tweaks;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.product.model.Category;
 import com.maya_yagan.sms.product.service.ProductService;
+import com.maya_yagan.sms.util.ContextMenuUtil;
 import com.maya_yagan.sms.util.MenuButtonUtil;
 import com.maya_yagan.sms.util.ViewUtil;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
 
@@ -57,7 +53,7 @@ public class ProductManagementController implements Initializable {
     
     private void loadCategories() {
         MenuButtonUtil.populateMenuButton(
-       categoryMenuButton,
+                categoryMenuButton,
                 productService::getAllCategories, 
                 Category::getName,
                 this::handleCategorySelection,
@@ -96,27 +92,41 @@ public class ProductManagementController implements Initializable {
         addCategoryButton.setOnAction(event -> ViewUtil.displayView("/view/product/AddCategory.fxml",
                 (AddCategoryController controller) -> {
                     controller.setModalPane(modalPane);
-                    controller.setOnCloseAction(() -> loadCategories());
+                    controller.setOnCloseAction(this::loadCategories);
                 }, modalPane));
 
         editCategoriesButton.setOnAction(event -> ViewUtil.displayView("/view/product/EditCategories.fxml",
                 (EditCategoriesController controller) -> {
                     controller.setModalPane(modalPane);
-                    controller.setOnCloseAction(() -> loadCategories());
+                    controller.setOnCloseAction(this::loadCategories);
                 }, modalPane));
 
+        setupProductTableContextMenu();
+    }
+
+    private void setupProductTableContextMenu() {
         productTableView.setRowFactory(tv -> {
             TableRow<Product> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
-                if(event.getClickCount() == 2 && (!row.isEmpty())){
-                    Product selectedProduct = row.getItem();
-                    ViewUtil.displayView("/view/product/EditProduct.fxml", 
-                            (EditProductController controller) -> {
-                                controller.setProduct(selectedProduct);
-                                controller.setModalPane(modalPane);
-                                controller.setOnCloseAction(() -> 
-                                        handleCategorySelection(selectedProduct.getCategory()));
-                            }, modalPane);
+            row.itemProperty().addListener((obs, oldProduct, currentProduct) -> {
+                if(currentProduct != null){
+                    List<ContextMenuUtil.MenuItemConfig<Product>> menuItems = new ArrayList<>();
+
+                    menuItems.add(new ContextMenuUtil.MenuItemConfig<>(
+                            "Edit Product",
+                            (product, r) -> ViewUtil.displayView("/view/product/EditProduct.fxml",
+                                    (EditProductController controller) -> {
+                                        controller.setProduct(product);
+                                        controller.setModalPane(modalPane);
+                                        controller.setOnCloseAction(() ->
+                                                handleCategorySelection(product.getCategory()));
+                                    }, modalPane)
+                    ));
+
+                    ContextMenu contextMenu = ContextMenuUtil.createContextMenu(row, currentProduct, menuItems);
+                    row.setContextMenu(contextMenu);
+                }
+                else {
+                    row.setContextMenu(null);
                 }
             });
             return row;
@@ -124,16 +134,15 @@ public class ProductManagementController implements Initializable {
     }
 
     private void handleCategorySelection(Category category) {
-        String categoryName = category.getName();
-        categoryMenuButton.setText(categoryName);
-        refreshTable(categoryName);
+        categoryMenuButton.setText(category.getName());
+        refreshTable(category.getName());
     }
     
     private void setupDynamicLayoutAdjustment(){
         ViewUtil.setupDynamicLayoutAdjustment(
-                categoryMenuButton,
-                Arrays.asList(addCategoryButton, editCategoriesButton, addProductButton),
-                   Arrays.asList(10.0, 130.0, 260.0)
+            categoryMenuButton,
+            Arrays.asList(addCategoryButton, editCategoriesButton, addProductButton),
+            Arrays.asList(10.0, 130.0, 260.0)
         );
     }
 }

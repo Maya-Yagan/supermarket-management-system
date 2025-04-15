@@ -72,7 +72,7 @@ public class ValidationService {
     }
     
     public void validateCategory(Category category){
-        if(category.getName().isEmpty())
+        if(category.getName() == null || category.getName().trim().isEmpty())
             throw new CustomException("Please fill the name", "EMPTY_FIELDS");
     }
 }

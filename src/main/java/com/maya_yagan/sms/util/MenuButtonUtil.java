@@ -22,6 +22,7 @@ public class MenuButtonUtil {
         String allItemsLabel,
         Runnable onAllItemsSelected){
 
+        menuButton.getItems().clear();
         MenuItem allItems = new MenuItem(allItemsLabel);
         menuButton.setText(allItemsLabel);
 
