@@ -64,18 +64,4 @@ public class EditUserController extends BaseUserController {
             ExceptionHandler.handleException(e);
         }        
     }
-    
-    @FXML 
-    private void handleDelete(){
-        AlertUtil.showDeleteConfirmation(
-        user,
-        "Delete User",
-    "Are you sure you want to delete this user?",
-    "This action cannot be undone.",
-        (User u) -> {
-            userService.deleteUser(u.getId());
-            if(onCloseAction != null) onCloseAction.run();
-            close();
-        });
-    }
 }

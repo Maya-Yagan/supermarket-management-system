@@ -43,7 +43,7 @@ public class ValidationService {
             user.getPassword().isEmpty() || user.getTcNumber().isEmpty() ||
             user.getBirthDate() == null || user.getGender() == null ||
             user.getRoles().isEmpty() || 
-           (user.getIsPartTime() == false && user.getIsFullTime() == false))
+           (!user.getIsPartTime() && !user.getIsFullTime()))
             throw new CustomException("Please fill all fields", "EMPTY_FIELDS");
         if (!isValidEmail(user.getEmail()))
             throw new CustomException("Please enter a valid email", "INVALID_EMAIL");

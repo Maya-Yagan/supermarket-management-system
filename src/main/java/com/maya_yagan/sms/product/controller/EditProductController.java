@@ -1,7 +1,6 @@
 package com.maya_yagan.sms.product.controller;
 
 import com.maya_yagan.sms.product.model.Product;
-import com.maya_yagan.sms.util.AlertUtil;
 import com.maya_yagan.sms.util.CustomException;
 import com.maya_yagan.sms.util.ExceptionHandler;
 import javafx.fxml.FXML;
@@ -34,19 +33,7 @@ public class EditProductController extends BaseProductController {
     }
     
     @FXML
-    private void handleDelete(){
-        AlertUtil.showDeleteConfirmation(product,
-                "Delete Product",
-                "Are you sure you want to delete this product?",
-                "This action cannot be undone",
-                (Product p) -> {
-                    productService.deleteProduct(p.getId());
-                    if(onCloseAction != null) onCloseAction.run();
-                    close();
-                });
-    }
-    
-    @FXML
+    @Override
     public void handleSave(){
         try{
             productService.updateProductData(product, 

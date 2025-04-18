@@ -83,7 +83,6 @@
                </GridPane.margin></Button>
             <Button fx:id="cancelButton" onAction="#close" text="Cancel" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="9" />
             <Label GridPane.columnIndex="1" />
-            <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#handleDelete" styleClass="danger" text="Delete User" textAlignment="CENTER" GridPane.halignment="LEFT" GridPane.rowIndex="9" />
             <Text fill="#455079" strokeType="OUTSIDE" strokeWidth="0.0" text="Edit Employee">
                <font>
                   <Font size="23.0" />

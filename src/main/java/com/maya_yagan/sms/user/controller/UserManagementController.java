@@ -5,23 +5,23 @@ import atlantafx.base.theme.Tweaks;
 import com.maya_yagan.sms.user.model.Role;
 import com.maya_yagan.sms.user.model.User;
 import com.maya_yagan.sms.user.service.UserService;
+import com.maya_yagan.sms.util.AlertUtil;
+import com.maya_yagan.sms.util.ContextMenuUtil;
 import com.maya_yagan.sms.util.ViewUtil;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javafx.scene.control.Button;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.TableRow;
 import javafx.scene.layout.StackPane;
 
 /**
@@ -48,12 +48,16 @@ public class UserManagementController implements Initializable {
         userService.initializeRole();
         modalPane = ViewUtil.initializeModalPane(stackPane);
         configureTableColumns();
-        setupTableRowClickListener();
         setupEventHandlers();
-        loadUserData();
+        refreshTable();
         userTableView.setItems(userObservableList);
         userTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         userTableView.getStyleClass().add(Tweaks.EDGE_TO_EDGE);
+    }
+
+    private void refreshTable() {
+        List<User> users = userService.getAllUsers();
+        userObservableList.setAll(users);
     }
 
     private void configureTableColumns() {
@@ -89,37 +93,56 @@ public class UserManagementController implements Initializable {
         });
     }
 
-        
-    private void setupTableRowClickListener(){
-        userTableView.setRowFactory(tv -> {
-            TableRow<User> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
-                if(event.getClickCount() == 2 && (!row.isEmpty()))
-                    handleDoubleClick(row.getItem());
-            });
-            return row;
-        });
-    }
-    
-    private void handleDoubleClick(User selectedUser){
-        ViewUtil.displayView("/view/user/EditUser.fxml", 
-                        (EditUserController controller) -> {
-                            controller.setUser(selectedUser);
-                            controller.setModalPane(modalPane);
-                            controller.setOnCloseAction(() -> loadUserData());
-                        }, modalPane);
-    }
-    
     private void setupEventHandlers(){
         addUserButton.setOnAction(event -> ViewUtil.displayView("/view/user/AddUser.fxml", 
                 (AddUserController controller) -> {
                     controller.setModalPane(modalPane);
-                    controller.setOnCloseAction(() -> loadUserData());
+                    controller.setOnCloseAction(this::refreshTable);
                 }, modalPane));
+
+        setupUserTableContextMenu();
     }
-    
-    private void loadUserData() {
-        List<User> users = userService.getAllUsers();
-        userObservableList.setAll(users);
+
+    private  void setupUserTableContextMenu(){
+        userTableView.setRowFactory(tv -> {
+            TableRow<User> row = new TableRow<>();
+            row.itemProperty().addListener((obs, oldUser, currentUser) -> {
+                if(currentUser != null) {
+                    List<ContextMenuUtil.MenuItemConfig<User>> menuItems = new ArrayList<>();
+
+                    menuItems.add(new ContextMenuUtil.MenuItemConfig<>(
+                            "Edit User",
+                            (user, r) ->
+                                    ViewUtil.displayView("/view/user/EditUser.fxml",
+                                    (EditUserController controller) -> {
+                                        controller.setUser(row.getItem());
+                                        controller.setModalPane(modalPane);
+                                        controller.setOnCloseAction(this::refreshTable);
+                                    }, modalPane)
+                    ));
+
+                    menuItems.add(new ContextMenuUtil.MenuItemConfig<>(
+                            "Delete User",
+                            (user, r) -> {
+                                AlertUtil.showDeleteConfirmation(user,
+                                        "Delete User",
+                                        "Are you sure you want to delete this user?",
+                                        "This action cannot be undone.",
+                                        (u) -> {
+                                            userService.deleteUser(u.getId());
+                                            refreshTable();
+                                        }
+                                );
+                            }
+                    ));
+
+                    ContextMenu contextMenu = ContextMenuUtil.createContextMenu(row, currentUser, menuItems);
+                    row.setContextMenu(contextMenu);
+                } else {
+                    row.setContextMenu(null);
+                }
+            });
+            return row;
+        });
     }
 }

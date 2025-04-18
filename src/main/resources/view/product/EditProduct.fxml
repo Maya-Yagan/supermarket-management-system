@@ -52,7 +52,6 @@
                </GridPane.margin>
             </Button>
             <Button fx:id="cancelButton" onAction="#close"  mnemonicParsing="false" text="Cancel" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
-            <Button mnemonicParsing="false" onAction="#handleDelete" styleClass="danger" text="Delete" GridPane.rowIndex="6" />
             <MenuButton fx:id="unitMenuButton" mnemonicParsing="false" text="Select" GridPane.columnIndex="3" GridPane.rowIndex="4" />
             <Label text="Product Unit" GridPane.columnIndex="2" GridPane.rowIndex="4" />
          </children>
