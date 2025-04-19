@@ -1,6 +1,5 @@
 package com.maya_yagan.sms.warehouse.controller;
 
-import com.maya_yagan.sms.warehouse.controller.AddProductToWarehouseController;
 import atlantafx.base.controls.ModalPane;
 import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Tweaks;
@@ -255,7 +254,7 @@ public class WarehouseProductsController implements Initializable {
                                 "Are you sure you want to delete this product?",
                                 "This action cannot be undone",
                                 (Product p) -> {
-                                    warehouseDAO.deleteProdcutFromWarehouse(warehouse, product);
+                                    warehouseDAO.deleteProductFromWarehouse(warehouse, product);
                                     productObservableList.remove(product);
                                 });
                     });

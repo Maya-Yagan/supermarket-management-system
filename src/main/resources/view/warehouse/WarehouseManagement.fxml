@@ -10,11 +10,11 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<StackPane fx:id="stackPane" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.warehouse.controller.WarehouseManagementController">
+<StackPane fx:id="stackPane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.warehouse.controller.WarehouseManagementController">
     <children>
     <AnchorPane fx:id="AnchorPane">
         <children>
-          <TableView fx:id="warehouseTableView" layoutX="32.0" layoutY="121.0" AnchorPane.bottomAnchor="54.33333333333337" AnchorPane.leftAnchor="70.0" AnchorPane.rightAnchor="70.0" AnchorPane.topAnchor="121.0">
+          <TableView fx:id="warehouseTableView" layoutX="32.0" layoutY="121.0" AnchorPane.bottomAnchor="54.33333333333337" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="124.0">
              <columns>
                 <TableColumn fx:id="nameColumn" text="Name" />
                 <TableColumn fx:id="capacityColumn" text="Capacity" />
@@ -25,14 +25,13 @@
                 <String fx:value="striped" />
              </styleClass>
           </TableView>
-          <Button fx:id="addWarehouseButton" layoutX="70.0" layoutY="80.0" mnemonicParsing="false" onAction="#addWarehouse" styleClass="accent" text="Add Warehouse" AnchorPane.leftAnchor="70.0" AnchorPane.topAnchor="80.0" />
-          <Text fill="#455079" layoutX="32.0" layoutY="57.0" text="Warehouse Management" textAlignment="CENTER" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="429.4072265625" AnchorPane.topAnchor="28.943359375">
+          <Button fx:id="addWarehouseButton" layoutX="32.0" layoutY="75.0" mnemonicParsing="false" onAction="#addWarehouse" styleClass="accent" text="Add Warehouse" AnchorPane.leftAnchor="32.0" AnchorPane.topAnchor="80.0" />
+          <Text fill="#455079" layoutX="32.0" layoutY="56.0" text="Warehouse Management" textAlignment="CENTER" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="430.49609375" AnchorPane.topAnchor="27.943359375">
              <font>
                 <Font size="26.0" />
              </font>
           </Text>
-          <Button fx:id="editWarehouseButton" layoutX="200.0" layoutY="80.0" mnemonicParsing="false" onAction="#editWarehouse" styleClass="accent" text="Edit Warehouse" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="80.0" />
-            <Label layoutX="356.0" layoutY="88.0" text="Double-click on a warehouse to view its details" textFill="#a3a1a1">
+          <Label layoutX="177.0" layoutY="84.0" text="Right-click a cell for more actions." textFill="#a3a1a1" AnchorPane.leftAnchor="177.0" AnchorPane.topAnchor="84.0">
                 <graphic>
                     <org.kordamp.ikonli.javafx.FontIcon iconLiteral="fth-info" />
                 </graphic>

@@ -4,7 +4,7 @@ import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.warehouse.model.ProductWarehouse;
 import com.maya_yagan.sms.warehouse.model.Warehouse;
 import com.maya_yagan.sms.util.HibernateUtil;
-import java.util.Collections;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -70,27 +70,7 @@ public class WarehouseDAO {
             return null;
         }
     }
-    
-    /**
-     * Retrieves a list of product-warehouse associations for a specific warehouse.
-     * 
-     * @param warehouse The warehouse for which to retrieve product associations
-     * @return List of ProductWarehouse entries associated with the specified warehouse
-     */
-    public List<ProductWarehouse> getProductWarehousesForWarehouse(Warehouse warehouse){
-        try(Session session = HibernateUtil.getSessionFactory().openSession()){
-            Query<ProductWarehouse> query = session.createQuery(
-                    "FROM ProductWarehouse pw WHERE pw.warehouse = :warehouse",
-                    ProductWarehouse.class
-            );
-            query.setParameter("warehouse", warehouse);
-            return query.getResultList();
-        } catch(Exception e){
-            e.printStackTrace();
-            return Collections.emptyList();
-        }
-    }
-    
+
     /**
      * Retrieves a list of all warehouses.
      * 
@@ -149,7 +129,7 @@ public class WarehouseDAO {
      * @param warehouse The warehouse from which the product will be deleted
      * @param product The product to be deleted from the warehouse
      */
-    public void deleteProdcutFromWarehouse(Warehouse warehouse, Product product){
+    public void deleteProductFromWarehouse(Warehouse warehouse, Product product){
         Transaction transaction = null;
         try(Session session = HibernateUtil.getSessionFactory().openSession()){
             transaction = session.beginTransaction();

@@ -21,12 +21,16 @@ public class ExceptionHandler {
                 alertTitle = "Invalid Email Format";
                 alertMessage = exception.getMessage();
                 break;
-            case "INVALID_FLOAT":
-                alertTitle = "Invalid Format";
+            case "INVALID_NUMBER":
+                alertTitle = "Invalid Number";
                 alertMessage = exception.getMessage();
                 break;
             case "INVALID_DATE":
                 alertTitle = "Invalid Date Format";
+                alertMessage = exception.getMessage();
+                break;
+            case "INVALID_CAPACITY":
+                alertTitle = "Invalid Warehouse Capacity";
                 alertMessage = exception.getMessage();
                 break;
             default:

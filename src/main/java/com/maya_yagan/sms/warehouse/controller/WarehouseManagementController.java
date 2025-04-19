@@ -1,22 +1,22 @@
 package com.maya_yagan.sms.warehouse.controller;
 
-import com.maya_yagan.sms.warehouse.controller.EditWarehouseController;
-import com.maya_yagan.sms.warehouse.controller.AddWarehouseController;
 import atlantafx.base.controls.ModalPane;
 import atlantafx.base.theme.Tweaks;
-import com.maya_yagan.sms.warehouse.dao.WarehouseDAO;
-import com.maya_yagan.sms.warehouse.model.ProductWarehouse;
+import com.maya_yagan.sms.util.AlertUtil;
+import com.maya_yagan.sms.util.ContextMenuUtil;
 import com.maya_yagan.sms.warehouse.model.Warehouse;
 import com.maya_yagan.sms.util.ViewUtil;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Set;
+import com.maya_yagan.sms.warehouse.service.WarehouseService;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -26,128 +26,104 @@ import javafx.scene.layout.StackPane;
 /**
  * Controller class for managing warehouses in the application.
  * 
- * This class provides functionality for displaying a list of warehouses,
- * viewing the products stored in a specific warehouse, and adding or editing warehouse details.
- * It interacts with the user interface through JavaFX components and handles database operations
- * via the WarehouseDAO.
- * 
  * @author Maya Yagan
  */
 public class WarehouseManagementController implements Initializable {
 
-    @FXML
-    private TableView<Warehouse> warehouseTableView;
-    @FXML
-    private TableColumn<Warehouse, String> nameColumn;
-    @FXML 
-    private TableColumn<Warehouse, Integer> capacityColumn;
-    @FXML
-    private TableColumn<Warehouse, Integer> totalProductsColumn;
-    @FXML
-    private StackPane stackPane;
+    @FXML private TableView<Warehouse> warehouseTableView;
+    @FXML private TableColumn<Warehouse, String> nameColumn;
+    @FXML private TableColumn<Warehouse, Integer> capacityColumn;
+    @FXML private TableColumn<Warehouse, Integer> totalProductsColumn;
+    @FXML private StackPane stackPane;
+
     private ModalPane modalPane;
-    private final WarehouseDAO warehouseDAO = new WarehouseDAO();
+    private final WarehouseService warehouseService = new WarehouseService();
     private final ObservableList<Warehouse> warehouseObservableList = FXCollections.observableArrayList();
-    
-    /**
-     * Initializes the controller and sets up the warehouse table view and modal pane.
-     * 
-     * This method configures the table columns, sets the warehouse data into the table,
-     * and defines the row click behavior to open warehouse product details in a modal.
-     */
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Configure table columns for displaying warehouse data
         configureTableColumns();
-        // Bind the observable list to the table view
+        setupProductTableContextMenu();
+        refreshTable();
+        modalPane = ViewUtil.initializeModalPane(stackPane);
+        warehouseTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        warehouseTableView.getStyleClass().add(Tweaks.EDGE_TO_EDGE);
+    }
+
+    private void refreshTable(){
+        List<Warehouse> warehouses = warehouseService.getAllWarehouses();
+        warehouseObservableList.setAll(warehouses);
+    }
+
+    private void configureTableColumns(){
         warehouseTableView.setItems(warehouseObservableList);
-        
-        // Define behavior for double-clicking a row
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        capacityColumn.setCellValueFactory(new PropertyValueFactory<>("capacity"));
+        totalProductsColumn.setCellValueFactory(data -> {
+            Warehouse warehouse = data.getValue();
+            int total = warehouseService.calculateTotalProducts(warehouse);
+            return new ReadOnlyObjectWrapper<>(total);
+        });
+    }
+
+    private void setupProductTableContextMenu() {
         warehouseTableView.setRowFactory(tv -> {
             TableRow<Warehouse> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
-                if(event.getClickCount() == 2 && (!row.isEmpty())){
-                    Warehouse selectedWarehouse = row.getItem();
-                    ViewUtil.displayView("/view/warehouse/WarehouseProducts.fxml",
-                            (WarehouseProductsController controller) -> {
-                                controller.setWarehouse(selectedWarehouse);
-                            }, modalPane);
+            row.itemProperty().addListener((obs, oldVal, currentWarehouse) -> {
+                if(currentWarehouse != null){
+                    List<ContextMenuUtil.MenuItemConfig<Warehouse>> menuItems = new ArrayList<>();
+
+                    menuItems.add(new ContextMenuUtil.MenuItemConfig<>(
+                            "View Products",
+                            (warehouse, r) ->
+                                    ViewUtil.displayView("/view/warehouse/WarehouseProducts.fxml",
+                                            (WarehouseProductsController controller) ->
+                                                    controller.setWarehouse(warehouse),
+                                            modalPane)
+                    ));
+
+                    menuItems.add(new ContextMenuUtil.MenuItemConfig<>(
+                            "Edit Warehouse",
+                            (warehouse, r) ->
+                                    ViewUtil.displayView("/view/warehouse/EditWarehouse.fxml",
+                                    (EditWarehouseController controller) -> {
+                                        controller.setModalPane(modalPane);
+                                        controller.setWarehouse(warehouse);
+                                        controller.setOnCloseAction(this::refreshTable);
+                                    }, modalPane)
+                    ));
+
+                    menuItems.add(new ContextMenuUtil.MenuItemConfig<>(
+                            "Delete Warehouse",
+                            (warehouse, r) -> {
+                                AlertUtil.showDeleteConfirmation(warehouse,
+                                        "Delete Warehouse",
+                                        "Are you sure you want to delete this warehouse?",
+                                        "This action cannot be undone",
+                                        (w) -> {
+                                            warehouseService.deleteWarehouse(w.getId());
+                                            refreshTable();
+                                        }
+                                );
+                            }
+                    ));
+
+                    ContextMenu contextMenu = ContextMenuUtil.createContextMenu(row, currentWarehouse, menuItems);
+                    row.setContextMenu(contextMenu);
+                } else {
+                    row.setContextMenu(null);
                 }
             });
             return row;
         });
-        // Configure table view style and resizing policy
-        warehouseTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        warehouseTableView.getStyleClass().add(Tweaks.EDGE_TO_EDGE);
-        loadData();
-        initializeModalPane();
-    }   
-    
-    /**
-     * Initializes and configures the modal pane for the stack pane.
-     */
-    private void initializeModalPane() {
-        StackPane root = stackPane;
-        modalPane = new ModalPane();
-        modalPane.setId("modalPane");
-        root.getChildren().add(modalPane);
     }
-    
-    /**
-     * Configures the columns of the warehouse table.
-     * 
-     * This method binds the table columns to the appropriate properties of the Warehouse model.
-     * The totalProductsColumn computes the total products in a warehouse dynamically.
-     */
-    private void configureTableColumns(){
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        capacityColumn.setCellValueFactory(new PropertyValueFactory<>("capacity"));
-        
-        // Compute total products in each warehouse
-        totalProductsColumn.setCellValueFactory(data -> {
-            Warehouse warehouse = data.getValue();
-            Set<ProductWarehouse> productWarehouses = warehouse.getProductWarehouses();
-            if(productWarehouses  != null){
-                int totalProducts = productWarehouses.stream()
-                                                 .mapToInt(ProductWarehouse::getAmount)
-                                                 .sum();
-                return new ReadOnlyObjectWrapper<>(totalProducts);
-            }    
-            else
-                return new ReadOnlyObjectWrapper<>(0);
-        });
-    }
-    
-    /**
-     * Loads the list of warehouses from the database and updates the table view.
-     */
-    private void loadData(){
-        List<Warehouse> warehouses = warehouseDAO.getWarehouses();
-        warehouseObservableList.clear();
-        if(warehouses != null) warehouseObservableList.addAll(warehouses);
-    }
-    
-    /**
-     * Opens the form to add a new warehouse.
-     */
+
     @FXML
     private void addWarehouse(){
         ViewUtil.displayView("/view/warehouse/AddWarehouse.fxml", 
             (AddWarehouseController controller) -> {
                 controller.setModalPane(modalPane);
-                controller.setOnCloseAction(() -> loadData());
-            }, modalPane);
-    }
-    
-    /**
-     * Opens the form to edit an existing warehouse.
-     */
-    @FXML
-    private void editWarehouse(){
-        ViewUtil.displayView("/view/warehouse/EditWarehouse.fxml", 
-            (EditWarehouseController controller) -> {
-                controller.setModalPane(modalPane);
-                controller.setOnCloseAction(() -> loadData());
+                controller.setOnCloseAction(this::refreshTable);
             }, modalPane);
     }
 }

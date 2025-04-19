@@ -3,6 +3,8 @@ package com.maya_yagan.sms.util;
 import com.maya_yagan.sms.product.model.Category;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.user.model.User;
+import com.maya_yagan.sms.warehouse.model.Warehouse;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -62,12 +64,36 @@ public class ValidationService {
         if(!isValidDate(product.getExpirationDate().format(DATE_FORMATTER)) || !isValidDate(product.getProductionDate().format(DATE_FORMATTER)))
             throw new CustomException("Invalid date format.\nPlease follow this format: DD.MM.YYYY", "INVALID_DATE");
     }
+
+    public void validateWarehouse(String name, int newCapacity, int totalProducts){
+        if(newCapacity <= 0)
+            throw new CustomException("Please enter a valid number.", "INVALID_NUMBER");
+        if(totalProducts > newCapacity)
+            throw new CustomException("The new capacity cannot be less than the current stock.", "INVALID_CAPACITY");
+        if(name.isEmpty())
+            throw new CustomException("PLease fill all fields", "EMPTY_FIELDS");
+    }
+
+    public void validateWarehouse(String name, int capacity){
+        if(name.isEmpty())
+            throw new CustomException("PLease fill all fields", "EMPTY_FIELDS");
+        if(capacity <= 0)
+            throw new CustomException("Please enter a valid number.", "INVALID_NUMBER");
+    }
     
     public float parseAndValidateFloat(String input, String fieldName){
         try{
             return Float.parseFloat(input);
         } catch(NumberFormatException e){
-            throw new CustomException("Invalid " + fieldName + " format.\nPlease Enter a valid " + fieldName, "INVALID_FLOAT");
+            throw new CustomException("Invalid " + fieldName + " format.\nPlease Enter a valid " + fieldName, "INVALID_NUMBER");
+        }
+    }
+
+    public int parseAndValidateInt(String input, String fieldName){
+        try{
+            return Integer.parseInt(input);
+        } catch(NumberFormatException e){
+            throw new CustomException("Invalid " + fieldName + " format.\nPlease Enter a valid " + fieldName, "INVALID_NUMBER");
         }
     }
     

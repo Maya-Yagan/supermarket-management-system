@@ -66,7 +66,7 @@ public class ProductService {
     
     public String formatExpirationDate(Product product){
             return (product.getExpirationDate() == null) ?
-                    "No Expiray Date" : 
+                    "No Expiry Date" :
                     product.getExpirationDate().toString();
     }
     
