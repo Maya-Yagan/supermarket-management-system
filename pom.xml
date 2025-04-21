@@ -18,8 +18,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
+                    <source>17</source>
+                    <target>17</target>
                 </configuration>
             </plugin>
             
@@ -42,29 +42,14 @@
                 </executions>
             </plugin>
 
-            <!-- JavaFX plugin to properly launch the JavaFX application -->
+            <!-- exec-maven-plugin to run the application -->
             <plugin>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.8</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
                 <configuration>
-                    <mainClass>${exec.mainClass}</mainClass>
-                    <modulePaths>
-                    <path>C:/javafx-sdk-17/lib</path> <!-- Use the actual path to your JavaFX SDK lib folder -->
-                </modulePaths>
-                    <options>
-                        <option>--module-path</option>
-                        <option>C:/javafx-sdk-17/lib</option>
-                        <option>--add-modules</option>
-                        <option>javafx.controls,javafx.fxml,javafx.graphics</option>
-                    </options>
+                    <!-- Main class for the application -->
+                    <mainClass>com.maya_yagan.sms.Main</mainClass>
                 </configuration>
             </plugin>
         </plugins>
@@ -74,8 +59,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <javafx.version>17</javafx.version>
-        <exec.mainClass>com.maya_yagan.sms.Main</exec.mainClass>
     </properties>
 
     <repositories>
@@ -93,17 +76,17 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>${javafx.version}</version>
+            <version>17</version>
         </dependency>
         
-        <!--jBCrypt library-->
+        <!-- jBCrypt library-->
         <dependency>
             <groupId>org.mindrot</groupId>
             <artifactId>jbcrypt</artifactId>
             <version>0.4</version>
         </dependency>
 
-        <!--AtlantaFX-->
+        <!-- AtlantaFX-->
         <dependency>
             <groupId>io.github.mkpaz</groupId>
             <artifactId>atlantafx-base</artifactId>
@@ -114,14 +97,14 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-base</artifactId>
-            <version>${javafx.version}</version>
+            <version>17</version>
         </dependency>
 
         <!-- JavaFX graphics module (needed for GUI apps) -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-graphics</artifactId>
-            <version>${javafx.version}</version>
+            <version>17</version>
         </dependency>
          
         <!-- Hibernate Core -->
@@ -160,7 +143,6 @@
             <scope>runtime</scope>
         </dependency>
 
-        
         <dependency>
             <groupId>com.mchange</groupId>
             <artifactId>c3p0</artifactId>
@@ -170,8 +152,9 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>${javafx.version}</version>
+            <version>17</version>
         </dependency>
+
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
             <artifactId>ikonli-javafx</artifactId>

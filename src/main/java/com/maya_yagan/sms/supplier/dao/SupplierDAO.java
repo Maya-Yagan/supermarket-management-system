@@ -17,17 +17,12 @@ import org.hibernate.query.Query;
 
 /**
  * Data Access Object (DAO) for the Supplier entity.
- * This class provides methods for preforming CRUD operations on Supplier data
- * in the database, including inserting, retrieving, updating and deleting suppliers.
  * 
  * @author Maya Yagan
  */
+
 public class SupplierDAO {
-    /**
-     * Inserts a new supplier into the database
-     * 
-     * @param supplier The supplier to be inserted
-     */
+   
     public void insertSupplier(Supplier supplier){
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()){
@@ -40,12 +35,6 @@ public class SupplierDAO {
         }
     }
     
-    /**
-     * Retrieves a supplier by its unique identifier
-     * 
-     * @param id The unique identifier of the supplier
-     * @return The supplier with the specified id, or null if not found
-     */
     public Supplier getSupplierById(int id){
         try (Session session = HibernateUtil.getSessionFactory().openSession()){
             Query<Supplier> query = session.createQuery("FROM Supplier s LEFT JOIN FETCH s.supplierProducts WHERE s.id = :id", Supplier.class);
@@ -57,12 +46,6 @@ public class SupplierDAO {
         }
     }
     
-    /**
-     * Retrieves a list of products provided by a specific supplier.
-     * 
-     * @param supplier The supplier that offers the products
-     * @return List of products provided by a supplier
-     */
     public List<Product> getSupplierProducts(Supplier supplier){
         try(Session session = HibernateUtil.getSessionFactory().openSession()){
             Query<Product> query = session.createQuery("SELECT p FROM Product p JOIN FETCH p.supplierProducts sp WHERE sp.supplier = :supplier", Product.class);
@@ -74,12 +57,6 @@ public class SupplierDAO {
         }
     } 
     
-    /**
-     * Retrieves a list of supplier-product association for a specific supplier.
-     * 
-     * @param supplier The supplier for which to retrieve product associations
-     * @return List of SupplierProduct entries associated with the specified supplier
-     */
     public List<SupplierProduct> getSupplierProductPairs(Supplier supplier){
         try(Session session = HibernateUtil.getSessionFactory().openSession()){
             Query<SupplierProduct> query = session.createQuery(
@@ -94,11 +71,6 @@ public class SupplierDAO {
         }
     }
     
-    /**
-     * Retrieves all distinct suppliers from the database
-     * 
-     * @return A set of all suppliers
-     */
     public Set<Supplier> getSuppliers(){
         try(Session session = HibernateUtil.getSessionFactory().openSession()){
             Query<Supplier> query = session.createQuery("SELECT DISTINCT s FROM Supplier s LEFT JOIN FETCH s.supplierProducts", Supplier.class);
@@ -109,11 +81,6 @@ public class SupplierDAO {
         }
     }
     
-    /**
-     * Updates an existing supplier in the database
-     * 
-     * @param supplier The supplier with updated data 
-     */
     public void updateSupplier(Supplier supplier){
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()){
@@ -145,12 +112,6 @@ public class SupplierDAO {
         }
     }
     
-    /**
-     * Deletes a single product from a specific supplier
-     * 
-     * @param supplier The supplier from which the product will be deleted
-     * @param product The product to be deleted from the supplier
-     */
     public void deleteProductFromSupplier(Supplier supplier, Product product){
         Transaction transaction = null;
         try(Session session = HibernateUtil.getSessionFactory().openSession()){
@@ -169,12 +130,7 @@ public class SupplierDAO {
             e.printStackTrace();
         }
     }
-    
-    /**
-     * Deletes a supplier from the database using the unique identifier.
-     * 
-     * @param id The unique identifier of the supplier to be deleted
-     */
+  
     public void deleteSupplier(int id){
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()){

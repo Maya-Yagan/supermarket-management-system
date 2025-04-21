@@ -4,6 +4,7 @@ import atlantafx.base.controls.ModalPane;
 import atlantafx.base.theme.Tweaks;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.product.model.Category;
+import com.maya_yagan.sms.product.model.ProductUnit;
 import com.maya_yagan.sms.product.service.ProductService;
 import com.maya_yagan.sms.util.AlertUtil;
 import com.maya_yagan.sms.util.ContextMenuUtil;
@@ -78,9 +79,11 @@ public class ProductManagementController implements Initializable {
         expirationDateColumn.setCellValueFactory(cellData ->
                 new SimpleStringProperty(productService.formatExpirationDate(cellData.getValue()))
         );
-        unitColumn.setCellValueFactory(cellData ->
-                new SimpleStringProperty(cellData.getValue().getUnit().getFullName())
-        );
+        unitColumn.setCellValueFactory(cellData ->{
+            ProductUnit unit = cellData.getValue().getUnit();
+            String text = (unit != null) ? unit.getFullName() : "";
+            return new SimpleStringProperty(text);
+        });
     }
 
     private void setupEventHandlers() {

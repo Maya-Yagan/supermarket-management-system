@@ -21,7 +21,6 @@
                   <TableColumn fx:id="categoryColumn" prefWidth="113.33332824707031" text="Category" />
                   <TableColumn fx:id="phoneNumberColumn" prefWidth="122.66670227050781" text="Phone Number" />
                   <TableColumn fx:id="emailColumn" prefWidth="133.33334350585938" text="Email" />
-                  <TableColumn fx:id="deleteColumn" prefWidth="172.66668701171875" text="Delete" />
                </columns>
                <styleClass>
                   <String fx:value="bordered" />

@@ -71,7 +71,7 @@ public class SupplierProductsController implements Initializable {
     private Label label1, label2;
     @FXML
     private StackPane stackPane;
-    
+    private Runnable onCloseAction;
     private ModalPane modalPane;
     private Supplier supplier;
     private Category selectedCategory;
@@ -311,4 +311,10 @@ public class SupplierProductsController implements Initializable {
             label2.setLayoutX(categoryMenuButton.getLayoutX() + newValue.doubleValue() + 150);
         });
     }
+
+    public void setOnCloseAction(Runnable onCloseAction) {
+        this.onCloseAction = onCloseAction;
+    }
+    
+    
 }

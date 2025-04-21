@@ -2,6 +2,7 @@ package com.maya_yagan.sms.util;
 
 import com.maya_yagan.sms.product.model.Category;
 import com.maya_yagan.sms.product.model.Product;
+import com.maya_yagan.sms.supplier.model.Supplier;
 import com.maya_yagan.sms.user.model.User;
 import com.maya_yagan.sms.warehouse.model.Warehouse;
 
@@ -53,6 +54,23 @@ public class ValidationService {
             throw new CustomException("Invalid date format.\nPlease follow this format: DD.MM.YYYY", "INVALID_DATE");
         }
     }
+    
+    public void validateSupplier(Supplier supplier) {
+        if (supplier.getName() == null || supplier.getName().trim().isEmpty() ||
+            supplier.getEmail() == null || supplier.getEmail().trim().isEmpty() ||
+            supplier.getPhoneNumber() == null || supplier.getPhoneNumber().trim().isEmpty()) {
+            throw new CustomException("Please fill all fields", "EMPTY_FIELDS");
+        }
+        
+        if (!isValidEmail(supplier.getEmail())) {
+            throw new CustomException("Please enter a valid email", "INVALID_EMAIL");
+        }
+
+        if (!supplier.getPhoneNumber().matches("\\d{10,15}")) {
+            throw new CustomException("Invalid phone number", "INVALID_PHONE");
+        }
+    }
+
     
     public void validateProduct(Product product){
         if(product.getName().isEmpty() || product.getPrice() == 0 || 
