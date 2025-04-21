@@ -1,6 +1,5 @@
 package com.maya_yagan.sms.supplier.controller;
 
-import com.maya_yagan.sms.supplier.controller.AddProductToSupplierController;
 import atlantafx.base.controls.ModalPane;
 import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Tweaks;
@@ -110,7 +109,7 @@ public class SupplierProductsController implements Initializable {
      * Sets up handlers for clicking buttons
      */
     private void setupEventHandlers(){
-        addProductButton.setOnAction(event -> ViewUtil.displayView("/view/supplier/AddProductToSupplier.fxml",
+        addProductButton.setOnAction(event -> ViewUtil.displayModalPaneView("/view/supplier/AddProductToSupplier.fxml",
                 (AddProductToSupplierController controller) -> {
                     controller.setModalPane(modalPane);
                     controller.setSupplier(supplier);

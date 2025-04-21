@@ -3,8 +3,6 @@ package com.maya_yagan.sms.warehouse.controller;
 import atlantafx.base.controls.ModalPane;
 import com.maya_yagan.sms.util.CustomException;
 import com.maya_yagan.sms.util.ExceptionHandler;
-import com.maya_yagan.sms.warehouse.dao.WarehouseDAO;
-import com.maya_yagan.sms.warehouse.model.Warehouse;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -41,7 +39,6 @@ public class AddWarehouseController implements Initializable {
         } catch(CustomException e){
             ExceptionHandler.handleException(e);
         }
-
     }
 
     @FXML

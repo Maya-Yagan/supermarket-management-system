@@ -5,20 +5,25 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.IntPredicate;
+
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.MenuButton;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 
 /**
  *
  * @author Maya Yagan
  */
 public class ViewUtil {
-    public static <T> void displayView(String path, Consumer<T> controllerConsumer, ModalPane modalPane) {
+    private static final ValidationService validationService = new ValidationService();
+    public static <T> void displayModalPaneView(String path, Consumer<T> controllerConsumer, ModalPane modalPane) {
         try {
             FXMLLoader loader = new FXMLLoader(ViewUtil.class.getResource(path));
             Parent root = loader.load();
@@ -30,7 +35,27 @@ public class ViewUtil {
             e.printStackTrace();
         }
     }
-    
+
+    public static <T> void switchView(String path, Consumer<T> controllerConsumer, StackPane targetPane, String title) {
+        try {
+            FXMLLoader loader = new FXMLLoader(ViewUtil.class.getResource(path));
+            Parent root = loader.load();
+            T controller = loader.getController();
+            controllerConsumer.accept(controller);
+
+            Stage stage = (Stage) targetPane.getScene().getWindow();
+            if (title != null) {
+                stage.setTitle(title);
+            }
+
+            targetPane.getChildren().clear();
+            targetPane.getChildren().add(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     /**
      * Displays a custom dialog with a given title, header message, and custom content.
      * The dialog will include OK and Cancel buttons.
@@ -48,7 +73,51 @@ public class ViewUtil {
         dialog.getDialogPane().setContent(content);
         return dialog.showAndWait();
     }
-    
+
+    public static void showIntegerInputDialog(
+            String title,
+            String header,
+            String content,
+            int defaultValue,
+            String fieldName,
+            IntPredicate validator,
+            Consumer<Integer> onSuccess) {
+        TextInputDialog dialog = new TextInputDialog(String.valueOf(defaultValue));
+        dialog.setTitle(title);
+        dialog.setHeaderText(header);
+        dialog.setContentText(content);
+
+        Optional<String> result = dialog.showAndWait();
+        if (!result.isPresent()) {
+            return;
+        }
+
+        try {
+            int value = validationService.parseAndValidateInt(result.get(), fieldName);
+            if (!validator.test(value)) {
+                throw new CustomException(
+                        String.format("%s must satisfy business rules", fieldName),
+                        "INVALID_NUMBER"
+                );
+            }
+            onSuccess.accept(value);
+        } catch (CustomException ex) {
+            ExceptionHandler.handleException(ex);
+        }
+    }
+
+    public static void showIntegerInputDialog(
+            String title,
+            String header,
+            String content,
+            int defaultValue,
+            String fieldName,
+            Consumer<Integer> onSuccess) {
+        showIntegerInputDialog(
+                title, header, content, defaultValue, fieldName,
+                val -> true, onSuccess);
+    }
+
     public static ModalPane initializeModalPane(StackPane stackPane) {
         ModalPane modalPane = new ModalPane();
         modalPane.setId("modalPane");

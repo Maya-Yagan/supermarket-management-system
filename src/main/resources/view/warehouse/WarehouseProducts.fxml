@@ -15,7 +15,7 @@
     <children>
     <AnchorPane fx:id="AnchorPane">
         <children>
-          <TableView fx:id="productTableView" layoutX="32.0" layoutY="127.33333333333333" prefHeight="427.0" prefWidth="603.0" AnchorPane.bottomAnchor="22.0" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="127.0">
+          <TableView fx:id="tableView" layoutX="32.0" layoutY="127.33333333333333" prefHeight="427.0" prefWidth="603.0" AnchorPane.bottomAnchor="22.0" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="127.0">
              <columns>
                 <TableColumn fx:id="idColumn" text="ID" />
                 <TableColumn fx:id="nameColumn" text="Name" />
@@ -24,14 +24,12 @@
                 <TableColumn fx:id="unitColumn" text="Unit" />
                 <TableColumn fx:id="productionDate" text="Production Date" />
                 <TableColumn fx:id="expirationDateColumn" text="Expiration Date" />
-                  <TableColumn fx:id="deleteColumn" text="Delete" />
              </columns>
              <styleClass>
                 <String fx:value="bordered" />
                 <String fx:value="striped" />
              </styleClass>
           </TableView>
-          <Button fx:id="addProductButton" layoutX="143.0" layoutY="80.0" mnemonicParsing="false" styleClass="accent" text="Add Product" AnchorPane.topAnchor="80.0" />
           <Text fx:id="warehouseName" fill="#455079" layoutX="32.0" layoutY="57.0" text="" textAlignment="CENTER" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="429.4072265625" AnchorPane.topAnchor="28.943359375">
              <font>
                 <Font size="26.0" />

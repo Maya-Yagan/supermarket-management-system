@@ -1,7 +1,7 @@
 package com.maya_yagan.sms.user.controller;
 
 import atlantafx.base.controls.ModalPane;
-import atlantafx.base.theme.Tweaks;
+import com.maya_yagan.sms.common.AbstractTableController;
 import com.maya_yagan.sms.user.model.Role;
 import com.maya_yagan.sms.user.model.User;
 import com.maya_yagan.sms.user.service.UserService;
@@ -10,18 +10,11 @@ import com.maya_yagan.sms.util.ContextMenuUtil;
 import com.maya_yagan.sms.util.ViewUtil;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import java.net.URL;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import java.util.*;
 import javafx.scene.layout.StackPane;
 
 /**
@@ -29,9 +22,8 @@ import javafx.scene.layout.StackPane;
  * 
  * @author  Maya Yagan
  */
-public class UserManagementController implements Initializable {
+public class UserManagementController extends AbstractTableController<User> {
 
-    @FXML private TableView<User> userTableView;
     @FXML private TableColumn<User, String> firstNameColumn, lastNameColumn, genderColumn, positionColumn, partFullTimeColumn, emailColumn, phoneColumn, tcNumberColumn;
     @FXML private TableColumn<User, Float> salaryColumn;
     @FXML private TableColumn<User, LocalDate> startDateColumn;
@@ -41,26 +33,9 @@ public class UserManagementController implements Initializable {
     
     private ModalPane modalPane;
     private final UserService userService = new UserService();
-    private final ObservableList<User> userObservableList = FXCollections.observableArrayList();
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        userService.initializeRole();
-        modalPane = ViewUtil.initializeModalPane(stackPane);
-        configureTableColumns();
-        setupEventHandlers();
-        refreshTable();
-        userTableView.setItems(userObservableList);
-        userTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        userTableView.getStyleClass().add(Tweaks.EDGE_TO_EDGE);
-    }
-
-    private void refreshTable() {
-        List<User> users = userService.getAllUsers();
-        userObservableList.setAll(users);
-    }
-
-    private void configureTableColumns() {
+    protected void configureColumns() {
         firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
         lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
         genderColumn.setCellValueFactory(new PropertyValueFactory<>("gender"));
@@ -93,56 +68,52 @@ public class UserManagementController implements Initializable {
         });
     }
 
-    private void setupEventHandlers(){
-        addUserButton.setOnAction(event -> ViewUtil.displayView("/view/user/AddUser.fxml", 
-                (AddUserController controller) -> {
-                    controller.setModalPane(modalPane);
-                    controller.setOnCloseAction(this::refreshTable);
-                }, modalPane));
-
-        setupUserTableContextMenu();
+    @Override
+    protected Collection<User> fetchData(){
+        return userService.getAllUsers();
     }
 
-    private  void setupUserTableContextMenu(){
-        userTableView.setRowFactory(tv -> {
-            TableRow<User> row = new TableRow<>();
-            row.itemProperty().addListener((obs, oldUser, currentUser) -> {
-                if(currentUser != null) {
-                    List<ContextMenuUtil.MenuItemConfig<User>> menuItems = new ArrayList<>();
+    @Override
+    protected List<ContextMenuUtil.MenuItemConfig<User>> menuItemsFor(User user) {
+        return List.of(
+                new ContextMenuUtil.MenuItemConfig<>("Edit User", (item, row) -> handleEditAction(item)),
+                new ContextMenuUtil.MenuItemConfig<>("Delete User", (item, row) -> handleDeleteAction(item))
+        );
+    }
 
-                    menuItems.add(new ContextMenuUtil.MenuItemConfig<>(
-                            "Edit User",
-                            (user, r) ->
-                                    ViewUtil.displayView("/view/user/EditUser.fxml",
-                                    (EditUserController controller) -> {
-                                        controller.setUser(row.getItem());
-                                        controller.setModalPane(modalPane);
-                                        controller.setOnCloseAction(this::refreshTable);
-                                    }, modalPane)
-                    ));
+    @Override
+    protected void postInit(){
+        userService.initializeRole();
+        modalPane = ViewUtil.initializeModalPane(stackPane);
+        setupEventHandlers();
+    }
 
-                    menuItems.add(new ContextMenuUtil.MenuItemConfig<>(
-                            "Delete User",
-                            (user, r) -> {
-                                AlertUtil.showDeleteConfirmation(user,
-                                        "Delete User",
-                                        "Are you sure you want to delete this user?",
-                                        "This action cannot be undone.",
-                                        (u) -> {
-                                            userService.deleteUser(u.getId());
-                                            refreshTable();
-                                        }
-                                );
-                            }
-                    ));
+    private void setupEventHandlers(){
+        addUserButton.setOnAction(event -> ViewUtil.displayModalPaneView("/view/user/AddUser.fxml",
+                (AddUserController controller) -> {
+                    controller.setModalPane(modalPane);
+                    controller.setOnCloseAction(this::refresh);
+                }, modalPane));
+    }
 
-                    ContextMenu contextMenu = ContextMenuUtil.createContextMenu(row, currentUser, menuItems);
-                    row.setContextMenu(contextMenu);
-                } else {
-                    row.setContextMenu(null);
+    private void handleDeleteAction(User user) {
+        AlertUtil.showDeleteConfirmation(user,
+                "Delete User",
+                "Are you sure you want to delete this user?",
+                "This action cannot be undone.",
+                (u) -> {
+                    userService.deleteUser(u.getId());
+                    refresh();
                 }
-            });
-            return row;
-        });
+        );
+    }
+
+    private void handleEditAction(User user) {
+        ViewUtil.displayModalPaneView("/view/user/EditUser.fxml",
+        (EditUserController controller) -> {
+            controller.setUser(user);
+            controller.setModalPane(modalPane);
+            controller.setOnCloseAction(this::refresh);
+        }, modalPane);
     }
 }

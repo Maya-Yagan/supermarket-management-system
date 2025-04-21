@@ -14,7 +14,7 @@
     <children>
     <AnchorPane fx:id="AnchorPane">
         <children>
-          <TableView fx:id="warehouseTableView" layoutX="32.0" layoutY="121.0" AnchorPane.bottomAnchor="54.33333333333337" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="124.0">
+          <TableView fx:id="tableView" layoutX="32.0" layoutY="121.0" AnchorPane.bottomAnchor="54.33333333333337" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="124.0">
              <columns>
                 <TableColumn fx:id="nameColumn" text="Name" />
                 <TableColumn fx:id="capacityColumn" text="Capacity" />

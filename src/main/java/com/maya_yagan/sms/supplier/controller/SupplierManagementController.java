@@ -1,7 +1,5 @@
 package com.maya_yagan.sms.supplier.controller;
 
-import com.maya_yagan.sms.supplier.controller.EditSupplierController;
-import com.maya_yagan.sms.supplier.controller.AddSupplierController;
 import atlantafx.base.controls.ModalPane;
 import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Tweaks;
@@ -115,12 +113,12 @@ public class SupplierManagementController implements Initializable {
     }
     
     private void setupEventHandlers(){
-        addSupplierButton.setOnAction(event -> ViewUtil.displayView("/view/supplier/AddSupplier.fxml",
+        addSupplierButton.setOnAction(event -> ViewUtil.displayModalPaneView("/view/supplier/AddSupplier.fxml",
                 (AddSupplierController controller) -> {
                     controller.setModalPane(modalPane);
                     controller.setOnCloseAction(() -> loadSuppliers());
                 }, modalPane));
-        makeOrderButton.setOnAction(event -> ViewUtil.displayView("/view/order/AddOrder.fxml",
+        makeOrderButton.setOnAction(event -> ViewUtil.displayModalPaneView("/view/order/OrderManagement.fxml",
                 (AddOrderController controller) -> {}, modalPane));
         setupTableContextMenu();
         
@@ -151,7 +149,7 @@ public class SupplierManagementController implements Initializable {
                     menuItems.add(new ContextMenuUtil.MenuItemConfig<>(
                             "Edit supplier",
                             (supplier, r) -> {
-                                ViewUtil.displayView("/view/supplier/EditSupplier.fxml",
+                                ViewUtil.displayModalPaneView("/view/supplier/EditSupplier.fxml",
                                     (EditSupplierController controller) -> {
                                     controller.setSupplier(supplier);
                                     controller.setModalPane(modalPane);
@@ -163,7 +161,7 @@ public class SupplierManagementController implements Initializable {
                     menuItems.add(new ContextMenuUtil.MenuItemConfig<>(
                             "View Details",
                             (supplier, r) -> {
-                                ViewUtil.displayView("/view/supplier/SupplierProducts.fxml",
+                                ViewUtil.displayModalPaneView("/view/supplier/SupplierProducts.fxml",
                                     (SupplierProductsController controller) -> {
                                     controller.setSupplier(supplier);
                                     controller.setOnCloseAction(() -> loadSuppliers());
@@ -180,7 +178,29 @@ public class SupplierManagementController implements Initializable {
             return row;
         });
     }
-    
+
+    /**
+     * Creates a context menu for a table row
+     * 
+     * @param row The table row to attach the context menu to
+     * @return The configured context menu
+     */
+    private ContextMenu createContextMenu(TableRow<Supplier> row){
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem editSupplier = new MenuItem("Edit this supplier");
+        editSupplier.setOnAction(event -> {
+            Supplier selectedSupplier = row.getItem();
+            if(selectedSupplier != null)
+                ViewUtil.displayModalPaneView("/view/supplier/EditSupplier.fxml",
+                        (EditSupplierController controller) -> {
+                            controller.setSupplier(selectedSupplier);
+                            controller.setModalPane(modalPane);
+                            controller.setOnCloseAction(() -> loadSuppliers());
+                        }, modalPane);
+        });
+        contextMenu.getItems().add(editSupplier);
+        return contextMenu;
+    }
     
     private void handleRowClick(MouseEvent event, TableRow<Supplier> row){
         if(row.isEmpty()) return;
@@ -192,7 +212,7 @@ public class SupplierManagementController implements Initializable {
         
         if(event.getClickCount() == 2 && event.getButton() == MouseButton.PRIMARY){
             Supplier selectedSupplier = row.getItem();
-            ViewUtil.displayView("/view/supplier/SupplierProducts.fxml",
+            ViewUtil.displayModalPaneView("/view/supplier/SupplierProducts.fxml",
                     (SupplierProductsController controller) -> {
                         controller.setSupplier(selectedSupplier);
                     }, modalPane);
