@@ -3,7 +3,6 @@ package com.maya_yagan.sms.util;
 import com.maya_yagan.sms.product.model.Category;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.user.model.User;
-import com.maya_yagan.sms.warehouse.model.Warehouse;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -100,5 +99,23 @@ public class ValidationService {
     public void validateCategory(Category category){
         if(category.getName() == null || category.getName().trim().isEmpty())
             throw new CustomException("Please fill the name", "EMPTY_FIELDS");
+    }
+
+    public void validateStockAmount(int newAmount, int remainingCapacity){
+        if (newAmount < 0)
+            throw new CustomException(
+                    "The amount cannot be negative.",
+                    "INVALID_NUMBER");
+
+        if (remainingCapacity == 0)
+            throw new CustomException(
+                    "The warehouse is already full. No more products can be added.",
+                    "INVALID_CAPACITY");
+
+        if (newAmount > remainingCapacity)
+            throw new CustomException(
+                    "The entered amount exceeds the remaining warehouse capacity. "
+                            + "Remaining capacity: " + remainingCapacity,
+                    "INVALID_CAPACITY");
     }
 }

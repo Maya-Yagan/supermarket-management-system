@@ -1,7 +1,5 @@
 package com.maya_yagan.sms.supplier.controller;
 
-import com.maya_yagan.sms.supplier.controller.EditSupplierController;
-import com.maya_yagan.sms.supplier.controller.AddSupplierController;
 import atlantafx.base.controls.ModalPane;
 import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Tweaks;
@@ -130,12 +128,12 @@ public class SupplierManagementController implements Initializable {
      * Sets up event handlers for buttons
      */
     private void setupEventHandlers(){
-        addSupplierButton.setOnAction(event -> ViewUtil.displayView("/view/supplier/AddSupplier.fxml",
+        addSupplierButton.setOnAction(event -> ViewUtil.displayModalPaneView("/view/supplier/AddSupplier.fxml",
                 (AddSupplierController controller) -> {
                     controller.setModalPane(modalPane);
                     controller.setOnCloseAction(() -> loadSuppliers());
                 }, modalPane));
-        makeOrderButton.setOnAction(event -> ViewUtil.displayView("/view/order/OrderManagement.fxml",
+        makeOrderButton.setOnAction(event -> ViewUtil.displayModalPaneView("/view/order/OrderManagement.fxml",
                 (AddOrderController controller) -> {}, modalPane));
     }
     
@@ -164,7 +162,7 @@ public class SupplierManagementController implements Initializable {
         editSupplier.setOnAction(event -> {
             Supplier selectedSupplier = row.getItem();
             if(selectedSupplier != null)
-                ViewUtil.displayView("/view/supplier/EditSupplier.fxml",
+                ViewUtil.displayModalPaneView("/view/supplier/EditSupplier.fxml",
                         (EditSupplierController controller) -> {
                             controller.setSupplier(selectedSupplier);
                             controller.setModalPane(modalPane);
@@ -192,7 +190,7 @@ public class SupplierManagementController implements Initializable {
         
         if(event.getClickCount() == 2 && event.getButton() == MouseButton.PRIMARY){
             Supplier selectedSupplier = row.getItem();
-            ViewUtil.displayView("/view/supplier/SupplierProducts.fxml",
+            ViewUtil.displayModalPaneView("/view/supplier/SupplierProducts.fxml",
                     (SupplierProductsController controller) -> {
                         controller.setSupplier(selectedSupplier);
                     }, modalPane);

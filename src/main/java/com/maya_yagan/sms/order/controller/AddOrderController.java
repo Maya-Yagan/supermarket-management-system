@@ -189,7 +189,7 @@ public class AddOrderController implements Initializable {
     }
     
     private void setupEventHandlers(){
-        ordersButton.setOnAction(event -> ViewUtil.displayView(
+        ordersButton.setOnAction(event -> ViewUtil.displayModalPaneView(
                 "/view/order/OrderManagement.fxml",
                 (OrderManagementController controller) -> {
                     

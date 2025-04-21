@@ -71,7 +71,7 @@ public class OrderManagementController implements Initializable {
         configureTableColumns();
         populateTable();
         setupRowInteractions();
-        addOrderButton.setOnAction(event -> ViewUtil.displayView(
+        addOrderButton.setOnAction(event -> ViewUtil.displayModalPaneView(
                 "/view/order/AddOrder.fxml",
                 (AddOrderController controller) -> {
                 }, modalPane));
@@ -161,7 +161,7 @@ public class OrderManagementController implements Initializable {
         orderDetails.setOnAction(event -> {
             selectedOrder = row.getItem();
             if(selectedOrder != null)
-                ViewUtil.displayView("/view/order/OrderProducts.fxml",
+                ViewUtil.displayModalPaneView("/view/order/OrderProducts.fxml",
                         (OrderProductsController controller) -> {
                             controller.setModalPane(modalPane);
                             controller.setOrder(selectedOrder);
@@ -193,7 +193,7 @@ public class OrderManagementController implements Initializable {
             editOrder.setOnAction(event -> {
                 selectedOrder = row.getItem();
                 if(selectedOrder != null)
-                    ViewUtil.displayView("/view/order/EditOrder.fxml",
+                    ViewUtil.displayModalPaneView("/view/order/EditOrder.fxml",
                             (EditOrderController controller) -> {
                                 controller.setModalPane(modalPane);
                                 controller.setOrder(selectedOrder);
