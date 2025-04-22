@@ -1,172 +1,145 @@
 package com.maya_yagan.sms.supplier.controller;
 
 import atlantafx.base.controls.ModalPane;
-import com.maya_yagan.sms.product.dao.CategoryDAO;
-import com.maya_yagan.sms.product.dao.ProductDAO;
-import com.maya_yagan.sms.supplier.dao.SupplierDAO;
-import com.maya_yagan.sms.product.model.Category;
+import com.maya_yagan.sms.common.AbstractTableController;
 import com.maya_yagan.sms.product.model.Product;
-import com.maya_yagan.sms.supplier.model.Supplier;
-import com.maya_yagan.sms.supplier.model.SupplierProduct;
-import com.maya_yagan.sms.util.AlertUtil;
-import java.net.URL;
-import java.util.HashSet;
-import java.util.ResourceBundle;
-import java.util.Set;
+import com.maya_yagan.sms.product.service.ProductService;
+import com.maya_yagan.sms.product.model.Category;
+import com.maya_yagan.sms.supplier.service.SupplierService;
+
+import java.util.*;
+
+import com.maya_yagan.sms.util.*;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 /**
  * FXML Controller class for handling the logic for adding a supplier
  *
  * @author Maya Yagan
  */
-public class AddSupplierController implements Initializable {
+public class AddSupplierController extends AbstractTableController<Product> {
     
-    @FXML
-    private TextField nameField, emailField, phoneNumberField;
-    @FXML
-    private MenuButton categoryMenu, productsMenu;
-    @FXML
-    private Button saveButton, cancelButton;
-    
+    @FXML private TextField nameTextField, emailTextField, phoneTextField;
+    @FXML private TableColumn<Product, String> productColumn;
+    @FXML private TableColumn<Product, Boolean> selectColumn;
+    @FXML private TableColumn<Product, Float> supplierPriceColumn;
+    @FXML private MenuButton categoryMenuButton;
+    @FXML private Button saveButton, cancelButton;
+
     private Runnable onCloseAction;
     private ModalPane modalPane;
-    private final CategoryDAO categoryDAO = new CategoryDAO();
-    private final ProductDAO productDAO = new ProductDAO();
-    private final SupplierDAO supplierDAO = new SupplierDAO();
-    private Category selectedCategory = null;
+    private String currentCategory = "All Categories";
+    private final ProductService productService = new ProductService();
+    private final SupplierService supplierService = new SupplierService();
+    private final Map<Product, Float> selectedProducts = new HashMap<>();
 
-    /**
-     * Initializes the controller class.
-     * 
-     * This method sets up the category menu and button event handlers.
-     */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        loadCategories();
-        setupEventHandlers();
-    }    
-    
-    /**
-     * Loads categories from the database and populates the category selection menu.
-     * 
-     * This method fetches all available categories from the database using the CategoryDAO, 
-     * and adds them as menu items to the categoryMenu.
-     */
-    private void loadCategories(){
-        Set<Category> categories = categoryDAO.getCategories();
-        if(categories != null){
-            for(Category category : categories){
-                MenuItem menuItem = new MenuItem(category.getName());
-                menuItem.setOnAction(event -> {
-                    selectedCategory = category;
-                    categoryMenu.setText(category.getName());
-                    loadProductsByCategory(category);
-                });
-                categoryMenu.getItems().add(menuItem);
-            }
-        }
-    }
-    
-    /**
-     * Loads products for the selected category and updates the product selection menu.
-     *
-     * @param category The selected category for filtering products.
-     */
-    private void loadProductsByCategory(Category category){
-        productsMenu.getItems().clear();
-        Set<Product> products = productDAO.getProductsByCategory(category);
-        if(products != null && !products.isEmpty()){
-            for(Product product : products){
-                CheckMenuItem productMenuItem = new CheckMenuItem(product.getName());
-                productsMenu.getItems().add(productMenuItem);
-            }
-        } 
-        else productsMenu.setText("No products available");
-    }
-    
-    /**
-     * Sets up event handlers for the save and cancel buttons.
-     */
-    private void setupEventHandlers(){
-        saveButton.setOnAction(event -> saveSupplier());
-        cancelButton.setOnAction(event -> closeForm());
-    }
-    
-    /**
-     * Saves the supplier with the provided details and selected products.
-     * Displays alerts if required fields are missing or no products are selected.
-     */
-    private void saveSupplier(){
-        String name = nameField.getText();
-        String email = emailField.getText();
-        String phoneNumber = phoneNumberField.getText();
-        if(name.isEmpty() || email.isEmpty() || phoneNumber.isEmpty() || selectedCategory == null){
-            AlertUtil.showAlert(Alert.AlertType.WARNING, "Empty fields!", "Please fill in all fields.");
-            return;
-        }
-        Supplier supplier = new Supplier();
-        supplier.setEmail(email);
-        supplier.setName(name);
-        supplier.setPhoneNumber(phoneNumber);
-        Set<SupplierProduct> supplierProducts = new HashSet<>();
-        //i need to find a way to set the suppleir products properly
-        for(MenuItem menuItem : productsMenu.getItems()){
-            if(menuItem instanceof CheckMenuItem checkMenuItem && checkMenuItem.isSelected()){
-                String productName = checkMenuItem.getText();
-                Product product = productDAO.getProductsByCategory(selectedCategory).stream()
-                        .filter(p -> p.getName().equals(productName))
-                        .findFirst()
-                        .orElse(null);
-                if(product != null){
-                    SupplierProduct supplierProduct = new SupplierProduct();
-                    supplierProduct.setProduct(product);
-                    supplierProduct.setSupplier(supplier);
-                    supplierProducts.add(supplierProduct);
+    private void loadCategories() {
+        MenuButtonUtil.populateMenuButton(
+                categoryMenuButton,
+                productService::getAllCategories,
+                Category::getName,
+                this::onCategorySelected,
+                "All Categories",
+                () -> {
+                    currentCategory = "All Categories";
+                    categoryMenuButton.setText(currentCategory);
+                    refresh();
                 }
-            }
-        }
-        if(supplierProducts.isEmpty()){
-            AlertUtil.showAlert(Alert.AlertType.WARNING, "No products selected!", "Please select at least one product.");
-            return;
-        }
-        supplier.setSupplierProducts(supplierProducts);
-        
-        supplierDAO.insertSupplier(supplier);
-        if(onCloseAction != null) onCloseAction.run();
-        closeForm();
+        );
     }
-    
-    /**
-     * Closes the form by hiding the modal pane.
-     * 
-     * This method hides the form by calling the hide method on the modal pane
-     */
-    private void closeForm(){
+
+    @Override
+    protected void configureColumns() {
+        productColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        supplierPriceColumn.setCellValueFactory(cell -> {
+            Product product = cell.getValue();
+            Float price = selectedProducts.getOrDefault(product,  0f);
+            return new SimpleObjectProperty<>(price);
+        });
+        TableViewUtil.setupCheckboxColumn(
+                selectColumn,
+                selectedProducts,
+                this::promptForPriceAndSelect);
+    }
+
+    @Override
+    protected Collection<Product> fetchData() {
+        return productService.getFilteredProductsByCategory(currentCategory);
+    }
+
+    @Override
+    protected void postInit(){
+        setupEventHandlers();
+        loadCategories();
+        tableView.setEditable(true);
+    }
+
+    @Override
+    protected List<ContextMenuUtil.MenuItemConfig<Product>> menuItemsFor(Product s) {
+        return List.of(
+                new ContextMenuUtil.MenuItemConfig<>("Edit Price", (item, row) -> promptForPriceAndSelect(item))
+        );
+    }
+
+    private void setupEventHandlers(){
+        saveButton.setOnAction(event -> handleSaveAction());
+        cancelButton.setOnAction(event -> close());
+    }
+
+    private void onCategorySelected(Category category){
+        currentCategory = category.getName();
+        categoryMenuButton.setText(currentCategory);
+        refresh();
+    }
+
+    private void handleSaveAction(){
+        try{
+            supplierService.addSupplier(
+                    nameTextField.getText(),
+                    emailTextField.getText(),
+                    phoneTextField.getText(),
+                    selectedProducts
+            );
+            if(onCloseAction != null) onCloseAction.run();
+            close();
+        } catch (CustomException e){
+            ExceptionHandler.handleException(e);
+        }
+    }
+
+    private void promptForPriceAndSelect(Product product){
+        ViewUtil.showFloatInputDialog(
+                "Enter Supplier Price",
+                "Enter the price for " + product.getName(),
+                "Price",
+                0f,
+                "Price",
+                newAmt -> {
+                    try{
+                        selectedProducts.put(product, newAmt.floatValue());
+                        refresh();
+                    } catch (CustomException e){
+                        ExceptionHandler.handleException(e);
+                        tableView.refresh();
+                    }
+                }
+        );
+    }
+
+    private void close(){
         if(modalPane != null) modalPane.hide();
     }
-    
-    /**
-     * Sets the action to be performed when the form is closed.
-     *
-     * @param onCloseAction The action to run on form close.
-     */
+
     public void setOnCloseAction(Runnable onCloseAction){
         this.onCloseAction = onCloseAction;
     }
-    
-    /**
-     * Sets the modal pane for the form.
-     *
-     * @param modalPane The modal pane to be used for the form.
-     */
+
     public void setModalPane(ModalPane modalPane){
         this.modalPane = modalPane;
     }
