@@ -133,7 +133,7 @@ public class WarehouseProductsController extends AbstractTableController<Product
                                 "The product amount was successfully updated.");
                     } catch (CustomException ex) {
                         ExceptionHandler.handleException(ex);
-                        tableView.refresh();
+                        refresh();
                     }
                 }
         );

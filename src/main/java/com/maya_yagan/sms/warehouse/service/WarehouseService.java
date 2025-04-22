@@ -1,7 +1,10 @@
 package com.maya_yagan.sms.warehouse.service;
 
+import com.maya_yagan.sms.order.model.Order;
+import com.maya_yagan.sms.order.model.OrderProduct;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.product.service.ProductService;
+import com.maya_yagan.sms.util.CustomException;
 import com.maya_yagan.sms.util.ValidationService;
 import com.maya_yagan.sms.warehouse.dao.WarehouseDAO;
 import com.maya_yagan.sms.warehouse.model.ProductWarehouse;
@@ -77,5 +80,31 @@ public class WarehouseService {
         warehouse.setName(name);
         validationService.validateWarehouse(name, warehouse.getCapacity());
         warehouseDAO.insertWarehouse(warehouse);
+    }
+
+    public void allocateOrder(Order order, Warehouse warehouse){
+        Warehouse fresh = warehouseDAO.getWarehouseById(warehouse.getId());
+        if(fresh == null) throw new CustomException("Warehouse not found", "NOT_FOUND");
+        int currentUsage = calculateTotalProducts(fresh);
+        int orderTotal = order.getOrderProducts()
+                .stream()
+                .mapToInt(OrderProduct::getAmount)
+                .sum();
+        if(currentUsage + orderTotal > fresh.getCapacity())
+            throw new CustomException(
+                    "This warehouse doesn't have enough capacity for this order. Please choose another warehouse.",
+                    "INSUFFICIENT_CAPACITY");
+
+        for(var op : order.getOrderProducts()){
+            fresh.getProductWarehouses().stream()
+                    .filter(pw -> pw.getProduct().equals(op.getProduct()))
+                    .findFirst()
+                    .ifPresentOrElse(
+                            pw -> pw.setAmount(pw.getAmount() + op.getAmount()),
+                            () -> fresh.getProductWarehouses()
+                                    .add(new ProductWarehouse(fresh, op.getProduct(), op.getAmount()))
+                    );
+        }
+        warehouseDAO.updateWarehouse(fresh);
     }
 }

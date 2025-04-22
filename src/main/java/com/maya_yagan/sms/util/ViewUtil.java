@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.DoublePredicate;
 import java.util.function.IntPredicate;
 
 import javafx.fxml.FXMLLoader;
@@ -114,6 +115,50 @@ public class ViewUtil {
             String fieldName,
             Consumer<Integer> onSuccess) {
         showIntegerInputDialog(
+                title, header, content, defaultValue, fieldName,
+                val -> true, onSuccess);
+    }
+
+    public static void showFloatInputDialog(
+            String title,
+            String header,
+            String content,
+            float defaultValue,
+            String fieldName,
+            DoublePredicate validator,
+            Consumer<Double> onSuccess) {
+        TextInputDialog dialog = new TextInputDialog(String.valueOf(defaultValue));
+        dialog.setTitle(title);
+        dialog.setHeaderText(header);
+        dialog.setContentText(content);
+
+        Optional<String> result = dialog.showAndWait();
+        if (!result.isPresent()) {
+            return;
+        }
+
+        try {
+            double value = validationService.parseAndValidateFloat(result.get(), fieldName);
+            if (!validator.test(value)) {
+                throw new CustomException(
+                        String.format("%s must satisfy business rules", fieldName),
+                        "INVALID_NUMBER"
+                );
+            }
+            onSuccess.accept(value);
+        } catch (CustomException ex) {
+            ExceptionHandler.handleException(ex);
+        }
+    }
+
+    public static void showFloatInputDialog(
+            String title,
+            String header,
+            String content,
+            float defaultValue,
+            String fieldName,
+            Consumer<Double> onSuccess) {
+        showFloatInputDialog(
                 title, header, content, defaultValue, fieldName,
                 val -> true, onSuccess);
     }

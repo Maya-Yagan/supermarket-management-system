@@ -26,7 +26,6 @@ import javafx.scene.layout.StackPane;
  */
 public class ProductManagementController extends AbstractTableController<Product> {
 
-    @FXML private TableView<Product> tableView;
     @FXML private TableColumn<Product, Integer> idColumn;
     @FXML private TableColumn<Product, String> nameColumn, productionDate, expirationDateColumn, discountsColumn, unitColumn;
     @FXML private TableColumn<Product, Double> priceColumn;
@@ -37,7 +36,6 @@ public class ProductManagementController extends AbstractTableController<Product
     private ModalPane modalPane;
     private String currentCategory = "All Categories";
     private final ProductService productService = new ProductService();
-
 
     private void loadCategories() {
         MenuButtonUtil.populateMenuButton(

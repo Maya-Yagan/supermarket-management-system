@@ -70,7 +70,6 @@ public class ValidationService {
         }
     }
 
-    
     public void validateProduct(Product product){
         if(product.getName().isEmpty() || product.getPrice() == 0 || 
            product.getProductionDate() == null || 
@@ -100,15 +99,15 @@ public class ValidationService {
     
     public float parseAndValidateFloat(String input, String fieldName){
         try{
-            return Float.parseFloat(input);
+            return Float.parseFloat(input.trim());
         } catch(NumberFormatException e){
-            throw new CustomException("Invalid " + fieldName + " format.\nPlease Enter a valid " + fieldName, "INVALID_NUMBER");
+            throw new CustomException("Invalid " + fieldName + " format.\nPlease Enter a valid" + fieldName, "INVALID_NUMBER");
         }
     }
 
     public int parseAndValidateInt(String input, String fieldName){
         try{
-            return Integer.parseInt(input);
+            return Integer.parseInt(input.trim());
         } catch(NumberFormatException e){
             throw new CustomException("Invalid " + fieldName + " format.\nPlease Enter a valid " + fieldName, "INVALID_NUMBER");
         }
