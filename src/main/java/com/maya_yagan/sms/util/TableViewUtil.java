@@ -1,36 +1,37 @@
 package com.maya_yagan.sms.util;
 
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.event.EventHandler;
-import javafx.util.StringConverter;
+import javafx.scene.control.cell.CheckBoxTableCell;
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  *
  * @author Maya Yagan
  */
 public class TableViewUtil {
-    /**
-     * Sets up a table column for editing with a TextField cell.
-     *
-     * @param <S> the type of the items contained within the TableView
-     * @param <T> the type of the cell data
-     * @param column the TableColumn to be set up for editing
-     * @param tableView the TableView that contains the column; it will be set to editable
-     * @param converter a StringConverter for converting between String and T; if null, a default converter is used
-     * @param commitHandler an event handler that is invoked when an edit is committed
-     */
-    public static <S, T> void setupColumnForEditing(
-            TableColumn<S, T> column,
-            TableView<S> tableView,
-            StringConverter<T> converter,
-            EventHandler<TableColumn.CellEditEvent<S, T>> commitHandler) {
-        if (converter != null) 
-            column.setCellFactory(TextFieldTableCell.forTableColumn(converter));
-        //else
-            //column.setCellFactory(TextFieldTableCell.forTableColumn());
-        column.setOnEditCommit(commitHandler);
-        tableView.setEditable(true);
+    public static <T, V> void setupCheckboxColumn(
+            TableColumn<T, Boolean> column,
+            Map<T, V> backingMap,
+            Consumer<T> onChecked) {
+        column.setCellValueFactory(cellData -> {
+            T item = cellData.getValue();
+            SimpleBooleanProperty prop =
+                    new SimpleBooleanProperty(backingMap.containsKey(item));
+
+            prop.addListener((obs, wasSelected, isNowSelected) -> {
+                if (isNowSelected) {
+                    onChecked.accept(item);
+                } else {
+                    backingMap.remove(item);
+                }
+                cellData.getTableView().refresh();
+            });
+            return prop;
+        });
+        column.setCellFactory(CheckBoxTableCell.forTableColumn(column));
+        column.setEditable(true);
     }
 }
