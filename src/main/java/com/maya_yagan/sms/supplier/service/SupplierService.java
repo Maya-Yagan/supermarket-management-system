@@ -75,8 +75,26 @@ public class SupplierService {
         return Collections.emptyList();
     }
 
-    public void addProductsToSupplier(){
-        //supplier.setSupplierProducts();
+    public void addProductsToSupplier(Supplier supplier, Map<Product, Float> products){
+        if(products.isEmpty())
+            throw new CustomException(
+                    "Please select at least one product to add.",
+                    "NOT_FOUND");
+        for(Map.Entry<Product, Float> e : products.entrySet()){
+            Product product = e.getKey();
+            Float price = e.getValue();
+            validationService.parseAndValidateFloat(Float.toString(price),
+                    "Supplier price for " + product.getName());
+            boolean exists =
+                    supplier.getSupplierProducts()
+                    .stream()
+                    .anyMatch(sp -> sp.getProduct().equals(product));
+            if(!exists){
+                SupplierProduct sp = new SupplierProduct(product, supplier, price);
+                supplier.getSupplierProducts().add(sp);
+            }
+        }
+        supplierDAO.updateSupplier(supplier);
     }
 
     public void deleteProductFromSupplier(Supplier supplier, Product product) {

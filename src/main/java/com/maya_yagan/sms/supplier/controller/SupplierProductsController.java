@@ -16,6 +16,7 @@ import com.maya_yagan.sms.util.ViewUtil;
 import java.util.*;
 
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -36,7 +37,7 @@ public class SupplierProductsController extends AbstractTableController<Supplier
     @FXML private Text supplierName;
     @FXML private TableColumn<SupplierProduct, String> nameColumn;   
     @FXML private TableColumn<SupplierProduct, String> unitColumn;   
-    @FXML private TableColumn<SupplierProduct, Double> priceColumn;   
+    @FXML private TableColumn<SupplierProduct, Float> priceColumn;
     @FXML private  Button addProductButton, backButton;   
     @FXML private  MenuButton categoryMenuButton;   
     @FXML private Label infoLabel;
@@ -69,7 +70,7 @@ public class SupplierProductsController extends AbstractTableController<Supplier
         nameColumn.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getProduct().getName()));
         priceColumn.setCellValueFactory(cellData ->
-                new SimpleDoubleProperty(cellData.getValue().getPrice()).asObject());
+                new SimpleFloatProperty(cellData.getValue().getPrice()).asObject());
         unitColumn.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getProduct().getUnit().getFullName()));
     }
