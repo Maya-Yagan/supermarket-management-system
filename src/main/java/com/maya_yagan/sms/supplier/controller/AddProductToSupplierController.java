@@ -42,19 +42,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
  */
 public class AddProductToSupplierController implements Initializable {
 
-    @FXML
-    private TableView<Product> productsTable;
-    @FXML
-    private TableColumn<Product, Integer> idColumn;
-    @FXML
-    private TableColumn<Product, String> nameColumn, unitColumn;
-    @FXML
-    private TableColumn<Product, Boolean> selectColumn;
-    @FXML
-    private MenuButton categoryMenuButton;
-    @FXML 
-    private Button saveButton, cancelButton;
-    
+    @FXML  private TableView<Product> productsTable;
+    @FXML private TableColumn<Product, Integer> idColumn;
+    @FXML private TableColumn<Product, String> nameColumn, unitColumn;
+    @FXML private TableColumn<Product, Boolean> selectColumn;
+    @FXML private MenuButton categoryMenuButton;   
+    @FXML  private Button saveButton, cancelButton;
+   
     private final CategoryDAO categoryDAO = new CategoryDAO();
     private final ProductDAO productDAO = new ProductDAO();
     private final SupplierDAO SupplierDAO = new SupplierDAO();
@@ -67,9 +61,6 @@ public class AddProductToSupplierController implements Initializable {
     private Runnable onCloseAction;
     private ModalPane modalPane;
     
-    /**
-     * Initializes the controller.
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         configureTableColumns();
@@ -77,9 +68,6 @@ public class AddProductToSupplierController implements Initializable {
         setupEventHandlers();
     }    
     
-    /**
-     * Configures the table columns to display product data.
-     */
     private void configureTableColumns() {
         productsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         productsTable.getStyleClass().add(Tweaks.EDGE_TO_EDGE);
@@ -90,9 +78,6 @@ public class AddProductToSupplierController implements Initializable {
         setupSelectColumn();
     }
     
-    /**
-     * Sets up the select column with checkboxes.
-     */
     private void setupSelectColumn(){
         productsTable.setEditable(true);
         selectColumn.setEditable(true);
@@ -139,9 +124,6 @@ public class AddProductToSupplierController implements Initializable {
         selectColumn.setCellFactory(CheckBoxTableCell.forTableColumn(selectColumn));
     }
 
-    /**
-     * Populates the category menu with available categories.
-     */
     private void populateCategoryMenu(){
         categoryMenuButton.getItems().clear();
         categoryDAO.getCategories().forEach(category -> {
@@ -151,37 +133,23 @@ public class AddProductToSupplierController implements Initializable {
         });
     }
     
-    /**
-     * Sets up handlers for events like clicking buttons
-     */
     private void setupEventHandlers(){
         saveButton.setOnAction(event -> saveProductToSupplier());
         cancelButton.setOnAction(event -> closeModal());
     }
     
-    /**
-     * Handles category selection from the menu.
-     * 
-     * @param category The selected category
-     */
     private void handleCategorySelection(Category category){
         selectedCategory = category;
         categoryMenuButton.setText(category.getName());
         loadProductsByCategory();
     }
-    
-    /**
-     * Loads products belonging to the selected category into the table.
-     */
+
     private void loadProductsByCategory(){
         productObservableList.clear();
         if(selectedCategory != null)
             productObservableList.addAll(productDAO.getProductsByCategory(selectedCategory));
     }
-    
-    /**
-     * Saves the selected product to the supplier.
-     */
+
     private void saveProductToSupplier(){
         boolean anySelected = false;
         for(Map.Entry<Product, SimpleBooleanProperty> entry : selectedProducts.entrySet()){
@@ -221,36 +189,18 @@ public class AddProductToSupplierController implements Initializable {
         closeModal();
     }
     
-    /**
-     * Sets the supplier which the products belong to.
-     * 
-     * @param supplier The supplier of the products.
-     */
     public void setSupplier(Supplier supplier){
         this.supplier = supplier;
     }
     
-    /**
-     * Closes the modal pane and clears any active UI elements.
-     */
     public void closeModal(){
         if(modalPane != null) modalPane.hide();
     }
 
-    /**
-     * Sets the action to perform when the modal is closed.
-     *
-     * @param onCloseAction A runnable task to execute on close.
-     */
     public void setOnCloseAction(Runnable onCloseAction) {
         this.onCloseAction = onCloseAction;
     }
 
-    /**
-     * Sets the modal pane for displaying this controller's UI.
-     * 
-     * @param modalPane The modal pane to display additional UI content.
-     */
     public void setModalPane(ModalPane modalPane) {
         this.modalPane = modalPane;
     }

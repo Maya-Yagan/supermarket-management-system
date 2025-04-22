@@ -1,7 +1,7 @@
-
 package com.maya_yagan.sms.supplier.service;
 
 import com.maya_yagan.sms.product.model.Product;
+import com.maya_yagan.sms.product.model.Category;
 import com.maya_yagan.sms.supplier.dao.SupplierDAO;
 import com.maya_yagan.sms.supplier.model.Supplier;
 import com.maya_yagan.sms.supplier.model.SupplierProduct;
@@ -14,8 +14,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
+ * Service class responsible for managing supplier-related operations.
  *
- * @author Rahaf Alaa
+ * Author: Rahaf Alaa
  */
 public class SupplierService {
 
@@ -25,7 +26,7 @@ public class SupplierService {
     public Set<Supplier> getAllSuppliers() {
         return supplierDAO.getSuppliers();
     }
-    
+
     public List<Product> getSupplierProduct(Supplier supplier) {
         return supplierDAO.getSupplierProducts(supplier);
     }
@@ -75,5 +76,30 @@ public class SupplierService {
 
     public void addProductsToSupplier(){
         //supplier.setSupplierProducts();
+    }
+
+    public void deleteProductFromSupplier(Supplier supplier, Product product) {
+        supplierDAO.deleteProductFromSupplier(supplier, product);
+    }
+
+    public List<SupplierProduct> getSupplierProductsByCategory(Supplier supplier, Category category) {
+        List<SupplierProduct> products = supplierDAO.getSupplierProductPairs(supplier);
+        if (category != null) {
+            products = products.stream()
+                    .filter(sp -> sp.getProduct().getCategory().equals(category))
+                    .collect(Collectors.toList());
+        }
+        return products;
+    }
+
+    public void updateSupplierProduct(SupplierProduct sp) {
+        // Replace the old entry with the updated one and call updateSupplier
+        Supplier supplier = sp.getSupplier();
+        // Remove the old entry for the same product if exists
+        supplier.getSupplierProducts().removeIf(existing -> existing.getProduct().equals(sp.getProduct()));
+        // Add the updated one
+        supplier.getSupplierProducts().add(sp);
+        // Persist the changes using the existing DAO
+        supplierDAO.updateSupplier(supplier);
     }
 }
