@@ -123,7 +123,7 @@ public class SupplierManagementController extends AbstractTableController<Suppli
                 "This action cannot be undone",
                 (p) -> {
                     supplierService.deleteSupplier(p.getId());
-                     refresh();
+                    refresh();
                 }
         );
     }

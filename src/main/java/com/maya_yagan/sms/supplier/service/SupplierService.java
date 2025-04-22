@@ -5,6 +5,7 @@ import com.maya_yagan.sms.product.model.Category;
 import com.maya_yagan.sms.supplier.dao.SupplierDAO;
 import com.maya_yagan.sms.supplier.model.Supplier;
 import com.maya_yagan.sms.supplier.model.SupplierProduct;
+import com.maya_yagan.sms.util.CustomException;
 import com.maya_yagan.sms.util.ValidationService;
 
 import java.util.Collections;
@@ -92,14 +93,19 @@ public class SupplierService {
         return products;
     }
 
-    public void updateSupplierProduct(SupplierProduct sp) {
-        // Replace the old entry with the updated one and call updateSupplier
-        Supplier supplier = sp.getSupplier();
-        // Remove the old entry for the same product if exists
-        supplier.getSupplierProducts().removeIf(existing -> existing.getProduct().equals(sp.getProduct()));
-        // Add the updated one
-        supplier.getSupplierProducts().add(sp);
-        // Persist the changes using the existing DAO
+    public void updateSupplier(Supplier supplier, SupplierProduct sp, double newPrice) {
+        validationService.parseAndValidateFloat(String.valueOf(newPrice), "Price");
+        Set<SupplierProduct> supplierProducts = supplier.getSupplierProducts();
+        SupplierProduct target =
+                supplierProducts
+                .stream()
+                .filter(p -> p.getProduct().equals(sp.getProduct()))
+                .findFirst()
+                .orElseThrow(() -> new CustomException(
+                        "The product is not associated with this supplier",
+                        "PRODUCT_NOT_FOUND"
+                ));
+        target.setPrice((float)newPrice);
         supplierDAO.updateSupplier(supplier);
     }
 }

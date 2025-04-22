@@ -99,7 +99,10 @@ public class ValidationService {
     
     public float parseAndValidateFloat(String input, String fieldName){
         try{
-            return Float.parseFloat(input.trim());
+            float number = Float.parseFloat(input.trim());
+            if(number <= 0)
+                throw new CustomException("The entered number must be greater than zero.", "INVALID_NUMBER");
+            else return number;
         } catch(NumberFormatException e){
             throw new CustomException("Invalid " + fieldName + " format.\nPlease Enter a valid" + fieldName, "INVALID_NUMBER");
         }
@@ -107,7 +110,10 @@ public class ValidationService {
 
     public int parseAndValidateInt(String input, String fieldName){
         try{
-            return Integer.parseInt(input.trim());
+            int number = Integer.parseInt(input.trim());
+            if(number <= 0)
+                throw new CustomException("The entered number must be greater than zero.", "INVALID_NUMBER");
+            else return number;
         } catch(NumberFormatException e){
             throw new CustomException("Invalid " + fieldName + " format.\nPlease Enter a valid " + fieldName, "INVALID_NUMBER");
         }
