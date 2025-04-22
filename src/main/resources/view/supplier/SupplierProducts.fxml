@@ -20,7 +20,6 @@
                 <TableColumn fx:id="nameColumn" text="Name" />
                 <TableColumn fx:id="priceColumn" text="Price" />
                   <TableColumn fx:id="unitColumn" text="Unit" />
-                  <TableColumn fx:id="deleteColumn" text="Delete" />
              </columns>
              <styleClass>
                 <String fx:value="bordered" />

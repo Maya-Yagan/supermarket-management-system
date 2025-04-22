@@ -1,11 +1,8 @@
 package com.maya_yagan.sms.supplier.controller;
 
 import atlantafx.base.controls.ModalPane;
-import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Tweaks;
 import com.maya_yagan.sms.order.controller.AddOrderController;
-import com.maya_yagan.sms.product.controller.EditProductController;
-import com.maya_yagan.sms.supplier.dao.SupplierDAO;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.supplier.model.Supplier;
 import com.maya_yagan.sms.supplier.service.SupplierService;
@@ -34,8 +31,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
-import org.kordamp.ikonli.feather.Feather;
-import org.kordamp.ikonli.javafx.FontIcon;
 
 /**
  * FXML Controller class for managing suppliers in the supermarket management system.

@@ -1,17 +1,21 @@
 package com.maya_yagan.sms.supplier.controller;
 
 import atlantafx.base.controls.ModalPane;
-import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Tweaks;
-import com.maya_yagan.sms.product.dao.CategoryDAO;
-import com.maya_yagan.sms.supplier.dao.SupplierDAO;
 import com.maya_yagan.sms.product.model.Category;
+import com.maya_yagan.sms.product.service.ProductService;
 import com.maya_yagan.sms.supplier.model.Supplier;
 import com.maya_yagan.sms.supplier.model.SupplierProduct;
-import com.maya_yagan.sms.util.ViewUtil;
+import com.maya_yagan.sms.supplier.service.SupplierService;
 import com.maya_yagan.sms.util.AlertUtil;
+import com.maya_yagan.sms.util.ContextMenuUtil;
+import com.maya_yagan.sms.util.CustomException;
+import com.maya_yagan.sms.util.ExceptionHandler;
+import com.maya_yagan.sms.util.MenuButtonUtil;
+import com.maya_yagan.sms.util.ViewUtil;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -25,19 +29,16 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
-import org.kordamp.ikonli.feather.Feather;
-import org.kordamp.ikonli.javafx.FontIcon;
 
 /**
  * FXML Controller class for managing products of a supplier.
@@ -48,53 +49,36 @@ import org.kordamp.ikonli.javafx.FontIcon;
  *
  * @author Maya Yagan
  */
-public class SupplierProductsController implements Initializable {
+public class SupplierProductsController  implements Initializable {
     
-    @FXML
-    private Text supplierName;
-    @FXML
-    private TableView<SupplierProduct> productTableView;
-    @FXML
-    private TableColumn<SupplierProduct, String> nameColumn;
-    @FXML
-    private TableColumn<SupplierProduct, String> unitColumn;
-    @FXML
-    private TableColumn<SupplierProduct, Double> priceColumn; //this was previouly of type String instead of double
-    @FXML
-    private  TableColumn<SupplierProduct, Void> deleteColumn;
-    @FXML
-    private  Button addProductButton, backButton;
-    @FXML
-    private  MenuButton categoryMenuButton;
-    @FXML
-    private Label label1, label2;
-    @FXML
-    private StackPane stackPane;
+    @FXML private Text supplierName;
+    @FXML private TableView<SupplierProduct> productTableView;
+    @FXML private TableColumn<SupplierProduct, String> nameColumn;   
+    @FXML private TableColumn<SupplierProduct, String> unitColumn;   
+    @FXML private TableColumn<SupplierProduct, Double> priceColumn;   
+    @FXML private  Button addProductButton, backButton;   
+    @FXML private  MenuButton categoryMenuButton;   
+    @FXML private Label label1, label2; 
+    @FXML private StackPane stackPane;
+    
     private Runnable onCloseAction;
     private ModalPane modalPane;
     private Supplier supplier;
     private Category selectedCategory;
-    private final CategoryDAO categoryDAO = new CategoryDAO();
-    private final SupplierDAO supplierDAO = new SupplierDAO();
+    private final SupplierService supplierService = new SupplierService();
+    private final ProductService productService = new ProductService();
     private final ObservableList<SupplierProduct> productObservableList = FXCollections.observableArrayList();
     
-    /**
-     * Initializes the controller class and sets up the UI components and behaviors.
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         configureTableColumns();
         setupEventHandlers();
         loadCategories();
-        setupDeleteColumn();
-        setupColumnForEditing();
         initializeModalPane();
         setupDynamicLayoutAdjustment();
+        setupContextMenu();
     }    
-    
-    /**
-     * Configures the table columns for displaying the products.
-     */
+
     private void configureTableColumns(){
         productTableView.setItems(productObservableList);
         productTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -105,9 +89,6 @@ public class SupplierProductsController implements Initializable {
         unitColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProduct().getUnit().getFullName()));
     }
     
-    /**
-     * Sets up handlers for clicking buttons
-     */
     private void setupEventHandlers(){
         addProductButton.setOnAction(event -> ViewUtil.displayModalPaneView("/view/supplier/AddProductToSupplier.fxml",
                 (AddProductToSupplierController controller) -> {
@@ -118,175 +99,48 @@ public class SupplierProductsController implements Initializable {
         backButton.setOnAction(event -> goBack());
         
     }
-    
-    /**
-     * Loads the list of product categories into the menu button.
-     */
-    private void loadCategories(){
-        categoryMenuButton.getItems().clear();
-        MenuItem allCategoriesItem = new MenuItem("All Categories");
-        categoryMenuButton.setText("All Categories");
-        allCategoriesItem.setOnAction(event -> {
+
+    private void loadCategories() {
+    MenuButtonUtil.populateMenuButton(
+        categoryMenuButton,
+        productService::getAllCategories,
+        Category::getName,
+        this::handleCategorySelection,
+        "All Categories",
+        () -> {
             selectedCategory = null;
             categoryMenuButton.setText("All Categories");
             loadProducts();
-        });
-        categoryMenuButton.getItems().add(allCategoriesItem);
-        
-        Set<Category> categories = categoryDAO.getCategories();
-        if (categories != null) {
-            for (Category category : categories) {
-                MenuItem menuItem = new MenuItem(category.getName());
-                menuItem.setOnAction(event -> handleCategorySelection(category));
-                categoryMenuButton.getItems().add(menuItem);
-            }
         }
-    }
-    
-    /**
-     * Loads the list of products for the current supplier and category.
-     */
+    );
+}
+
+
     private void loadProducts(){
         productObservableList.clear();
-        List<SupplierProduct> products = supplierDAO.getSupplierProductPairs(supplier);
-        if(selectedCategory != null)
-            products = products.stream()
-                    .filter(product -> product.getProduct().getCategory().equals(selectedCategory))
-                    .toList();
+        List<SupplierProduct> products = supplierService.getSupplierProductsByCategory(supplier,selectedCategory);  
         productObservableList.addAll(products);
     }
     
-    /**
-     * Handles category selection from the button and loads products accordingly.
-     * 
-     * @param category The selected category from the menu
-     */
     private void handleCategorySelection(Category category){
         selectedCategory = category;
         categoryMenuButton.setText(category.getName());
         loadProducts();
     }
-    
-    /**
-     * Configures the delete button for removing a product from a supplier.
-     */
-    private void setupDeleteColumn(){
-        deleteColumn.setCellFactory(param -> {
-            return new TableCell<SupplierProduct, Void>(){
-                private final Button deleteButton = new Button(null, new FontIcon(Feather.TRASH));
-                {
-                    deleteButton.getStyleClass().add(Styles.DANGER);
-                    deleteButton.setOnAction(event -> {
-                        SupplierProduct supplierProduct = getTableView().getItems().get(getIndex());
-                        AlertUtil.showDeleteConfirmation(supplierProduct,
-                                "Delete Confirmation",
-                                "Are you sure you want to delete this product?",
-                                "This action cannot be undone",
-                                (SupplierProduct p) -> {
-                                    supplierDAO.deleteProductFromSupplier(supplier, supplierProduct.getProduct());
-                                    productObservableList.remove(supplierProduct);
-                                });
-                    });
-                }
-                @Override
-                protected  void updateItem(Void item, boolean empty){
-                    super.updateItem(item, empty);
-                    if(empty) setGraphic(null);
-                    else setGraphic(deleteButton);
-                }
-            };
-        });
-    }
-    
-    /**
-     * Configures the price column for in-line editing of supplier product.
-     */
-    private void setupColumnForEditing(){
-        priceColumn.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<Double>(){
-                        @Override
-                        public String toString(Double object) {
-                            return object != null ? String.format("%.2f", object) : "";
-                        }
-                        @Override
-                        public Double fromString(String string) {
-                            try{
-                                return Double.valueOf(string);
-                            } catch(NumberFormatException e){
-                                AlertUtil.showAlert(Alert.AlertType.ERROR, "Invalid Input", "Please enter a valid decimal number.");
-                                return null;
-                            }
-                        }
-                }));
-        
-        priceColumn.setOnEditCommit(event -> {
-            SupplierProduct product = event.getRowValue();
-            Double newPrice = event.getNewValue();
-            
-            try{
-                if(newPrice < 0){
-                    AlertUtil.showAlert(Alert.AlertType.ERROR, "Invalid Input", "The price cannot be negative.");
-                    productTableView.refresh();
-                    return;
-                }
-                
-                SupplierProduct supplierProduct = supplier.getSupplierProducts()
-                        .stream()
-                        .filter(sp -> sp.getProduct().equals(product.getProduct()))
-                        .findFirst()
-                        .orElse(null);
-                
-                if(supplierProduct != null){
-                    supplierProduct.setPrice(newPrice.floatValue());
-                    supplierDAO.updateSupplier(supplier);
-                    Supplier refreshedSupplier = supplierDAO.getSupplierById(supplier.getId());
-                    supplier.setSupplierProducts(refreshedSupplier.getSupplierProducts());
-                    productTableView.refresh();
-                    
-                    /* I did this becasue the productTableView is displaying 
-                    an observable list that hasn't been updated with the new price.
-                    If we don't do this explicitly, the updated price won't be shown
-                    after pressing Enter. Previously, the SupplierProduct object in
-                    the Supplier instance was updated. Now, after updating SupplierProduct
-                    in the Supplier instance, we make the observable list aware of this change.
-                    */
-                    int index = productObservableList.indexOf(product);
-                    if (index != -1)
-                        productObservableList.set(index, supplierProduct);
 
-                    AlertUtil.showAlert(Alert.AlertType.INFORMATION, "Success", "The price has been updated successfully.");
-                }
-            } catch(NumberFormatException e){
-                AlertUtil.showAlert(Alert.AlertType.ERROR, "Invalid Input", "Please enter a valid number for the price.");
-                productTableView.refresh();
-            }
-        });
-        productTableView.setEditable(true);
-    }
-    
-    /**
-     * Sets the supplier and loads products accordingly.
-     * 
-     * @param supplier The supplier to be set
-     */
     public void setSupplier(Supplier supplier){
         this.supplier = supplier;
         supplierName.setText(supplier.getName());
         loadProducts();
     }
-    
-    /**
-     * Initializes and configures the modal pane.
-     */
+
     private void initializeModalPane() {
         StackPane root = stackPane;
         modalPane = new ModalPane();
         modalPane.setId("modalPane");
         root.getChildren().add(modalPane);
     }
-    
-    /**
-     * Navigates back to the warehouse management screen.
-     */
+
     private void goBack(){
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/supplier/SupplierManagement.fxml"));
@@ -299,10 +153,7 @@ public class SupplierProductsController implements Initializable {
             e.printStackTrace();
         }
     }
-    
-    /**
-     * Adjusts the layout dynamically when the width of the category menu changes.
-     */
+
     private void setupDynamicLayoutAdjustment(){
         categoryMenuButton.widthProperty().addListener((observable, oldValue, newValue) -> {
             addProductButton.setLayoutX(categoryMenuButton.getLayoutX() + newValue.doubleValue() + 10);
@@ -315,5 +166,75 @@ public class SupplierProductsController implements Initializable {
         this.onCloseAction = onCloseAction;
     }
     
-    
+     private void setupContextMenu() {
+    productTableView.setRowFactory(tv -> {
+        TableRow<SupplierProduct> row = new TableRow<>();
+        row.itemProperty().addListener((obs, oldItem, newItem) -> {
+            if (newItem != null) {
+                List<ContextMenuUtil.MenuItemConfig<SupplierProduct>> menuItems = new ArrayList<>();
+
+                // Edit Price
+                menuItems.add(new ContextMenuUtil.MenuItemConfig<>(
+                        "Edit Price",
+                        (sp, r) -> handleEditPriceAction(sp)
+                ));
+
+                // Delete Product
+                menuItems.add(new ContextMenuUtil.MenuItemConfig<>(
+                        "Delete Product",
+                        (sp, r) -> AlertUtil.showDeleteConfirmation(
+                                sp,
+                                "Delete Product",
+                                "Are you sure you want to delete this product?",
+                                "This action cannot be undone.",
+                                deletedProduct -> {
+                                    supplierService.deleteProductFromSupplier(
+                                            deletedProduct.getSupplier(),
+                                            deletedProduct.getProduct()
+                                    );
+                                    productObservableList.remove(deletedProduct);
+                                    AlertUtil.showAlert(
+                                            Alert.AlertType.INFORMATION,
+                                            "Product Deleted",
+                                            "The product has been successfully deleted.");
+                                }
+                        )
+                ));
+
+                ContextMenu contextMenu = ContextMenuUtil.createContextMenu(row, newItem, menuItems);
+                row.setContextMenu(contextMenu);
+            } else {
+                row.setContextMenu(null);
+            }
+        });
+        return row;
+    });
 }
+     private void handleEditPriceAction(SupplierProduct sp) {
+    ViewUtil.showFloatInputDialog(
+            "Edit Price",
+            "Enter new price for " + sp.getProduct().getName(),
+            "Price (" + sp.getProduct().getUnit().getShortName() + ")",
+            sp.getPrice(),
+            "Price",
+            newPrice -> {
+                try {
+                    sp.setPrice(newPrice.floatValue()); 
+                    supplierService.updateSupplierProduct(sp);
+                    productTableView.refresh();
+                    AlertUtil.showAlert(
+                            Alert.AlertType.INFORMATION,
+                            "Success",
+                            "The product price was successfully updated.");
+                } catch (CustomException ex) {
+                    ExceptionHandler.handleException(ex);
+                    productTableView.refresh();
+                }
+            }
+    );
+}
+
+     
+
+
+} 

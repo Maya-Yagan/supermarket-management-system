@@ -29,13 +29,10 @@ import javafx.scene.control.TextField;
  */
 public class AddSupplierController implements Initializable {
     
-    @FXML
-    private TextField nameField, emailField, phoneNumberField;
-    @FXML
-    private MenuButton categoryMenu, productsMenu;
-    @FXML
-    private Button saveButton, cancelButton;
-    
+    @FXML private TextField nameField, emailField, phoneNumberField;
+    @FXML private MenuButton categoryMenu, productsMenu;
+    @FXML private Button saveButton, cancelButton;
+     
     private Runnable onCloseAction;
     private ModalPane modalPane;
     private final CategoryDAO categoryDAO = new CategoryDAO();
@@ -43,23 +40,12 @@ public class AddSupplierController implements Initializable {
     private final SupplierDAO supplierDAO = new SupplierDAO();
     private Category selectedCategory = null;
 
-    /**
-     * Initializes the controller class.
-     * 
-     * This method sets up the category menu and button event handlers.
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         loadCategories();
         setupEventHandlers();
     }    
     
-    /**
-     * Loads categories from the database and populates the category selection menu.
-     * 
-     * This method fetches all available categories from the database using the CategoryDAO, 
-     * and adds them as menu items to the categoryMenu.
-     */
     private void loadCategories(){
         Set<Category> categories = categoryDAO.getCategories();
         if(categories != null){
@@ -75,11 +61,6 @@ public class AddSupplierController implements Initializable {
         }
     }
     
-    /**
-     * Loads products for the selected category and updates the product selection menu.
-     *
-     * @param category The selected category for filtering products.
-     */
     private void loadProductsByCategory(Category category){
         productsMenu.getItems().clear();
         Set<Product> products = productDAO.getProductsByCategory(category);
@@ -92,18 +73,11 @@ public class AddSupplierController implements Initializable {
         else productsMenu.setText("No products available");
     }
     
-    /**
-     * Sets up event handlers for the save and cancel buttons.
-     */
     private void setupEventHandlers(){
         saveButton.setOnAction(event -> saveSupplier());
         cancelButton.setOnAction(event -> closeForm());
     }
     
-    /**
-     * Saves the supplier with the provided details and selected products.
-     * Displays alerts if required fields are missing or no products are selected.
-     */
     private void saveSupplier(){
         String name = nameField.getText();
         String email = emailField.getText();
@@ -144,29 +118,14 @@ public class AddSupplierController implements Initializable {
         closeForm();
     }
     
-    /**
-     * Closes the form by hiding the modal pane.
-     * 
-     * This method hides the form by calling the hide method on the modal pane
-     */
     private void closeForm(){
         if(modalPane != null) modalPane.hide();
     }
     
-    /**
-     * Sets the action to be performed when the form is closed.
-     *
-     * @param onCloseAction The action to run on form close.
-     */
     public void setOnCloseAction(Runnable onCloseAction){
         this.onCloseAction = onCloseAction;
     }
     
-    /**
-     * Sets the modal pane for the form.
-     *
-     * @param modalPane The modal pane to be used for the form.
-     */
     public void setModalPane(ModalPane modalPane){
         this.modalPane = modalPane;
     }
