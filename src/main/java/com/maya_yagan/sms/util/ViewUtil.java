@@ -217,4 +217,30 @@ public class ViewUtil {
             }
         });
     }
+
+    public static <T> boolean showDialog(
+            String fxmlPath,
+            String title,
+            Consumer<T> initController,
+            Consumer<T> onSave) throws IOException {
+
+        FXMLLoader loader = new FXMLLoader(ViewUtil.class.getResource(fxmlPath));
+        Parent root = loader.load();
+        T controller = loader.getController();
+        initController.accept(controller);
+
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle(title);
+        dialog.getDialogPane().setContent(root);
+
+        ButtonType ok = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().setAll(ok, ButtonType.CANCEL);
+
+        Optional<ButtonType> result = dialog.showAndWait();
+        if (result.isPresent() && result.get() == ok) {
+            onSave.accept(controller);
+            return true;
+        }
+        return false;
+    }
 }

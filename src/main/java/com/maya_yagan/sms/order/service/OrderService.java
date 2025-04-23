@@ -25,7 +25,28 @@ public class OrderService {
     }
 
     public void updateOrder(Order order){
+        validationService.validateOrder(order);
+        orderDAO.updateOrder(order);
+    }
 
+    public void updateOrder(Order order, OrderProduct orderProduct, int newAmount){
+        validationService.parseAndValidateInt(String.valueOf(newAmount), "Amount");
+        Set<OrderProduct> orderProducts = order.getOrderProducts();
+        OrderProduct target =
+                orderProducts
+                        .stream()
+                        .filter(o -> o.getProduct().equals(orderProduct.getProduct()))
+                        .findFirst()
+                        .orElseThrow(() -> new CustomException(
+                                "The product is not associated with this order",
+                                "NOT_FOUND"
+                        ));
+        target.setAmount(newAmount);
+        orderDAO.updateOrder(order);
+    }
+
+    public void deleteProductFromOrder(Order order, Product product){
+        orderDAO.deleteProductFromOrder(order, product);
     }
 
     public void deleteOrder(int id){
@@ -82,5 +103,29 @@ public class OrderService {
         warehouseService.allocateOrder(order, warehouse);
         order.setDeliveryDate(LocalDate.now());
         orderDAO.updateOrder(order);
+    }
+
+    public double getSupplierPrice(Order order, OrderProduct op) {
+        return order.getSupplier().getSupplierProducts().stream()
+                .filter(sp -> sp.getProduct().equals(op.getProduct()))
+                .findFirst()
+                .map(SupplierProduct::getPrice)
+                .orElse(0.0F);
+    }
+
+    public float calculateTotalPrice(Order order) {
+        return (float) orderDAO.getOrderById(order.getId()).getOrderProducts().stream()
+                .mapToDouble(op -> getSupplierPrice(order, op) * op.getAmount())
+                .sum();
+    }
+
+    public int calculateTotalProducts(Order order) {
+        return orderDAO.getOrderById(order.getId()).getOrderProducts().stream()
+                .mapToInt(OrderProduct::getAmount)
+                .sum();
+    }
+
+    public Order getOrderById(int id){
+        return orderDAO.getOrderById(id);
     }
 }

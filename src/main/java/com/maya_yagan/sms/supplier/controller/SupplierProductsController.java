@@ -15,7 +15,6 @@ import com.maya_yagan.sms.util.MenuButtonUtil;
 import com.maya_yagan.sms.util.ViewUtil;
 import java.util.*;
 
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
@@ -133,7 +132,7 @@ public class SupplierProductsController extends AbstractTableController<Supplier
         ViewUtil.showFloatInputDialog(
                 "Edit Price",
                 "Enter new price for " + sp.getProduct().getName(),
-                "Price (" + sp.getProduct().getUnit().getShortName() + ")",
+                "Price",
                 sp.getPrice(),
                 "Price",
                 newPrice -> {
