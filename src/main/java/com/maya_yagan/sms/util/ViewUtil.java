@@ -3,18 +3,19 @@ package com.maya_yagan.sms.util;
 import atlantafx.base.controls.ModalPane;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.DoublePredicate;
 import java.util.function.IntPredicate;
 
+import com.maya_yagan.sms.supplier.model.SupplierProduct;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -56,16 +57,6 @@ public class ViewUtil {
         }
     }
 
-
-    /**
-     * Displays a custom dialog with a given title, header message, and custom content.
-     * The dialog will include OK and Cancel buttons.
-     *
-     * @param title   The title of the dialog window.
-     * @param header  The header text or message displayed in the dialog.
-     * @param content A JavaFX Node containing custom content (e.g., TableView, TextField).
-     * @return An Optional containing the ButtonType that was pressed, or empty if the dialog was closed.
-     */
     public static Optional<ButtonType> showCustomDialog(String title, String header, Node content){
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle(title);
@@ -73,6 +64,50 @@ public class ViewUtil {
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
         dialog.getDialogPane().setContent(content);
         return dialog.showAndWait();
+    }
+
+    public static Optional<ButtonType> showOrderSummaryDialog(
+            String title,
+            String headerText,
+            List<SupplierProduct> items,
+            Map<SupplierProduct, Integer> amounts) {
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(10));
+
+        grid.add(new Label("Product"), 0, 0);
+        grid.add(new Label("Amount"), 1, 0);
+        grid.add(new Label("Price"), 2, 0);
+        grid.add(new Label("Total"), 3, 0);
+
+        float grandTotal = 0f;
+        int grandQuantity = 0;
+        int row = 1;
+
+        for (SupplierProduct sp : items) {
+            int qty = amounts.getOrDefault(sp, 1);
+            float price = sp.getPrice();
+            float lineTotal = price * qty;
+
+            grandQuantity += qty;
+            grandTotal   += lineTotal;
+
+            grid.add(new Label(sp.getProduct().getName()),       0, row);
+            grid.add(new Label(String.valueOf(qty)),             1, row);
+            grid.add(new Label(String.format("%.2f", price)),    2, row);
+            grid.add(new Label(String.format("%.2f", lineTotal)),3, row);
+            row++;
+        }
+
+        Label summary = new Label(
+                "Total Quantity: " + grandQuantity +
+                        "    Grand Total: " + String.format("%.2f", grandTotal));
+        summary.setStyle("-fx-font-weight: bold;");
+
+        grid.add(summary, 0, row, 4, 1);
+
+        return ViewUtil.showCustomDialog(title, headerText, grid);
     }
 
     public static void showIntegerInputDialog(
