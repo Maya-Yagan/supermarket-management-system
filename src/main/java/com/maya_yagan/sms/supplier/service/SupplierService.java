@@ -2,25 +2,23 @@ package com.maya_yagan.sms.supplier.service;
 
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.product.model.Category;
+import com.maya_yagan.sms.product.service.ProductService;
 import com.maya_yagan.sms.supplier.dao.SupplierDAO;
 import com.maya_yagan.sms.supplier.model.Supplier;
 import com.maya_yagan.sms.supplier.model.SupplierProduct;
 import com.maya_yagan.sms.util.CustomException;
 import com.maya_yagan.sms.util.ValidationService;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Service class responsible for managing supplier-related operations.
- *
  * Author: Rahaf Alaa
  */
 public class SupplierService {
 
+    private final ProductService productService = new ProductService();
     private final SupplierDAO supplierDAO = new SupplierDAO();
     private final ValidationService validationService = new ValidationService();
 
@@ -121,9 +119,27 @@ public class SupplierService {
                 .findFirst()
                 .orElseThrow(() -> new CustomException(
                         "The product is not associated with this supplier",
-                        "PRODUCT_NOT_FOUND"
+                        "NOT_FOUND"
                 ));
         target.setPrice((float)newPrice);
         supplierDAO.updateSupplier(supplier);
+    }
+
+    public SupplierProduct getByProductAndSupplier(Product product, Supplier supplier){
+        return supplier.getSupplierProducts()
+                .stream()
+                .filter(sp -> sp.getProduct().equals(product))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public Collection<SupplierProduct> getSupplierProductsByCategoryAndSupplier(
+            String category, Supplier supplier){
+        if(supplier == null) return Collections.emptyList();
+        Set<Product> products = productService.getFilteredProductsByCategory(category);
+        return products.stream()
+                .map(product -> getByProductAndSupplier(product, supplier))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 }

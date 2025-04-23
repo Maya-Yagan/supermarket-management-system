@@ -14,7 +14,7 @@
    <children>
       <AnchorPane prefHeight="418.0" prefWidth="442.0">
          <children>
-            <TableView fx:id="productsTable" layoutX="32.0" layoutY="115.33333333333333" prefHeight="245.0" prefWidth="376.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="22.0" AnchorPane.rightAnchor="22.0" AnchorPane.topAnchor="115.0">
+            <TableView fx:id="tableView" layoutX="32.0" layoutY="115.33333333333333" prefHeight="245.0" prefWidth="376.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="22.0" AnchorPane.rightAnchor="22.0" AnchorPane.topAnchor="115.0">
                <columns>
                   <TableColumn fx:id="addToOrderColumn" prefWidth="136.66665267944336" text="Add to Order" />
                   <TableColumn fx:id="productColumn" prefWidth="111.33332824707031" text="Product" />
