@@ -24,7 +24,7 @@ public class SupplierProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Integer id;
     
     @ManyToOne
     @JoinColumn(name = "supplier_id", nullable = false)
@@ -135,14 +135,24 @@ public class SupplierProduct {
 
     @Override
     public boolean equals(Object o) {
-        if(this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        SupplierProduct that = (SupplierProduct) o;
-        return id == that.id;
+        if (this == o) return true;
+        if (!(o instanceof SupplierProduct)) return false;
+        SupplierProduct other = (SupplierProduct) o;
+
+        // 1) If both have DB ids, compare by id
+        if (id != null && other.id != null) {
+            return id.equals(other.id);
+        }
+
+        // 2) Otherwise compare by business key (supplier + product)
+        return Objects.equals(supplier, other.supplier)
+                && Objects.equals(product,  other.product);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return (id != null)
+                ? id.hashCode()                         // persisted entity
+                : Objects.hash(supplier, product);      // transient entity
     }
 }

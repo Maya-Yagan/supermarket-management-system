@@ -34,16 +34,12 @@ public class SupplierService {
         supplierDAO.deleteSupplier(id);
     }
 
-    public void updateSupplier(Supplier supplier) {
-        supplierDAO.updateSupplier(supplier);
-    }
-
     public void updateSupplierData(Supplier supplier, String name, String email, String phone) {
         supplier.setName(name);
         supplier.setEmail(email);
         supplier.setPhoneNumber(phone);
         validationService.validateSupplier(supplier);
-        updateSupplier(supplier);
+        supplierDAO.updateSupplier(supplier);
     }
 
     public void addSupplier(String name, String email, String phone, Map<Product, Float> products) {
@@ -73,27 +69,42 @@ public class SupplierService {
         return Collections.emptyList();
     }
 
-    public void addProductsToSupplier(Supplier supplier, Map<Product, Float> products){
-        if(products.isEmpty())
-            throw new CustomException(
-                    "Please select at least one product to add.",
-                    "NOT_FOUND");
-        for(Map.Entry<Product, Float> e : products.entrySet()){
-            Product product = e.getKey();
-            Float price = e.getValue();
-            validationService.parseAndValidateFloat(Float.toString(price),
-                    "Supplier price for " + product.getName());
-            boolean exists =
-                    supplier.getSupplierProducts()
-                    .stream()
-                    .anyMatch(sp -> sp.getProduct().equals(product));
-            if(!exists){
-                SupplierProduct sp = new SupplierProduct(product, supplier, price);
-                supplier.getSupplierProducts().add(sp);
+    public void addProductsToSupplier(Supplier supplier, Map<Product, Float> products) {
+        if (supplier == null)
+            throw new CustomException("No supplier is currently being edited.", "NOT_FOUND");
+        if (products.isEmpty())
+            throw new CustomException("Please select at least one product to add.", "NOT_FOUND");
+
+        for (var entry : products.entrySet()) {
+            Product p = entry.getKey();
+            Float rawPrice = entry.getValue();
+
+            float price = validationService.parseAndValidateFloat(
+                    rawPrice.toString(),
+                    "Price for " + p.getName()
+            );
+
+            SupplierProduct existing = supplier.getSupplierProducts().stream()
+                    .filter(sp -> sp.getProduct().equals(p))
+                    .findFirst()
+                    .orElse(null);
+
+            if (existing != null) {
+                existing.setPrice(price);              // update existing price
+            } else {
+                SupplierProduct sp = new SupplierProduct(p, supplier, price);
+                supplier.getSupplierProducts().add(sp); // add new mapping
             }
         }
+
+        System.out.println("SupplierProducts in memory: " +
+                supplier.getSupplierProducts().size());
+        supplier.getSupplierProducts().forEach(sp ->
+                System.out.println(" -> " + sp.getProduct().getName()));
+
         supplierDAO.updateSupplier(supplier);
     }
+
 
     public void deleteProductFromSupplier(Supplier supplier, Product product) {
         supplierDAO.deleteProductFromSupplier(supplier, product);

@@ -80,38 +80,19 @@ public class SupplierDAO {
             return null;
         }
     }
-    
-    public void updateSupplier(Supplier supplier){
+
+    public void updateSupplier(Supplier supplier) {
         Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()){
+        try(Session session = HibernateUtil.getSessionFactory().openSession()){
             transaction = session.beginTransaction();
-            Supplier managedSupplier = session.get(Supplier.class, supplier.getId());
-            if(managedSupplier != null){
-                managedSupplier.setName(supplier.getName());
-                managedSupplier.setEmail(supplier.getEmail());
-                managedSupplier.setPhoneNumber(supplier.getPhoneNumber());
-                Hibernate.initialize(managedSupplier.getSupplierProducts());
-                Map<Product, SupplierProduct> existingMap = managedSupplier.getSupplierProducts().stream()
-                        .collect(Collectors.toMap(SupplierProduct::getProduct, sp -> sp));
-                for(SupplierProduct sp : supplier.getSupplierProducts()){
-                    SupplierProduct existingSp = existingMap.get(sp.getProduct());
-                    if(existingSp != null)
-                        existingSp.setPrice(sp.getPrice());
-                    else
-                        managedSupplier.getSupplierProducts().add(
-                                new SupplierProduct(sp.getProduct(), managedSupplier, sp.getPrice())
-                        );
-                }
-                session.merge(managedSupplier);
-            }
-            session.flush();
+            session.merge(supplier);
             transaction.commit();
         } catch(Exception e){
             if(transaction != null) transaction.rollback();
             e.printStackTrace();
         }
     }
-    
+
     public void deleteProductFromSupplier(Supplier supplier, Product product){
         Transaction transaction = null;
         try(Session session = HibernateUtil.getSessionFactory().openSession()){

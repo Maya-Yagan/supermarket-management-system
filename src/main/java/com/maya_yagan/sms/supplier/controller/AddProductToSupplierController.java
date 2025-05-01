@@ -123,6 +123,11 @@ public class AddProductToSupplierController extends AbstractTableController<Prod
 
     private void saveProductToSupplier(){
         try{
+            System.out.println("Selected products:");
+            selectedProducts.forEach((p, price) -> {
+                System.out.println("Product: " + p.getName() + " | Price: " + price);
+            });
+
             supplierService.addProductsToSupplier(supplier, selectedProducts);
             AlertUtil.showAlert(
                     Alert.AlertType.INFORMATION,

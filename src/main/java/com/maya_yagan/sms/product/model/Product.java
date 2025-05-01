@@ -33,7 +33,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Integer id;
     @Column(name = "name")
     private String name;
     @Column(name = "price")
@@ -235,7 +235,7 @@ public class Product {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Product product = (Product) obj;
-        return id == product.id;
+        return Objects.equals(id, product.id);
     }
 
     @Override

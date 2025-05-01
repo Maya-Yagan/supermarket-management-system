@@ -23,7 +23,7 @@ public class Supplier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Integer id;
     @Column(name = "name")
     private String name;
     @Column(name = "email")
@@ -169,7 +169,7 @@ public class Supplier {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Supplier supplier = (Supplier) obj;
-        return id == supplier.id;
+        return Objects.equals(id, supplier.id);
     }
     
     /**
