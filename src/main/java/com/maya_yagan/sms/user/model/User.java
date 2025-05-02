@@ -1,9 +1,7 @@
 package com.maya_yagan.sms.user.model;
 
 import com.maya_yagan.sms.order.model.Order;
-import com.maya_yagan.sms.user.model.Role;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 import javax.persistence.*;
 import org.mindrot.jbcrypt.BCrypt;
@@ -237,7 +235,7 @@ public class User {
     /**
      * Returns the roles assigned to the user.
      * 
-     * @return the list of roles
+     * @return the set of roles
      */
     public Set<Role> getRoles() {
         return roles;

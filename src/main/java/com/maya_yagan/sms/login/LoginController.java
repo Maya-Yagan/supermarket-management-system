@@ -23,7 +23,6 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 /**
  * Controller class for the main login screen of the application.
- * 
  * Note: This controller uses Hibernate for database access
  * and depends on the AuthenticationService for password verification.
  * 

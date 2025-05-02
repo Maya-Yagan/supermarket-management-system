@@ -23,11 +23,6 @@ import org.kordamp.ikonli.javafx.FontIcon;
 /**
  * FXML Controller class for managing the home page in the supermarket management system.
  *
- * This controller handles the user interface for the home page, including the 
- * sidebar, navigation between different management pages (product, user, warehouse), 
- * and logging out of the application. It allows toggling the sidebar visibility and 
- * setting up the content of the main screen dynamically based on user actions.
- * 
  * @author Maya Yagan
  */
 public class HomePageController implements Initializable {

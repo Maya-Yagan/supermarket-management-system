@@ -1,6 +1,5 @@
 package com.maya_yagan.sms.supplier.model;
 
-import com.maya_yagan.sms.supplier.model.Supplier;
 import com.maya_yagan.sms.product.model.Product;
 import javax.persistence.Column;
 import javax.persistence.Entity;

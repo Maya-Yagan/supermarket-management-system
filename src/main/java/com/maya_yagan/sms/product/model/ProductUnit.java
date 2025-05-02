@@ -18,7 +18,7 @@ public enum ProductUnit {
      * @param fullName the full name of the unit
      * @param shortName the short name of the unit
      */
-    private ProductUnit(String fullName, String shortName) {
+     ProductUnit(String fullName, String shortName) {
         this.fullName = fullName;
         this.shortName = shortName;
     }

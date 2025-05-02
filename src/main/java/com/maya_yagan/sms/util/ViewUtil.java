@@ -124,7 +124,7 @@ public class ViewUtil {
         dialog.setContentText(content);
 
         Optional<String> result = dialog.showAndWait();
-        if (!result.isPresent()) {
+        if (result.isEmpty()) {
             return;
         }
 
@@ -168,7 +168,7 @@ public class ViewUtil {
         dialog.setContentText(content);
 
         Optional<String> result = dialog.showAndWait();
-        if (!result.isPresent()) {
+        if (result.isEmpty()) {
             return;
         }
 
