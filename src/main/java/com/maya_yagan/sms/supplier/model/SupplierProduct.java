@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.util.Objects;
 
 /**
  * Represents the association between a supplier and a product in the supermarket management system.
@@ -131,5 +132,18 @@ public class SupplierProduct {
                 "product=" + product.getName() +
                 ", supplier=" + supplier.getName() + 
                 ", price=" + price + '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SupplierProduct that = (SupplierProduct) o;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

@@ -14,6 +14,7 @@ import com.maya_yagan.sms.warehouse.service.WarehouseService;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class OrderService {
     private final OrderDAO orderDAO = new OrderDAO();
@@ -119,10 +120,34 @@ public class OrderService {
                 .sum();
     }
 
+    public float calculateTotalPrice(Map<SupplierProduct,Integer> productsAmount) {
+        return (float) productsAmount.entrySet().stream()
+                .mapToDouble(e -> e.getKey().getPrice() * e.getValue())
+                .sum();
+    }
+
     public int calculateTotalProducts(Order order) {
         return orderDAO.getOrderById(order.getId()).getOrderProducts().stream()
                 .mapToInt(OrderProduct::getAmount)
                 .sum();
+    }
+
+    public void saveOrder(Map<SupplierProduct, Integer> products, Supplier supplier){
+        Order order = new Order();
+        order.setName(supplier.getName() + " Order - " + LocalDate.now());
+        order.setOrderDate(LocalDate.now());
+        order.setSupplier(supplier);
+        Set<OrderProduct> orderProducts = products.entrySet().stream()
+                        .map(e -> {
+                            OrderProduct op = new OrderProduct();
+                            op.setOrder(order);
+                            op.setProduct(e.getKey().getProduct());
+                            op.setAmount(e.getValue());
+                            return op;
+                        }).collect(Collectors.toSet());
+
+        order.setOrderProducts(orderProducts);
+        orderDAO.insertOrder(order);
     }
 
     public Order getOrderById(int id){

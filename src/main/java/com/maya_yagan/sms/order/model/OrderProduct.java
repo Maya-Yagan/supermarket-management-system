@@ -54,7 +54,15 @@ public class OrderProduct {
     public void setAmount(int amount) {
         this.amount = amount;
     }
-    
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
     @Override
     public String toString(){
         return "OrderProduct{" +
