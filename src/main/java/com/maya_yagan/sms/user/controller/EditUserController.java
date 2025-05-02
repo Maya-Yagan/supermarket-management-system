@@ -3,7 +3,6 @@ package com.maya_yagan.sms.user.controller;
 import com.maya_yagan.sms.user.model.User;
 import com.maya_yagan.sms.util.ExceptionHandler;
 import com.maya_yagan.sms.util.CustomException;
-import com.maya_yagan.sms.util.AlertUtil;
 import javafx.fxml.FXML;
 
 /**

@@ -1,5 +1,6 @@
 package com.maya_yagan.sms.util;
 
+import com.maya_yagan.sms.order.model.Order;
 import com.maya_yagan.sms.product.model.Category;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.supplier.model.Supplier;
@@ -70,7 +71,6 @@ public class ValidationService {
         }
     }
 
-    
     public void validateProduct(Product product){
         if(product.getName().isEmpty() || product.getPrice() == 0 || 
            product.getProductionDate() == null || 
@@ -100,15 +100,21 @@ public class ValidationService {
     
     public float parseAndValidateFloat(String input, String fieldName){
         try{
-            return Float.parseFloat(input);
+            float number = Float.parseFloat(input.trim());
+            if(number <= 0)
+                throw new CustomException("The entered number must be greater than zero.", "INVALID_NUMBER");
+            else return number;
         } catch(NumberFormatException e){
-            throw new CustomException("Invalid " + fieldName + " format.\nPlease Enter a valid " + fieldName, "INVALID_NUMBER");
+            throw new CustomException("Invalid " + fieldName + " format.\nPlease Enter a valid" + fieldName, "INVALID_NUMBER");
         }
     }
 
     public int parseAndValidateInt(String input, String fieldName){
         try{
-            return Integer.parseInt(input);
+            int number = Integer.parseInt(input.trim());
+            if(number <= 0)
+                throw new CustomException("The entered number must be greater than zero.", "INVALID_NUMBER");
+            else return number;
         } catch(NumberFormatException e){
             throw new CustomException("Invalid " + fieldName + " format.\nPlease Enter a valid " + fieldName, "INVALID_NUMBER");
         }
@@ -135,5 +141,12 @@ public class ValidationService {
                     "The entered amount exceeds the remaining warehouse capacity. "
                             + "Remaining capacity: " + remainingCapacity,
                     "INVALID_CAPACITY");
+    }
+
+    public void validateOrder(Order order){
+        if(order.getName().isEmpty() || order.getOrderDate() == null)
+            throw new CustomException("Please fill all fields", "EMPTY_FIELDS");
+        if(!isValidDate(order.getOrderDate().format(DATE_FORMATTER)))
+            throw new CustomException("Invalid date format.\nPlease follow this format: DD.MM.YYYY", "INVALID_DATE");
     }
 }

@@ -9,8 +9,8 @@ import com.maya_yagan.sms.user.model.User;
  * @author Maya Yagan
  */
 public class AuthenticationService {
-    private String userPassword;
-    private String userEmail;
+    private final String userPassword;
+    private final String userEmail;
 
     /**
      * Constructs an AuthenticationService instance with the specified email and password.

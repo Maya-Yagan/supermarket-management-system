@@ -33,6 +33,14 @@ public class ExceptionHandler {
                 alertTitle = "Invalid Warehouse Capacity";
                 alertMessage = exception.getMessage();
                 break;
+            case "INSUFFICIENT_CAPACITY":
+                alertTitle = "Insufficient Warehouse Capacity";
+                alertMessage = exception.getMessage();
+                break;
+            case "NOT_FOUND":
+                alertTitle = "Missing";
+                alertMessage = exception.getMessage();
+                break;
             default:
                 alertTitle = "Unexpected Error";
                 alertMessage = "An unexpected error occurred: " + exception.getMessage();
