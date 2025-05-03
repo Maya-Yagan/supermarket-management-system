@@ -198,6 +198,36 @@ public class ViewUtil {
                 val -> true, onSuccess);
     }
 
+    public static void showStringInputDialog(
+            String title,
+            String header,
+            String content,
+            String defaultValue,
+            String fieldName,
+            Consumer<String> onSuccess) {
+
+        TextInputDialog dialog = new TextInputDialog(defaultValue);
+        dialog.setTitle(title);
+        dialog.setHeaderText(header);
+        dialog.setContentText(content);
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isEmpty()) {
+            return;
+        }
+
+        try {
+            String value = result.get().trim();
+            if (value.isEmpty()) {
+                throw new CustomException(fieldName + " cannot be empty", "EMPTY_STRING");
+            }
+            onSuccess.accept(value);
+        } catch (CustomException ex) {
+            ExceptionHandler.handleException(ex);
+        }
+    }
+
+
     public static ModalPane initializeModalPane(StackPane stackPane) {
         ModalPane modalPane = new ModalPane();
         modalPane.setId("modalPane");
