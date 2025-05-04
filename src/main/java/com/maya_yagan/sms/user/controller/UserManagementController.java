@@ -7,6 +7,7 @@ import com.maya_yagan.sms.user.model.User;
 import com.maya_yagan.sms.user.service.UserService;
 import com.maya_yagan.sms.util.AlertUtil;
 import com.maya_yagan.sms.util.ContextMenuUtil;
+import com.maya_yagan.sms.util.DateUtil;
 import com.maya_yagan.sms.util.ViewUtil;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
@@ -26,7 +27,7 @@ public class UserManagementController extends AbstractTableController<User> {
 
     @FXML private TableColumn<User, String> firstNameColumn, lastNameColumn, genderColumn, positionColumn, partFullTimeColumn, emailColumn, phoneColumn, tcNumberColumn;
     @FXML private TableColumn<User, Float> salaryColumn;
-    @FXML private TableColumn<User, LocalDate> startDateColumn;
+    @FXML private TableColumn<User, String> startDateColumn;
     @FXML private TableColumn<User, Integer> ageColumn;
     @FXML private Button addUserButton;
     @FXML private StackPane stackPane;
@@ -40,7 +41,11 @@ public class UserManagementController extends AbstractTableController<User> {
         lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
         genderColumn.setCellValueFactory(new PropertyValueFactory<>("gender"));
         salaryColumn.setCellValueFactory(new PropertyValueFactory<>("salary"));
-        startDateColumn.setCellValueFactory(new PropertyValueFactory<>("startDate"));
+        startDateColumn.setCellValueFactory(cellData -> {
+            LocalDate date = cellData.getValue().getStartDate();
+            String text = (date != null) ? DateUtil.formatDate(date) : "";
+            return new ReadOnlyObjectWrapper<>(text);
+        });
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
         phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
         tcNumberColumn.setCellValueFactory(new PropertyValueFactory<>("tcNumber"));
@@ -76,6 +81,7 @@ public class UserManagementController extends AbstractTableController<User> {
     @Override
     protected List<ContextMenuUtil.MenuItemConfig<User>> menuItemsFor(User user) {
         return List.of(
+                new ContextMenuUtil.MenuItemConfig<>("Employee Attendance", (item, row) -> handleAttendanceAction(item)),
                 new ContextMenuUtil.MenuItemConfig<>("Edit User", (item, row) -> handleEditAction(item)),
                 new ContextMenuUtil.MenuItemConfig<>("Delete User", (item, row) -> handleDeleteAction(item))
         );
@@ -101,7 +107,7 @@ public class UserManagementController extends AbstractTableController<User> {
                 "Delete User",
                 "Are you sure you want to delete this user?",
                 "This action cannot be undone.",
-                (u) -> {
+                u -> {
                     userService.deleteUser(u.getId());
                     refresh();
                 }
@@ -115,5 +121,15 @@ public class UserManagementController extends AbstractTableController<User> {
             controller.setModalPane(modalPane);
             controller.setOnCloseAction(this::refresh);
         }, modalPane);
+    }
+
+    private void handleAttendanceAction(User user) {
+        if(user != null)
+            ViewUtil.displayModalPaneView("/view/user/EmployeeAttendance.fxml",
+                    (EmployeeAttendanceController controller) -> {
+                        controller.setModalPane(modalPane);
+                        controller.setUser(user);
+                        controller.setOnCloseAction(this::refresh);
+                    }, modalPane);
     }
 }

@@ -1,10 +1,12 @@
 package com.maya_yagan.sms.util;
 
+import com.maya_yagan.sms.login.AuthenticationService;
 import com.maya_yagan.sms.order.model.Order;
 import com.maya_yagan.sms.product.model.Category;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.supplier.model.Supplier;
 import com.maya_yagan.sms.user.model.User;
+import com.maya_yagan.sms.user.service.UserService;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -148,5 +150,14 @@ public class ValidationService {
             throw new CustomException("Please fill all fields", "EMPTY_FIELDS");
         if(!isValidDate(order.getOrderDate().format(DATE_FORMATTER)))
             throw new CustomException("Invalid date format.\nPlease follow this format: DD.MM.YYYY", "INVALID_DATE");
+    }
+
+    public void validateLogin(String email, String password){
+        AuthenticationService auth = new AuthenticationService();
+        if(email == null || email.isBlank() || password == null || password.isBlank())
+            throw new CustomException("Please fill all fields", "EMPTY_FIELDS");
+        UserService userService = new UserService();
+        User user = userService.getUserByEmail(email);
+        auth.authenticate(user, email, password);
     }
 }
