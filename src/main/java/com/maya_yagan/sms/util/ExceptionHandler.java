@@ -41,6 +41,18 @@ public class ExceptionHandler {
                 alertTitle = "Missing";
                 alertMessage = exception.getMessage();
                 break;
+            case "INVALID_FIELD":
+                alertTitle = "Invalid Fields";
+                alertMessage = exception.getMessage();
+                break;
+            case "CHECK_OUT":
+                alertTitle = "Check-out Error";
+                alertMessage = exception.getMessage();
+                break;
+            case "INVALID_FORMAT":
+                alertTitle = "Invalid Format";
+                alertMessage = exception.getMessage();
+                break;
             default:
                 alertTitle = "Unexpected Error";
                 alertMessage = "An unexpected error occurred: " + exception.getMessage();

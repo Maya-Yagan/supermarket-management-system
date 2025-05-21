@@ -9,11 +9,13 @@ import java.util.function.Consumer;
 import java.util.function.DoublePredicate;
 import java.util.function.IntPredicate;
 
+import com.maya_yagan.sms.common.ValidationService;
 import com.maya_yagan.sms.supplier.model.SupplierProduct;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -153,7 +155,7 @@ public class ViewUtil {
                 title, header, content, defaultValue, fieldName,
                 val -> true, onSuccess);
     }
-    
+
     public static void showFloatInputDialog(
             String title,
             String header,
@@ -198,13 +200,43 @@ public class ViewUtil {
                 val -> true, onSuccess);
     }
 
+    public static void showStringInputDialog(
+            String title,
+            String header,
+            String content,
+            String defaultValue,
+            String fieldName,
+            Consumer<String> onSuccess) {
+
+        TextInputDialog dialog = new TextInputDialog(defaultValue);
+        dialog.setTitle(title);
+        dialog.setHeaderText(header);
+        dialog.setContentText(content);
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isEmpty()) {
+            return;
+        }
+
+        try {
+            String value = result.get().trim();
+            if (value.isEmpty()) {
+                throw new CustomException(fieldName + " cannot be empty", "EMPTY_STRING");
+            }
+            onSuccess.accept(value);
+        } catch (CustomException ex) {
+            ExceptionHandler.handleException(ex);
+        }
+    }
+
+
     public static ModalPane initializeModalPane(StackPane stackPane) {
         ModalPane modalPane = new ModalPane();
         modalPane.setId("modalPane");
         stackPane.getChildren().add(modalPane);
         return modalPane;
     }
-    
+
     public static void setupDynamicLayoutAdjustment(MenuButton menuButton, List<Node> targetNodes, List<Double> offsets){
         if(targetNodes.size() != offsets.size())
             throw new IllegalArgumentException("The number of target nodes must match the number of offsets.");
@@ -242,5 +274,19 @@ public class ViewUtil {
             return true;
         }
         return false;
+    }
+
+    public static void changeScene(String path, String title,StackPane targetPane){
+        try {
+            FXMLLoader loader = new FXMLLoader(ViewUtil.class.getResource(path));
+            Parent root = loader.load();
+            Stage stage = (Stage) targetPane.getScene().getWindow();
+            Scene scene = stage.getScene();
+            scene.setRoot(root);
+            stage.setTitle(title);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.maya_yagan.sms.login;
+package com.maya_yagan.sms.login.service;
 
 import com.maya_yagan.sms.user.model.User;
 import com.maya_yagan.sms.util.CustomException;

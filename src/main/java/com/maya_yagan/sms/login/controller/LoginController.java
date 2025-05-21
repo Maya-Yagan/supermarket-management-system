@@ -1,13 +1,18 @@
-package com.maya_yagan.sms.login;
+package com.maya_yagan.sms.login.controller;
 
 import atlantafx.base.controls.PasswordTextField;
-import com.maya_yagan.sms.homepage.HomePageController;
+import com.maya_yagan.sms.common.ValidationService;
+import com.maya_yagan.sms.homepage.controller.HomePageController;
+import com.maya_yagan.sms.login.service.LoginService;
+import com.maya_yagan.sms.user.model.User;
+import com.maya_yagan.sms.user.service.AttendanceService;
 import com.maya_yagan.sms.util.*;
 
 import javafx.scene.layout.StackPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -27,14 +32,21 @@ public class LoginController implements Initializable {
     @FXML private Button loginButton;
     @FXML private StackPane stackPane;
 
+    private static LocalDate lastAttendanceInsertDate  = null;
     private final LoginService loginService = new LoginService();
     private final ValidationService validationService = new ValidationService();
+    private final AttendanceService attendanceService = new AttendanceService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        LocalDate today = LocalDate.now();
         configureEmailField();
         configurePasswordField();
         configureLoginButton();
+        if(lastAttendanceInsertDate == null || !lastAttendanceInsertDate.equals(today)){
+            attendanceService.createBlankAttendancesForToday();
+            lastAttendanceInsertDate = today;
+        }
     }
 
     private void configureEmailField() {
@@ -71,8 +83,8 @@ public class LoginController implements Initializable {
         String password = passwordField.getPassword();
 
         try {
-            if (loginService.login(email, password))
-                navigateToHomePage();
+            loginService.login(email, password);
+            navigateToHomePage();
         } catch (CustomException e) {
             ExceptionHandler.handleException(e);
         }

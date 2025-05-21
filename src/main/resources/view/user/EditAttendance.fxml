@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<StackPane fx:id="stackPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="248.0" prefWidth="378.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.user.controller.EditAttendanceController">
+   <children>
+      <GridPane alignment="CENTER" hgap="5.0" prefHeight="226.0" prefWidth="353.0" style="-fx-padding: 20;" vgap="5.0">
+         <columnConstraints>
+            <ColumnConstraints maxWidth="151.33332316080728" minWidth="139.33333333333334" prefWidth="139.33333333333334" />
+            <ColumnConstraints maxWidth="208.66666666666663" minWidth="188.66667683919272" prefWidth="192.6666259765625" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints maxHeight="37.333343505859375" minHeight="10.0" prefHeight="36.000006103515624" />
+            <RowConstraints maxHeight="37.333343505859375" minHeight="6.399981689453121" prefHeight="11.19999389648438" />
+            <RowConstraints maxHeight="38.40001831054687" minHeight="10.0" prefHeight="28.000024414062494" />
+            <RowConstraints maxHeight="43.20000000000002" minHeight="10.0" prefHeight="30.400012207031267" />
+            <RowConstraints maxHeight="40.66666666666666" minHeight="10.0" prefHeight="37.59998779296873" />
+            <RowConstraints maxHeight="40.66666666666666" minHeight="10.0" prefHeight="32.79999389648438" />
+            <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+         </rowConstraints>
+         <children>
+            <Label text="Check in hour:" GridPane.rowIndex="3" />
+            <TextField fx:id="checkinField" prefHeight="47.0" prefWidth="193.0" promptText="HH:MM" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Text fill="#455079" strokeType="OUTSIDE" strokeWidth="0.0" text="Edit Attendance Record">
+               <font>
+                  <Font size="23.0" />
+               </font>
+            </Text>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Check out hour:" GridPane.rowIndex="4" />
+            <TextField fx:id="checkoutField" promptText="HH:MM" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Notes:" GridPane.rowIndex="5" />
+            <TextField fx:id="notesField" promptText="Add notes if needed" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <CheckBox fx:id="absneceCheckbox" mnemonicParsing="false" text="Absent?" GridPane.rowIndex="2" />
+         </children>
+      </GridPane>
+   </children>
+</StackPane>

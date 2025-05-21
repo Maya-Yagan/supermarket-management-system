@@ -1,4 +1,4 @@
-package com.maya_yagan.sms.homepage;
+package com.maya_yagan.sms.homepage.controller;
 
 import atlantafx.base.theme.Styles;
 import com.maya_yagan.sms.component.Sidebar;
@@ -7,7 +7,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import com.maya_yagan.sms.util.UserSession;
+import com.maya_yagan.sms.common.UserSession;
 import com.maya_yagan.sms.util.ViewUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;

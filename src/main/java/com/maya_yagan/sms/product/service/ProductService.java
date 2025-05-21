@@ -5,7 +5,7 @@ import com.maya_yagan.sms.product.dao.ProductDAO;
 import com.maya_yagan.sms.product.model.Category;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.product.model.ProductUnit;
-import com.maya_yagan.sms.util.ValidationService;
+import com.maya_yagan.sms.common.ValidationService;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashSet;

@@ -7,7 +7,7 @@ import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.supplier.model.Supplier;
 import com.maya_yagan.sms.supplier.model.SupplierProduct;
 import com.maya_yagan.sms.util.CustomException;
-import com.maya_yagan.sms.util.ValidationService;
+import com.maya_yagan.sms.common.ValidationService;
 import com.maya_yagan.sms.warehouse.model.Warehouse;
 import com.maya_yagan.sms.warehouse.service.WarehouseService;
 
