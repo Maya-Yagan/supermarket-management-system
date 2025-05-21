@@ -1,6 +1,5 @@
 package com.maya_yagan.sms.util;
 
-import com.maya_yagan.sms.product.model.Category;
 import java.util.function.Supplier;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;

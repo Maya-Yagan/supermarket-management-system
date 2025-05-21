@@ -3,7 +3,6 @@ package com.maya_yagan.sms.user.controller;
 import com.maya_yagan.sms.user.model.User;
 import com.maya_yagan.sms.util.ExceptionHandler;
 import com.maya_yagan.sms.util.CustomException;
-import com.maya_yagan.sms.util.AlertUtil;
 import javafx.fxml.FXML;
 
 /**
@@ -34,10 +33,10 @@ public class EditUserController extends BaseUserController {
         selectedEmploymentType = user.getEmploymentType();
         employmentTypeMenu.setText(selectedEmploymentType);
         selectedPositions.clear();
-        user.getRoles().forEach(role -> {
-                selectedPositions.add(role.getName());         
-        });
+        user.getRoles().forEach(role -> selectedPositions.add(role.getName()));
         setPositionMenuSelection();
+        selectedWorkHours = user.getWorkHours();
+        workHoursMenubutton.setText(String.valueOf(selectedWorkHours));
     }
   
     @FXML 
@@ -56,7 +55,9 @@ public class EditUserController extends BaseUserController {
                 selectedGender,
                 selectedEmploymentType,
                 selectedPositions,
-                passwordField.getText());
+                passwordField.getText(),
+                selectedWorkHours
+            );
             
             if(onCloseAction != null) onCloseAction.run();
             close();

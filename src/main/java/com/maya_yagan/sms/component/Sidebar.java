@@ -26,7 +26,6 @@ public class Sidebar {
     
     /**
      * Creates a sidebar with collapsible functionality.
-     * 
      * This method initializes a sidebar and populates it with the given items. 
      * The sidebar's toggle button is added at the top, followed by the list of sidebar items.
      * Each sidebar item is represented by a button, and if it has an icon, the icon will be displayed.
@@ -70,7 +69,6 @@ public class Sidebar {
     
     /**
      * Toggles the visibility of the sidebar with a smooth animation.
-     * 
      * The sidebar will either expand or collapse based on the current state. 
      * The transition is animated to smoothly adjust the width, 
      * and the visibility of child elements is adjusted.
@@ -93,31 +91,31 @@ public class Sidebar {
             }
         });
     }
-    
+
     /**
      * Represents a single item in the sidebar.
-     * A sidebar item may include a name, an icon, an action to perform when clicked, 
+     * A sidebar item may include a name, an icon, an action to perform when clicked,
      * and optionally, child items that represent a hierarchical structure.
      */
     public static class SidebarItem {
         private final String name;
         private final Feather icon;
         private final Runnable action;
-        private final List<SidebarItem> childern;
+        private final List<SidebarItem> children;
 
         /**
          * Constructs a SidebarItem with the given properties.
-         * 
+         *
          * @param name The name of the sidebar item.
          * @param icon The icon associated with the item (can be null).
          * @param action The action to perform when the item is clicked (can be null).
-         * @param childern A list of child SidebarItem objects (can be empty).
+         * @param children A list of child SidebarItem objects (can be empty).
          */
-        public SidebarItem(String name, Feather icon, Runnable action, List<SidebarItem> childern) {
+        public SidebarItem(String name, Feather icon, Runnable action, List<SidebarItem> children) {
             this.name = name;
             this.icon = icon;
             this.action = action;
-            this.childern = childern;
+            this.children = children;
         }
 
         public String getName() {
@@ -132,20 +130,20 @@ public class Sidebar {
             return action;
         }
 
-        public List<SidebarItem> getChildern() {
-            return childern;
+        public List<SidebarItem> getChildren() {
+            return children;
         }
-        
+
         /**
-         * Creates a UI representation of a sidebar item, either a button or a titled pane 
+         * Creates a UI representation of a sidebar item, either a button or a titled pane
          * depending on whether the item has child items.
-         * 
+         *
          * @param item The SidebarItem to create a UI component for.
          * @return A Node representing the sidebar item (Button or TitledPane).
          */
         private static Node createSidebarItem(SidebarItem item){
             // If the item has no children, create a button
-            if(item.getChildern() == null || item.getChildern().isEmpty()){
+            if(item.getChildren() == null || item.getChildren().isEmpty()){
                 Button button = new Button(item.getName());
                 button.setStyle("-fx-text-fill: white; -fx-background-color: transparent; -fx-alignment: LEFT;");
                 button.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.ACCENT);
@@ -157,7 +155,7 @@ public class Sidebar {
             // If the item has children, create a TitledPane
             else{
                 VBox childrenContainer = new VBox(5);
-                for(SidebarItem child : item.getChildern()){
+                for(SidebarItem child : item.getChildren()){
                     childrenContainer.getChildren().add(createSidebarItem(child));
                 }
                 TitledPane titledPane = new TitledPane(item.getName(), childrenContainer);

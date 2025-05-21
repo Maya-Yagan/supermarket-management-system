@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.String?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<StackPane fx:id="stackPane" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.product.controller.ProductManagementController">
+<StackPane fx:id="stackPane" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.product.controller.ProductManagementController">
     <children>
     <AnchorPane fx:id="AnchorPane">
         <children>
@@ -22,7 +17,8 @@
                   <TableColumn fx:id="unitColumn" text="Unit" />
                 <TableColumn fx:id="productionDate" text="Production Date" />
                 <TableColumn fx:id="expirationDateColumn" text="Expiration Date" />
-                <TableColumn fx:id="discountsColumn" text="Discount(s)" />
+                <TableColumn fx:id="discountsColumn" text="Discount(%)" />
+                 <TableColumn fx:id="barcodeColumn" prefWidth="75.0" text="Barcode" />
              </columns>
              <styleClass>
                 <String fx:value="bordered" />
@@ -41,6 +37,7 @@
           </MenuButton>
           <Button fx:id="addCategoryButton" layoutX="157.0" layoutY="80.0" mnemonicParsing="false" styleClass="accent" text="Add Category" AnchorPane.topAnchor="80.0" />
           <Button fx:id="editCategoriesButton" layoutX="272.0" layoutY="80.0" mnemonicParsing="false" styleClass="accent" text="Edit Categories" AnchorPane.topAnchor="80.0" />
+            <Button fx:id="MoneyUnitButton" layoutX="533.0" layoutY="82.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="128.0" text="Money Unit " />
         </children>
     </AnchorPane>
     </children>

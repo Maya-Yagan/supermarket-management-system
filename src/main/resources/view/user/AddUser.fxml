@@ -16,7 +16,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<StackPane fx:id="stackPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="407.0" prefWidth="681.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.user.controller.AddUserController">
+<StackPane fx:id="stackPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="407.0" prefWidth="681.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.user.controller.AddUserController">
    <children>
       <GridPane alignment="CENTER" hgap="10" prefHeight="405.0" prefWidth="687.0" style="-fx-padding: 20;" vgap="10">
          <columnConstraints>
@@ -43,11 +43,11 @@
             <Label text="Last Name:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
             <TextField fx:id="lastNameField" promptText="Last Name" GridPane.columnIndex="3" GridPane.rowIndex="1" />
             <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-            <TextField promptText="example@domain.com"  fx:id="emailField" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+            <TextField fx:id="emailField" promptText="example@domain.com" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <Label text="Phone Number:" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-            <atlantafx.base.controls.MaskTextField mask="(999) 999 99 99" promptText="(XXX) XXX XX XX"  fx:id="phoneNumberField" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+            <atlantafx.base.controls.MaskTextField fx:id="phoneNumberField" mask="(999) 999 99 99" promptText="(XXX) XXX XX XX" GridPane.columnIndex="3" GridPane.rowIndex="3" />
             <Label text="TC Number:" GridPane.columnIndex="2" GridPane.rowIndex="6" />
-            <atlantafx.base.controls.MaskTextField fx:id="tcNumberField" mask="99999999999" promptText="99999999999" GridPane.columnIndex="3" GridPane.rowIndex="6"/>
+            <atlantafx.base.controls.MaskTextField fx:id="tcNumberField" mask="99999999999" promptText="99999999999" GridPane.columnIndex="3" GridPane.rowIndex="6" />
             <Label text="Birth Date:" GridPane.rowIndex="4" />
             <DatePicker fx:id="birthDatePicker" promptText="MM/DD/YYYY" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <Label text="Gender:" GridPane.columnIndex="2" GridPane.rowIndex="4" />
@@ -92,6 +92,8 @@
                </font>
             </Text>
             <Label fx:id="warningLabel" textFill="RED" GridPane.columnIndex="1" />
+            <Label text="Work Hours:" GridPane.columnIndex="2" GridPane.rowIndex="8" />
+            <MenuButton fx:id="workHoursMenubutton" mnemonicParsing="false" text="Select" GridPane.columnIndex="3" GridPane.rowIndex="8" />
          </children>
       </GridPane>
    </children>

@@ -3,11 +3,14 @@ package com.maya_yagan.sms.user.controller;
 import atlantafx.base.controls.ModalPane;
 import com.maya_yagan.sms.user.service.UserService;
 import com.maya_yagan.sms.util.DateUtil;
-import com.maya_yagan.sms.util.ValidationService;
+import com.maya_yagan.sms.common.ValidationService;
 import java.net.URL;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.ResourceBundle;
 import java.util.Set;
+
+import com.maya_yagan.sms.util.MenuButtonUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -21,7 +24,7 @@ public abstract class BaseUserController implements Initializable {
     @FXML protected TextField firstNameField, lastNameField, emailField, phoneNumberField, tcNumberField, salaryField;
     @FXML protected DatePicker birthDatePicker;
     @FXML protected PasswordField passwordField;
-    @FXML protected MenuButton  positionMenuButton, employmentTypeMenu, genderMenuButton;
+    @FXML protected MenuButton  positionMenuButton, employmentTypeMenu, genderMenuButton, workHoursMenubutton;
     @FXML protected CheckMenuItem managerCheckMenuItem, accountantCheckMenuItem, depotEmployeeCheckMenuItem, cashierCheckMenuItem;
     @FXML protected MenuItem partTimeMenuItem, fullTimeMenuItem, maleMenuItem, femaleMenuItem;
     
@@ -29,6 +32,7 @@ public abstract class BaseUserController implements Initializable {
     protected ModalPane modalPane;
     protected String selectedEmploymentType;
     protected String selectedGender;
+    protected int selectedWorkHours;
     protected final Set<String> selectedPositions = new HashSet<>();
     protected final UserService userService = new UserService();
     protected final ValidationService validationService = new ValidationService();
@@ -39,6 +43,7 @@ public abstract class BaseUserController implements Initializable {
         initializeGenderMenu();
         initializeEmploymentTypeMenu();
         initializePositionMenu();
+        initializeWorkHoursMenu();
         addFieldValidation();
     }
 
@@ -81,6 +86,24 @@ public abstract class BaseUserController implements Initializable {
                 .addListener((obs, oldVal, newVal) -> updateSelectedPositions());
         cashierCheckMenuItem.selectedProperty()
                 .addListener((obs, oldVal, newVal) -> updateSelectedPositions());
+    }
+
+    private void initializeWorkHoursMenu() {
+        MenuButtonUtil.populateMenuButton(
+                workHoursMenubutton,
+                () -> {
+                    Set<Integer> items = new LinkedHashSet<>();
+                    for (int i = 1; i <= 10; i++)
+                        items.add(i);
+                    return items;
+                },
+                Object::toString,
+                selectedValue -> {
+                    selectedWorkHours = selectedValue;
+                },
+                "Select",
+                () -> {}
+        );
     }
 
     private void updateSelectedPositions() {

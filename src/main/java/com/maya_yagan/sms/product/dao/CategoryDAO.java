@@ -16,12 +16,6 @@ import org.hibernate.query.Query;
  * @author Maya Yagan
  */
 public class CategoryDAO {
-    /**
-     * Inserts a new category into the database.
-     * 
-     * @param category The category to be inserted
-     * @return 
-     */
     public boolean insertCategory(Category category){
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()){

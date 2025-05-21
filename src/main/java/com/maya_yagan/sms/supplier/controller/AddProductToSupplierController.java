@@ -3,17 +3,14 @@ package com.maya_yagan.sms.supplier.controller;
 import atlantafx.base.controls.ModalPane;
 import com.maya_yagan.sms.common.AbstractTableController;
 import com.maya_yagan.sms.product.service.ProductService;
-import com.maya_yagan.sms.supplier.dao.SupplierDAO;
 import com.maya_yagan.sms.product.model.Category;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.supplier.model.Supplier;
-import com.maya_yagan.sms.supplier.model.SupplierProduct;
 import com.maya_yagan.sms.supplier.service.SupplierService;
 import com.maya_yagan.sms.util.*;
 
 import java.util.*;
 
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;

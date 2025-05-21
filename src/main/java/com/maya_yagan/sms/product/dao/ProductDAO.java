@@ -13,13 +13,13 @@ import org.hibernate.query.Query;
  * Data Access Object (DAO) for the Product entity.
  * This class provides methods for performing CRUD operations on Product data
  * in the database, including inserting, retrieving, updating, and deleting products.
- * 
+ *
  * @author Maya Yagan
  */
 public class ProductDAO {
     /**
      * Inserts a new product into the database.
-     * 
+     *
      * @param product The product to be inserted
      */
     public boolean insertProduct(Product product){
@@ -35,10 +35,10 @@ public class ProductDAO {
             return false;
         }
     }
-    
+
     /**
      * Retrieves a product by its unique identifier.
-     * 
+     *
      * @param id The unique identifier of the product
      * @return The product with the specified id, or null if not found
      */
@@ -52,10 +52,10 @@ public class ProductDAO {
             return null;
         }
     }
-    
+
     /**
      * Retrieves a set of products that belong to a specific category.
-     * 
+     *
      * @param category The category for which to retrieve products
      * @return A set of products in the specified category
      */
@@ -72,7 +72,7 @@ public class ProductDAO {
 
     /**
      * Retrieves all distinct products from the database.
-     * 
+     *
      * @return A set of all products
      */
     public Set<Product> getProducts(){
@@ -84,10 +84,10 @@ public class ProductDAO {
             return null;
         }
     }
-    
+
     /**
      * Updates an existing product in the database.
-     * 
+     *
      * @param product The product with updated data
      */
     public void updateProduct(Product product){
@@ -97,21 +97,23 @@ public class ProductDAO {
             Product p = session.get(Product.class, product.getId());
             p.setName(product.getName());
             p.setPrice(product.getPrice());
+            p.setDiscount(product.getDiscount());
             p.setProductionDate(product.getProductionDate());
             p.setExpirationDate(product.getExpirationDate());
             p.setCategory(product.getCategory());
             p.setUnit(product.getUnit());
+            p.setBarcode(product.getBarcode());
             session.update(p);
             transaction.commit();
         } catch (Exception e){
             if(transaction != null) transaction.rollback();
-          e.printStackTrace();
+            e.printStackTrace();
         }
     }
-    
+
     /**
      * Deletes a product from the database using its unique identifier.
-     * 
+     *
      * @param id The unique identifier of the product to be deleted
      */
     public void deleteProduct(int id){
@@ -123,7 +125,7 @@ public class ProductDAO {
             transaction.commit();
         } catch (Exception e){
             if(transaction != null) transaction.rollback();
-          e.printStackTrace();
+            e.printStackTrace();
         }
     }
 }

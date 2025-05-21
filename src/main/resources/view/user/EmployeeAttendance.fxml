@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+
+<StackPane fx:id="stackPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="608.0" prefWidth="897.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.user.controller.EmployeeAttendanceController">
+   <AnchorPane prefHeight="512.0" prefWidth="648.0">
+      <TableView fx:id="tableView" layoutX="30.4" layoutY="140.0" prefHeight="366.0" prefWidth="733.0" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="140.0">
+         <columns>
+            <TableColumn fx:id="dateColumn" prefWidth="66.39996641874313" text="Date" />
+            <TableColumn fx:id="dayColumn" prefWidth="49.5999755859375" text="Day" />
+            <TableColumn fx:id="absentColumn" prefWidth="76.0" text="Absent?" />
+            <TableColumn fx:id="checkInColumn" prefWidth="102.39996337890625" text="Check in" />
+            <TableColumn fx:id="checkOutColumn" prefWidth="102.39996337890625" text="Check out" />
+            <TableColumn fx:id="workingHoursColumn" prefWidth="123.99998474121094" text="Working Hours" />
+            <TableColumn fx:id="overtimeHoursColumn" prefWidth="128.79998779296875" text="Overtime Hours" />
+            <TableColumn fx:id="notesColumn" prefWidth="102.39996337890625" text="Notes" />
+         </columns>
+         <styleClass>
+            <String fx:value="bordered" />
+            <String fx:value="striped" />
+         </styleClass>
+      </TableView>
+      <Button fx:id="closeButton" layoutX="538.0" layoutY="355.0" mnemonicParsing="false" text="Close" AnchorPane.bottomAnchor="28.333333333333314" AnchorPane.rightAnchor="30.0" />
+      <Label layoutX="46.0" layoutY="373.0" text="Total absences:" AnchorPane.bottomAnchor="26.333333333333314" AnchorPane.leftAnchor="30.0" />
+      <Label layoutX="46.0" layoutY="353.0" text="Total hours:" AnchorPane.bottomAnchor="46.333333333333314" AnchorPane.leftAnchor="30.0" />
+      <Label fx:id="totalAbsencesLabel" layoutX="144.0" layoutY="466.0" style="-fx-font-weight: bold;" text="0" AnchorPane.bottomAnchor="26.0" AnchorPane.leftAnchor="145.0" />
+      <Label fx:id="totalHoursLabel" layoutX="150.0" layoutY="446.0" style="-fx-font-weight: bold;" text="0" AnchorPane.bottomAnchor="46.0" AnchorPane.leftAnchor="145.0" />
+      <Label layoutX="46.0" layoutY="22.0" text="Employee Attendance Report" textFill="#455079" AnchorPane.leftAnchor="30.0">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Label layoutX="52.0" layoutY="77.0" text="Employee:" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="77.0" />
+      <Label layoutX="51.0" layoutY="104.0" text="Start Date:" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="104.0" />
+      <Button fx:id="exportPDFButton" layoutX="577.0" layoutY="521.0" mnemonicParsing="false" styleClass="accent" text="Export to PDF" AnchorPane.bottomAnchor="28.600000000000023" AnchorPane.rightAnchor="108.60000000000002" />
+      <MenuButton fx:id="yearMenuButton" layoutX="476.0" layoutY="57.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="126.0" text="Select Year" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="57.0" />
+      <MenuButton fx:id="monthMenuButton" layoutX="476.0" layoutY="96.0" mnemonicParsing="false" text="Select Month" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="96.0" />
+      <Label layoutX="570.0" layoutY="65.0" text="Year:" AnchorPane.rightAnchor="194.0" AnchorPane.topAnchor="65.0" />
+      <Label layoutX="408.0" layoutY="104.0" text="Month:" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="104.0" />
+      <Label fx:id="employeeNameLabel" layoutX="111.0" layoutY="77.0" text="Name" AnchorPane.leftAnchor="112.0" AnchorPane.topAnchor="77.0" />
+      <Label fx:id="startDateLabel" layoutX="112.0" layoutY="104.0" text="DD.MM.YYYY" AnchorPane.leftAnchor="112.0" AnchorPane.topAnchor="104.0" />
+   </AnchorPane>
+</StackPane>

@@ -31,7 +31,7 @@ public class UserDAO {
             return true;
         } catch (Exception e) {
             if(transaction != null) transaction.rollback();
-             e.printStackTrace();
+            e.printStackTrace();
              return false;
         }
     }
@@ -48,6 +48,17 @@ public class UserDAO {
             query.setParameter("id", id);
             return query.uniqueResult();
         } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public User getUserByEmail(String email){
+        try(Session session = HibernateUtil.getSessionFactory().openSession()){
+            return session.createQuery("FROM User WHERE email = :email", User.class)
+                    .setParameter("email", email)
+                    .uniqueResult();
+        } catch (Exception e){
             e.printStackTrace();
             return null;
         }
@@ -90,6 +101,7 @@ public class UserDAO {
             u.setIsPartTime(user.getIsPartTime());
             u.getRoles().clear();
             u.getRoles().addAll(user.getRoles());
+            u.setWorkHours(user.getWorkHours());
             if (user.getPassword() != null && !user.getPassword().isEmpty() && user.getPassword().length() != 60)
                 u.setPassword(user.getPassword());
             session.update(u);

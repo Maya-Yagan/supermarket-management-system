@@ -7,7 +7,7 @@ import com.maya_yagan.sms.supplier.dao.SupplierDAO;
 import com.maya_yagan.sms.supplier.model.Supplier;
 import com.maya_yagan.sms.supplier.model.SupplierProduct;
 import com.maya_yagan.sms.util.CustomException;
-import com.maya_yagan.sms.util.ValidationService;
+import com.maya_yagan.sms.common.ValidationService;
 
 import java.util.*;
 import java.util.stream.Collectors;

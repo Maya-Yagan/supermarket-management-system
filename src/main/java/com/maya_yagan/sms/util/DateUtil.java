@@ -1,8 +1,14 @@
 package com.maya_yagan.sms.util;
 
+import java.time.DayOfWeek;
+import java.time.Duration;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.time.format.TextStyle;
+import java.util.Locale;
+
 import javafx.scene.control.DatePicker;
 import javafx.util.StringConverter;
 
@@ -13,42 +19,76 @@ import javafx.util.StringConverter;
  */
 public class DateUtil {
     public static final String DEFAULT_DATE_PATTERN = "dd.MM.yyyy";
+    public static final String DEFAULT_TIME_PATTERN = "HH:mm";
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DEFAULT_DATE_PATTERN);
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern(DEFAULT_TIME_PATTERN);
+
+    public static String formatDate(LocalDate date) {
+        return date == null
+                ? ""
+                : DATE_FORMATTER.format(date);
+    }
+
+    public static String formatTime(LocalTime time) {
+        return time == null
+                ? ""
+                : TIME_FORMATTER.format(time);
+    }
+
+    public static String formatTimeOrDefault(LocalTime time, String defaultText) {
+        return (time == null) ? defaultText : TIME_FORMATTER.format(time);
+    }
+
+    public static String formatDayName(LocalDate date) {
+        if (date == null) return "";
+        DayOfWeek day = date.getDayOfWeek();
+        return day.getDisplayName(TextStyle.FULL, Locale.getDefault());
+    }
+
+    public static String formatDuration(Duration duration) {
+        if (duration == null) return "";
+        long hours = duration.toHours();
+        long minutes = duration.minusHours(hours).toMinutes();
+        return String.format("%d hrs %d mins", hours, minutes);
+    }
+
+    public static LocalDate parse(String text) throws DateTimeParseException {
+        if (text == null || text.isEmpty()) {
+            throw new IllegalArgumentException("Date string cannot be empty");
+        }
+        return LocalDate.parse(text, DATE_FORMATTER);
+    }
 
     public static void applyDateFormat(DatePicker datePicker){
         datePicker.setConverter(new StringConverter<LocalDate>(){
             @Override
             public String toString(LocalDate date){
-                return (date != null) ? DATE_FORMATTER.format(date) : "";
+                return DateUtil.formatDate(date);
             }
-            
+
             @Override
-            public LocalDate fromString(String string){
-                if(string != null && !string.isEmpty()){
-                    try{
-                        return LocalDate.parse(string, DATE_FORMATTER);
-                    } catch(DateTimeParseException e){
+            public LocalDate fromString(String text) {
+                if(text == null || text.trim().isEmpty()) return null;
+                try {
+                    return LocalDate.parse(text, DATE_FORMATTER);
+                } catch (DateTimeParseException e) {
                     ExceptionHandler.handleException(new CustomException(
-                        "Invalid date format.\nPlease follow this format: DD.MM.YYYY",
-                      "INVALID_DATE"));
+                            "Invalid date format.\nPlease follow this format: " + DEFAULT_DATE_PATTERN,
+                            "INVALID_DATE"));
                     return null;
-                    }
                 }
-                ExceptionHandler.handleException(new CustomException(
-                "Date cannot be empty.", "EMPTY_FIELDS"));
-                return null;
             }
         });
-        datePicker.setPromptText(DEFAULT_DATE_PATTERN.toUpperCase());
-    
+
+        datePicker.setPromptText(DEFAULT_DATE_PATTERN);
+
         datePicker.getEditor().focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if(!newVal){
-                try{
-                    LocalDate parseDate = 
-                            datePicker.getConverter()
+            if (!newVal) {
+                try {
+                    LocalDate ld = datePicker.getConverter()
                             .fromString(datePicker.getEditor().getText());
-                    datePicker.setValue(parseDate);
-                } catch (Exception e){
+                    datePicker.setValue(ld);
+                } catch (Exception e) {
                     datePicker.getEditor().clear();
                 }
             }
