@@ -9,11 +9,13 @@ import java.util.function.Consumer;
 import java.util.function.DoublePredicate;
 import java.util.function.IntPredicate;
 
+import com.maya_yagan.sms.common.ValidationService;
 import com.maya_yagan.sms.supplier.model.SupplierProduct;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -271,5 +273,19 @@ public class ViewUtil {
             return true;
         }
         return false;
+    }
+
+    public static void changeScene(String path, String title,StackPane targetPane){
+        try {
+            FXMLLoader loader = new FXMLLoader(ViewUtil.class.getResource(path));
+            Parent root = loader.load();
+            Stage stage = (Stage) targetPane.getScene().getWindow();
+            Scene scene = stage.getScene();
+            scene.setRoot(root);
+            stage.setTitle(title);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

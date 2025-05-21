@@ -4,7 +4,7 @@ import com.maya_yagan.sms.user.dao.RoleDAO;
 import com.maya_yagan.sms.user.dao.UserDAO;
 import com.maya_yagan.sms.user.model.Role;
 import com.maya_yagan.sms.user.model.User;
-import com.maya_yagan.sms.util.ValidationService;
+import com.maya_yagan.sms.common.ValidationService;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -21,10 +21,11 @@ public class UserService {
     
     public boolean createUser(String firstName, String lastName, String tcNumber, LocalDate birthDate, String gender,
                        String email, String phoneNumber, String password, String salaryText, 
-                       Set<String> selectedPositions, boolean isPartTime, boolean isFullTime) {
+                       Set<String> selectedPositions, boolean isPartTime, boolean isFullTime, int workHours) {
         float salary = validationService.parseAndValidateFloat(salaryText, "salary");
         Set<Role> roles = getRolesByNames(selectedPositions);
         User newUser = new User(firstName, lastName, tcNumber, birthDate, gender, email, phoneNumber, salary, password, roles, isPartTime, isFullTime);
+        newUser.setWorkHours(workHours);
         validationService.validateUser(newUser);
         return addUser(newUser);
     }
@@ -40,7 +41,8 @@ public class UserService {
                                 String gender,
                                 String employmentType,
                                 Set<String> selectedPositions,
-                                String password) {
+                                String password,
+                               int workHours) {
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setEmail(email);
@@ -49,6 +51,7 @@ public class UserService {
         user.setBirthDate(birthDate);
         user.setSalary(validationService.parseAndValidateFloat(salaryText, "salary"));
         user.setGender(gender);
+        user.setWorkHours(workHours);
         if("Full time".equals(employmentType)){
             user.setIsFullTime(true);
             user.setIsPartTime(false);
@@ -107,5 +110,9 @@ public class UserService {
             case "manager" -> 3;
             default -> -1;
         };
+    }
+
+    public User getUserByEmail(String email){
+        return userDAO.getUserByEmail(email);
     }
 }

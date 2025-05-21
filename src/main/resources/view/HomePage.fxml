@@ -2,19 +2,15 @@
 
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
+<?import javafx.scene.layout.StackPane?>
 
-<HBox fx:id="rootLayout" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.homepage.HomePageController">
+
+<StackPane fx:id="stackPane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.homepage.controller.HomePageController">
    <children>
-      <AnchorPane fx:id="contentPane">
+      <HBox fx:id="rootLayout" style="-fx-background-color: #fafafa;">
          <children>
-            <Text layoutX="43.0" layoutY="50.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Supermarket Manager" AnchorPane.leftAnchor="43.0" AnchorPane.topAnchor="24.1015625">
-               <font>
-                  <Font size="24.0" />
-               </font>
-            </Text>
+            <AnchorPane fx:id="contentPane" />
          </children>
-      </AnchorPane>
+      </HBox>
    </children>
-</HBox>
+</StackPane>

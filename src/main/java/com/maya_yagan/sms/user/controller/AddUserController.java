@@ -26,7 +26,8 @@ public class AddUserController extends BaseUserController {
                 passwordField.getText(),
               salaryField.getText(), selectedPositions,
               "Part time".equals(selectedEmploymentType),
-              "Full time".equals(selectedEmploymentType)))
+              "Full time".equals(selectedEmploymentType),
+                selectedWorkHours))
             {
                 if(onCloseAction != null) onCloseAction.run();
                 close();

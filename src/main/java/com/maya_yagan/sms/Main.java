@@ -14,8 +14,8 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Application.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/HomePage.fxml")));
-        primaryStage.setTitle("Supermarket Manager");
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/Login.fxml")));
+        primaryStage.setTitle("Supermarket Management System");
         primaryStage.setScene(new Scene(root));
         primaryStage.setMaximized(true);
         primaryStage.show();
