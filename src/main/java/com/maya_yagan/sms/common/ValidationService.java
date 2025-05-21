@@ -40,14 +40,14 @@ public class ValidationService {
             return false;
         }
     }
-    
+
     public void validateUser(User user){
         if (user.getFirstName().isEmpty() || user.getLastName().isEmpty() ||
-            user.getEmail().isEmpty() || user.getPhoneNumber().isEmpty() ||
-            user.getPassword().isEmpty() || user.getTcNumber().isEmpty() ||
-            user.getBirthDate() == null || user.getGender() == null || user.getWorkHours() == 0 ||
-            user.getRoles().isEmpty() || 
-           (!user.getIsPartTime() && !user.getIsFullTime()))
+                user.getEmail().isEmpty() || user.getPhoneNumber().isEmpty() ||
+                user.getPassword().isEmpty() || user.getTcNumber().isEmpty() ||
+                user.getBirthDate() == null || user.getGender() == null ||
+                user.getRoles().isEmpty() ||
+                (!user.getIsPartTime() && !user.getIsFullTime()))
             throw new CustomException("Please fill all fields", "EMPTY_FIELDS");
         if (!isValidEmail(user.getEmail()))
             throw new CustomException("Please enter a valid email", "INVALID_EMAIL");
@@ -76,9 +76,10 @@ public class ValidationService {
         if(product == null ||
            product.getName().isEmpty() ||
            product.getPrice() == 0 ||
-           product.getProductionDate() == null || 
+           product.getProductionDate() == null ||
            product.getCategory() == null ||
-           product.getUnit() == null)
+           product.getUnit() == null ||
+           product.getBarcode() == null || product.getBarcode().trim().isEmpty())
             throw new CustomException("Please fill all fields", "EMPTY_FIELDS");
 
         if (!isValidDate(product.getProductionDate().format(DATE_FORMATTER)))
@@ -137,7 +138,19 @@ public class ValidationService {
             throw new CustomException("Invalid " + fieldName + " format.\nPlease Enter a valid " + fieldName, "INVALID_NUMBER");
         }
     }
-    
+
+    public float parseDiscount(String input){
+        try {
+            float number = Float.parseFloat(input.trim());
+            if (number < 0)
+                throw new CustomException("Discount cannot be negative.", "INVALID_DISCOUNT");
+            return number;
+        } catch(NumberFormatException e){
+            return 0f;
+        }
+    }
+
+
     public void validateCategory(Category category){
         if(category.getName() == null || category.getName().trim().isEmpty())
             throw new CustomException("Please fill the name", "EMPTY_FIELDS");

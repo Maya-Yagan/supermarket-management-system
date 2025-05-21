@@ -2,6 +2,7 @@ package com.maya_yagan.sms.warehouse.controller;
 
 import atlantafx.base.controls.ModalPane;
 import com.maya_yagan.sms.common.AbstractTableController;
+import com.maya_yagan.sms.product.model.MoneyUnit;
 import com.maya_yagan.sms.product.service.ProductService;
 import com.maya_yagan.sms.util.*;
 import com.maya_yagan.sms.product.model.Category;
@@ -24,7 +25,7 @@ import javafx.scene.text.Text;
  * @author Maya Yagan
  */
 public class WarehouseProductsController extends AbstractTableController<ProductWarehouse> {
-    
+
     @FXML private Text warehouseName;
     @FXML private TableColumn<ProductWarehouse, Integer> idColumn, amountColumn;
     @FXML private TableColumn<ProductWarehouse, String> nameColumn, productionDate, expirationDateColumn, unitColumn;
@@ -77,6 +78,7 @@ public class WarehouseProductsController extends AbstractTableController<Product
         modalPane = ViewUtil.initializeModalPane(stackPane);
         setupDynamicLayoutAdjustment();
         setupEventHandlers();
+        updatePriceColumnHeaderWithMoneyUnit();
     }
 
     @Override
@@ -163,5 +165,16 @@ public class WarehouseProductsController extends AbstractTableController<Product
         this.warehouse = warehouse;
         warehouseName.setText(warehouse.getName());
         refresh();
+    }
+
+    private void updatePriceColumnHeaderWithMoneyUnit() {
+        String selectedCode = MoneyUnitContext.getSelectedMoneyUnitCode();
+        MoneyUnit moneyUnit = productService.getMoneyUnitByCode(selectedCode);
+
+        if (moneyUnit != null) {
+            priceColumn.setText("Price (" + moneyUnit.getName() + ")");
+        } else {
+            priceColumn.setText("Price");
+        }
     }
 }
