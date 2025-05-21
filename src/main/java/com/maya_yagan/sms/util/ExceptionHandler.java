@@ -11,7 +11,7 @@ public class ExceptionHandler {
         String alertMessage, alertTitle;
         String errorCode = exception.getErrorCode() != null ?
                 exception.getErrorCode() : "UNKNOWN_ERROR";
-        
+
         switch(errorCode){
             case "EMPTY_FIELDS":
                 alertTitle = "Empty Fields";
@@ -45,7 +45,7 @@ public class ExceptionHandler {
                 alertTitle = "Unexpected Error";
                 alertMessage = "An unexpected error occurred: " + exception.getMessage();
         }
-        
+
         AlertUtil.showAlert(Alert.AlertType.ERROR,
                 alertTitle, alertMessage);
     }

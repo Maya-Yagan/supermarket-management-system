@@ -2,18 +2,18 @@ package com.maya_yagan.sms.product.controller;
 
 import atlantafx.base.controls.ModalPane;
 import com.maya_yagan.sms.common.AbstractTableController;
+import com.maya_yagan.sms.product.model.MoneyUnit;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.product.model.Category;
 import com.maya_yagan.sms.product.model.ProductUnit;
 import com.maya_yagan.sms.product.service.ProductService;
-import com.maya_yagan.sms.util.AlertUtil;
-import com.maya_yagan.sms.util.ContextMenuUtil;
-import com.maya_yagan.sms.util.MenuButtonUtil;
-import com.maya_yagan.sms.util.ViewUtil;
+import com.maya_yagan.sms.util.*;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.StringProperty;
+import javafx.beans.property.SimpleStringProperty;
 
 import java.util.*;
 
-import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -24,18 +24,22 @@ import javafx.scene.layout.StackPane;
  *
  * @author Maya Yagan
  */
-public class ProductManagementController extends AbstractTableController<Product> {
+public class  ProductManagementController extends AbstractTableController<Product> {
 
     @FXML private TableColumn<Product, Integer> idColumn;
-    @FXML private TableColumn<Product, String> nameColumn, productionDate, expirationDateColumn, discountsColumn, unitColumn;
+    @FXML private TableColumn<Product, String> nameColumn, productionDate, expirationDateColumn, unitColumn , barcodeColumn;
     @FXML private TableColumn<Product, Double> priceColumn;
-    @FXML private Button addProductButton, addCategoryButton, editCategoriesButton;
+    @FXML private TableColumn<Product, Float> discountsColumn;
+    @FXML private Button addProductButton, addCategoryButton, editCategoriesButton ,MoneyUnitButton;
     @FXML private MenuButton categoryMenuButton;
     @FXML private StackPane stackPane;
+
 
     private ModalPane modalPane;
     private String currentCategory = "All Categories";
     private final ProductService productService = new ProductService();
+    private final StringProperty selectedMoneyUnit = new SimpleStringProperty();
+
 
     private void loadCategories() {
         MenuButtonUtil.populateMenuButton(
@@ -58,6 +62,8 @@ public class ProductManagementController extends AbstractTableController<Product
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         productionDate.setCellValueFactory(new PropertyValueFactory<>("productionDate"));
+        discountsColumn.setCellValueFactory(new PropertyValueFactory<>("discount"));
+        barcodeColumn.setCellValueFactory(new PropertyValueFactory<>("barcode"));
         expirationDateColumn.setCellValueFactory(cellData ->
                 new SimpleStringProperty(productService.formatExpirationDate(cellData.getValue()))
         );
@@ -66,6 +72,8 @@ public class ProductManagementController extends AbstractTableController<Product
             String text = (unit != null) ? unit.getFullName() : "";
             return new SimpleStringProperty(text);
         });
+
+
     }
 
     @Override
@@ -76,8 +84,10 @@ public class ProductManagementController extends AbstractTableController<Product
     @Override
     protected List<ContextMenuUtil.MenuItemConfig<Product>> menuItemsFor(Product p){
         return List.of(
-          new ContextMenuUtil.MenuItemConfig<>("Edit Product", (item, row) -> handleEditAction(item)),
-          new ContextMenuUtil.MenuItemConfig<>("Delete Product", (item, row) -> handleDeleteAction(item))
+                new ContextMenuUtil.MenuItemConfig<>("Edit Product", (item, row) -> handleEditAction(item)),
+                new ContextMenuUtil.MenuItemConfig<>("Delete Product", (item, row) -> handleDeleteAction(item)),
+                new ContextMenuUtil.MenuItemConfig<>("Add Discount", (item, row) -> handleAddDiscountAction(item))
+
         );
     }
 
@@ -87,6 +97,24 @@ public class ProductManagementController extends AbstractTableController<Product
         setupEventHandlers();
         loadCategories();
         setupDynamicLayoutAdjustment();
+        Set<MoneyUnit> units = productService.getAllMoneyUnits();
+        if (!units.isEmpty()) {
+            MoneyUnit mu = units.iterator().next();
+            selectedMoneyUnit.set(mu.getCode());
+            MoneyUnitContext.setSelectedMoneyUnitCode(mu.getCode());
+        } else {
+            selectedMoneyUnit.set("");
+        }
+
+        priceColumn.textProperty().bind(
+                Bindings.createStringBinding(
+                        () -> {
+                            String code = selectedMoneyUnit.get();
+                            return (code == null || code.isBlank()) ? "Price" : String.format("Price (%s)", code);
+                        },
+                        selectedMoneyUnit
+                )
+        );
     }
 
     private void setupEventHandlers() {
@@ -108,6 +136,8 @@ public class ProductManagementController extends AbstractTableController<Product
                     controller.setOnCloseAction(this::loadCategories);
                 }, modalPane));
 
+        MoneyUnitButton.setOnAction(event -> handleMoneyUnitButtonClick());
+
         setupProductTableContextMenu();
     }
 
@@ -123,6 +153,10 @@ public class ProductManagementController extends AbstractTableController<Product
 
                     menuItems.add(new ContextMenuUtil.MenuItemConfig<>("Delete Product",
                             (product, r) -> handleDeleteAction(product)));
+
+                    menuItems.add(new ContextMenuUtil.MenuItemConfig<>("Add Discount",
+                            (product, r) -> handleAddDiscountAction(product)));
+
 
                     ContextMenu contextMenu = ContextMenuUtil.createContextMenu(row, newVal, menuItems);
                     row.setContextMenu(contextMenu);
@@ -156,11 +190,57 @@ public class ProductManagementController extends AbstractTableController<Product
                 }, modalPane);
     }
 
+    private void handleAddDiscountAction(Product product) {
+        ViewUtil.showStringInputDialog(
+                "Add Discount",
+                "Enter the discount percentage (e.g., 10 for 10%):",
+                "Please enter a valid percentage (0-100):",
+                "",
+                "Discount",
+                discountStr -> {
+                    try {
+                        float discount = Float.parseFloat(discountStr.trim());
+                        if (discount < 0 || discount > 100) {
+                            AlertUtil.showAlert(Alert.AlertType.ERROR, "Invalid Discount", "The discount must be between 0 and 100.");
+                            return;
+                        }
+                        product.setDiscount(discount);
+                        productService.updateProduct(product);
+                        refresh();
+                    } catch (NumberFormatException e) {
+                        AlertUtil.showAlert(Alert.AlertType.ERROR, "Invalid Input", "Please enter a valid number for the discount.");
+                    }
+                }
+        );
+    }
+
+
+
+
     private void onCategorySelected(Category category) {
         currentCategory = category.getName();
         categoryMenuButton.setText(currentCategory);
         refresh();
     }
+
+    private void handleMoneyUnitButtonClick() {
+        ViewUtil.showStringInputDialog(
+                "Money Unit",
+                "Enter the currency code (e.g., USD, EUR):",
+                "Please enter a valid currency code:",
+                "",
+                "Money Unit",
+                unitStr -> {
+                    String code = unitStr.trim().toUpperCase();
+                    productService.addMoneyUnit(code, code, Optional.ofNullable(
+                                    productService.getMoneyUnitByCode(code))
+                            .map(MoneyUnit::getSymbol).orElse(code));
+                    MoneyUnitContext.setSelectedMoneyUnitCode(code);
+                    selectedMoneyUnit.set(code);
+                }
+        );
+    }
+
 
     private void setupDynamicLayoutAdjustment() {
         ViewUtil.setupDynamicLayoutAdjustment(

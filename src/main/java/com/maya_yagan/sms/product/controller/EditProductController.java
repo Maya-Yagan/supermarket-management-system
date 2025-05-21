@@ -5,12 +5,6 @@ import com.maya_yagan.sms.util.CustomException;
 import com.maya_yagan.sms.util.ExceptionHandler;
 import javafx.fxml.FXML;
 
-
-/**
- * FXML Controller class for editing product details in the supermarket management system.
- * 
- * @author Maya Yagan
- */
 public class EditProductController extends BaseProductController {
 
     private Product product;
@@ -19,33 +13,48 @@ public class EditProductController extends BaseProductController {
         this.product = product;
         populateFields();
     }
-   
+
     private void populateFields(){
-        if(product == null) return;
+        if (product == null) return;
+
         productNameField.setText(product.getName());
         priceField.setText(String.valueOf(product.getPrice()));
+        discountField.setText(String.valueOf(product.getDiscount()));
         productionDatePicker.setValue(product.getProductionDate());
         expirationDatePicker.setValue(product.getExpirationDate());
+        barcodeField.setText(product.getBarcode());
         selectedCategory = product.getCategory();
         selectedUnit = product.getUnit();
-        categoryMenuButton.setText(selectedCategory.toString());
-        unitMenuButton.setText(selectedUnit.getFullName());
+
+        if (selectedCategory != null)
+            categoryMenuButton.setText(selectedCategory.getName());
+
+        if (selectedUnit != null)
+            unitMenuButton.setText(selectedUnit.getFullName());
     }
-    
+
     @FXML
     @Override
     public void handleSave(){
-        try{
-            productService.updateProductData(product, 
+        try {
+            String discountInput = discountField.getText();
+            String discount = (discountInput == null || discountInput.trim().isEmpty()) ? "0" : discountInput.trim();
+
+            product.setBarcode(barcodeField.getText());
+            productService.updateProductData(
+                    product,
                     productNameField.getText(),
                     priceField.getText(),
-                    productionDatePicker.getValue(), 
-                    expirationDatePicker.getValue(), 
-                    selectedCategory, 
-                    selectedUnit);
-            if(onCloseAction != null) onCloseAction.run();
+                    discount,
+                    productionDatePicker.getValue(),
+                    expirationDatePicker.getValue(),
+                    selectedCategory,
+                    selectedUnit,
+                    barcodeField.getText()
+            );
+            if (onCloseAction != null) onCloseAction.run();
             close();
-        } catch(CustomException e){
+        } catch (CustomException e) {
             ExceptionHandler.handleException(e);
         }
     }

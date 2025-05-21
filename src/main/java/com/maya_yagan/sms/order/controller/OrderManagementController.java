@@ -3,6 +3,7 @@ package com.maya_yagan.sms.order.controller;
 import atlantafx.base.controls.ModalPane;
 import com.maya_yagan.sms.common.AbstractTableController;
 import com.maya_yagan.sms.order.service.OrderService;
+import com.maya_yagan.sms.product.service.ProductService;
 import com.maya_yagan.sms.util.*;
 import com.maya_yagan.sms.order.model.Order;
 import com.maya_yagan.sms.warehouse.model.Warehouse;
@@ -34,7 +35,7 @@ public class OrderManagementController extends AbstractTableController<Order> {
     @FXML private TableColumn<Order, Double> priceColumn;
     @FXML private Button addOrderButton;
     @FXML private StackPane stackPane;
-    
+
     private ModalPane modalPane;
     private final OrderService orderService = new OrderService();
     private final WarehouseService warehouseService = new WarehouseService();
@@ -49,6 +50,8 @@ public class OrderManagementController extends AbstractTableController<Order> {
         deliveryDateColumn.setCellValueFactory(cellData -> cellData.getValue().getDeliveryDate() == null
                 ? new SimpleStringProperty("Awaiting Delivery")
                 : new SimpleStringProperty(String.valueOf(cellData.getValue().getDeliveryDate())));
+
+        priceColumn.setText(MoneyUnitUtil.formatPriceHeader("Price"));
 
         priceColumn.setCellValueFactory(cellData -> {
             double price = orderService.getPrice(cellData.getValue());
@@ -134,7 +137,7 @@ public class OrderManagementController extends AbstractTableController<Order> {
                 }
         );
     }
-    
+
     private  void showWarehouseChoiceDialog(Order order){
         List<Warehouse> warehouses = warehouseService.getAllWarehouses();
         if(warehouses.isEmpty()){

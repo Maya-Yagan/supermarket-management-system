@@ -30,4 +30,6 @@ public class AlertUtil {
         if(result.isPresent() && result.get() == ButtonType.OK)
             onConfirmAction.accept(entity);
     }
+
+
 }

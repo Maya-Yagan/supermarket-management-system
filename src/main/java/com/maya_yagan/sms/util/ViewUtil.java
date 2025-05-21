@@ -75,11 +75,10 @@ public class ViewUtil {
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(10));
-
         grid.add(new Label("Product"), 0, 0);
         grid.add(new Label("Amount"), 1, 0);
-        grid.add(new Label("Price"), 2, 0);
-        grid.add(new Label("Total"), 3, 0);
+        grid.add(new Label("Price "), 2, 0);
+        grid.add(new Label("Total" ), 3, 0);
 
         float grandTotal = 0f;
         int grandQuantity = 0;
@@ -153,7 +152,7 @@ public class ViewUtil {
                 title, header, content, defaultValue, fieldName,
                 val -> true, onSuccess);
     }
-    
+
     public static void showFloatInputDialog(
             String title,
             String header,
@@ -234,7 +233,7 @@ public class ViewUtil {
         stackPane.getChildren().add(modalPane);
         return modalPane;
     }
-    
+
     public static void setupDynamicLayoutAdjustment(MenuButton menuButton, List<Node> targetNodes, List<Double> offsets){
         if(targetNodes.size() != offsets.size())
             throw new IllegalArgumentException("The number of target nodes must match the number of offsets.");

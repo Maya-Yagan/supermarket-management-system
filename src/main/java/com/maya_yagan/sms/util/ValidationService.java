@@ -17,7 +17,7 @@ import java.time.format.DateTimeParseException;
 public class ValidationService {
     private static final String DATE_PATTERN = "dd.MM.yyyy";
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_PATTERN);
-    
+
     public boolean isValidEmail(String email) {
         return email.matches("^[\\w.%+-]+@[\\w.-]+\\.[a-z]{2,}$");
     }
@@ -25,7 +25,7 @@ public class ValidationService {
     public boolean isValidSalary(String salary) {
         return salary.matches("\\d*\\.?\\d*");
     }
-    
+
     public boolean isValidDate(String date){
         if(date == null || date.trim().isEmpty()) return false;
         try{
@@ -35,18 +35,18 @@ public class ValidationService {
             return false;
         }
     }
-    
+
     public boolean isValidExpirationDate(LocalDate expiryDate, LocalDate productionDate){
-        return expiryDate != null && !expiryDate.isAfter(productionDate); 
+        return expiryDate != null && !expiryDate.isAfter(productionDate);
     }
-    
+
     public void validateUser(User user){
         if (user.getFirstName().isEmpty() || user.getLastName().isEmpty() ||
-            user.getEmail().isEmpty() || user.getPhoneNumber().isEmpty() ||
-            user.getPassword().isEmpty() || user.getTcNumber().isEmpty() ||
-            user.getBirthDate() == null || user.getGender() == null ||
-            user.getRoles().isEmpty() || 
-           (!user.getIsPartTime() && !user.getIsFullTime()))
+                user.getEmail().isEmpty() || user.getPhoneNumber().isEmpty() ||
+                user.getPassword().isEmpty() || user.getTcNumber().isEmpty() ||
+                user.getBirthDate() == null || user.getGender() == null ||
+                user.getRoles().isEmpty() ||
+                (!user.getIsPartTime() && !user.getIsFullTime()))
             throw new CustomException("Please fill all fields", "EMPTY_FIELDS");
         if (!isValidEmail(user.getEmail()))
             throw new CustomException("Please enter a valid email", "INVALID_EMAIL");
@@ -54,14 +54,14 @@ public class ValidationService {
             throw new CustomException("Invalid date format.\nPlease follow this format: DD.MM.YYYY", "INVALID_DATE");
         }
     }
-    
+
     public void validateSupplier(Supplier supplier) {
         if (supplier.getName() == null || supplier.getName().trim().isEmpty() ||
-            supplier.getEmail() == null || supplier.getEmail().trim().isEmpty() ||
-            supplier.getPhoneNumber() == null || supplier.getPhoneNumber().trim().isEmpty()) {
+                supplier.getEmail() == null || supplier.getEmail().trim().isEmpty() ||
+                supplier.getPhoneNumber() == null || supplier.getPhoneNumber().trim().isEmpty()) {
             throw new CustomException("Please fill all fields", "EMPTY_FIELDS");
         }
-        
+
         if (!isValidEmail(supplier.getEmail())) {
             throw new CustomException("Please enter a valid email", "INVALID_EMAIL");
         }
@@ -72,15 +72,17 @@ public class ValidationService {
     }
 
     public void validateProduct(Product product){
-        if(product.getName().isEmpty() || product.getPrice() == 0 || 
-           product.getProductionDate() == null || 
-           product.getCategory() == null || product.getUnit() == null)
-            throw new CustomException("Please fill all fields", "EMPTY_FIELDS");
+        if(product.getName().isEmpty() || product.getPrice() == 0 ||
+                product.getProductionDate() == null ||
+                product.getCategory() == null || product.getUnit() == null ||
+                product.getBarcode() == null || product.getBarcode().trim().isEmpty())
+            throw new CustomException("Please fill all fields, including barcode", "EMPTY_FIELDS");
         if(isValidExpirationDate(product.getExpirationDate(), product.getProductionDate()))
             throw new CustomException("Invalid Expiration date.\nExpiration date can't be before production date", "INVALID_DATE");
         if(!isValidDate(product.getExpirationDate().format(DATE_FORMATTER)) || !isValidDate(product.getProductionDate().format(DATE_FORMATTER)))
             throw new CustomException("Invalid date format.\nPlease follow this format: DD.MM.YYYY", "INVALID_DATE");
     }
+
 
     public void validateWarehouse(String name, int newCapacity, int totalProducts){
         if(newCapacity <= 0)
@@ -97,7 +99,7 @@ public class ValidationService {
         if(capacity <= 0)
             throw new CustomException("Please enter a valid number.", "INVALID_NUMBER");
     }
-    
+
     public float parseAndValidateFloat(String input, String fieldName){
         try{
             float number = Float.parseFloat(input.trim());
@@ -119,7 +121,19 @@ public class ValidationService {
             throw new CustomException("Invalid " + fieldName + " format.\nPlease Enter a valid " + fieldName, "INVALID_NUMBER");
         }
     }
-    
+
+    public float parseDiscount(String input){
+        try {
+            float number = Float.parseFloat(input.trim());
+            if (number < 0)
+                throw new CustomException("Discount cannot be negative.", "INVALID_DISCOUNT");
+            return number;
+        } catch(NumberFormatException e){
+            return 0f;
+        }
+    }
+
+
     public void validateCategory(Category category){
         if(category.getName() == null || category.getName().trim().isEmpty())
             throw new CustomException("Please fill the name", "EMPTY_FIELDS");

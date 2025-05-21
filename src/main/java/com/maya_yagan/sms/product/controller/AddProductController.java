@@ -6,22 +6,26 @@ import javafx.fxml.FXML;
 
 /**
  * FXML Controller class for adding a Product in the application.
- * 
+ *
  * @author Maya Yagan
  */
 public class AddProductController extends BaseProductController {
- 
+
     @Override
     @FXML
     public void handleSave() {
         try{
+            String discount = "0";
             if(productService.addProduct(
-                    productNameField.getText(), 
-                priceField.getText(), 
+                    productNameField.getText(),
+                priceField.getText(),
+            discount,
             productionDatePicker.getValue(),
-            expirationDatePicker.getValue(), 
+            expirationDatePicker.getValue(),
                  selectedCategory,
-                    selectedUnit)){
+                    selectedUnit,
+                    barcodeField.getText())){
+
                 if(onCloseAction != null) onCloseAction.run();
                 close();
             }

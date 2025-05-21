@@ -7,6 +7,7 @@ import com.maya_yagan.sms.user.model.User;
 import com.maya_yagan.sms.user.service.UserService;
 import com.maya_yagan.sms.util.AlertUtil;
 import com.maya_yagan.sms.util.ContextMenuUtil;
+import com.maya_yagan.sms.util.MoneyUnitUtil;
 import com.maya_yagan.sms.util.ViewUtil;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
@@ -19,7 +20,7 @@ import javafx.scene.layout.StackPane;
 
 /**
  * Controller class for managing the user interface related to user operations.
- * 
+ *
  * @author  Maya Yagan
  */
 public class UserManagementController extends AbstractTableController<User> {
@@ -30,7 +31,7 @@ public class UserManagementController extends AbstractTableController<User> {
     @FXML private TableColumn<User, Integer> ageColumn;
     @FXML private Button addUserButton;
     @FXML private StackPane stackPane;
-    
+
     private ModalPane modalPane;
     private final UserService userService = new UserService();
 
@@ -44,27 +45,29 @@ public class UserManagementController extends AbstractTableController<User> {
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
         phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
         tcNumberColumn.setCellValueFactory(new PropertyValueFactory<>("tcNumber"));
-        
+
+        salaryColumn.setText(MoneyUnitUtil.formatHeaderWithMoneyUnitName("Salary"));
+
         positionColumn.setCellValueFactory(data -> {
             User user = data.getValue();
-            String roleNames = user.getRoles() != null ? 
+            String roleNames = user.getRoles() != null ?
                     user.getRoles()
-                    .stream()
-                    .map(Role::getName)
-                    .filter(Objects::nonNull)
-                    .reduce((a, b) -> a + ", " + b)
-                    .orElse("") : "";
+                            .stream()
+                            .map(Role::getName)
+                            .filter(Objects::nonNull)
+                            .reduce((a, b) -> a + ", " + b)
+                            .orElse("") : "";
             return new ReadOnlyObjectWrapper<>(roleNames);
         });
 
-        partFullTimeColumn.setCellValueFactory(data -> 
-            new ReadOnlyObjectWrapper<>(data.getValue().getEmploymentType())
+        partFullTimeColumn.setCellValueFactory(data ->
+                new ReadOnlyObjectWrapper<>(data.getValue().getEmploymentType())
         );
-        
+
         ageColumn.setCellValueFactory(data -> {
             LocalDate birthDate = data.getValue().getBirthDate();
-            return new ReadOnlyObjectWrapper<>(birthDate != null ? 
-                Period.between(birthDate, LocalDate.now()).getYears() : null);
+            return new ReadOnlyObjectWrapper<>(birthDate != null ?
+                    Period.between(birthDate, LocalDate.now()).getYears() : null);
         });
     }
 
@@ -110,10 +113,10 @@ public class UserManagementController extends AbstractTableController<User> {
 
     private void handleEditAction(User user) {
         ViewUtil.displayModalPaneView("/view/user/EditUser.fxml",
-        (EditUserController controller) -> {
-            controller.setUser(user);
-            controller.setModalPane(modalPane);
-            controller.setOnCloseAction(this::refresh);
-        }, modalPane);
+                (EditUserController controller) -> {
+                    controller.setUser(user);
+                    controller.setModalPane(modalPane);
+                    controller.setOnCloseAction(this::refresh);
+                }, modalPane);
     }
 }
