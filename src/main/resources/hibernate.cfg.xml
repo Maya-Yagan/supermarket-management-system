@@ -30,5 +30,6 @@
         <mapping class="com.maya_yagan.sms.order.model.Order"/>
         <mapping class="com.maya_yagan.sms.order.model.OrderProduct"/>
         <mapping class="com.maya_yagan.sms.user.model.Attendance"/>
+        <mapping class="com.maya_yagan.sms.homepage.model.Notification"/>
     </session-factory>
 </hibernate-configuration>

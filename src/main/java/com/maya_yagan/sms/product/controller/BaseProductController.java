@@ -21,7 +21,7 @@ import java.util.ResourceBundle;
  */
 public abstract class BaseProductController implements Initializable {
 
-    @FXML protected TextField productNameField, discountField, priceField , barcodeField;
+    @FXML protected TextField productNameField, discountField, priceField , barcodeField, minStockLimitField;
     @FXML protected DatePicker productionDatePicker, expirationDatePicker;
     @FXML protected MenuButton categoryMenuButton, unitMenuButton;
 

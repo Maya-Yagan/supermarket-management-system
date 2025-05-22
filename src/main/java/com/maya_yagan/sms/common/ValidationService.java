@@ -74,12 +74,15 @@ public class ValidationService {
 
     public void validateProduct(Product product){
         if(product == null ||
-           product.getName().isEmpty() ||
-           product.getPrice() == 0 ||
-           product.getProductionDate() == null ||
-           product.getCategory() == null ||
-           product.getUnit() == null ||
-           product.getBarcode() == null || product.getBarcode().trim().isEmpty())
+            product.getName().isEmpty() ||
+            product.getPrice() == 0 ||
+            product.getProductionDate() == null ||
+            product.getCategory() == null ||
+            product.getUnit() == null ||
+            product.getBarcode() == null ||
+            product.getBarcode().trim().isEmpty() ||
+            product.getMinLimit() == 0
+        )
             throw new CustomException("Please fill all fields", "EMPTY_FIELDS");
 
         if (!isValidDate(product.getProductionDate().format(DATE_FORMATTER)))
@@ -149,7 +152,6 @@ public class ValidationService {
             return 0f;
         }
     }
-
 
     public void validateCategory(Category category){
         if(category.getName() == null || category.getName().trim().isEmpty())

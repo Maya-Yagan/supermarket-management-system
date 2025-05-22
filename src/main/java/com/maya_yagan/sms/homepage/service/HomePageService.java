@@ -1,5 +1,7 @@
 package com.maya_yagan.sms.homepage.service;
 
+import com.maya_yagan.sms.homepage.dao.NotificationDAO;
+import com.maya_yagan.sms.homepage.model.Notification;
 import com.maya_yagan.sms.login.service.AuthenticationService;
 import com.maya_yagan.sms.login.service.LoginService;
 import com.maya_yagan.sms.user.model.Attendance;
@@ -15,6 +17,7 @@ public class HomePageService {
     private final AttendanceService attendanceService = new AttendanceService();
     private final AuthenticationService authService = new AuthenticationService();
     private final LoginService loginService = new LoginService();
+    private final NotificationDAO notificationDAO = new NotificationDAO();
 
     public Attendance getTodayAttendance(User user) {
         return attendanceService.getAttendanceForUserToday(user);
@@ -43,5 +46,9 @@ public class HomePageService {
             return "You can check out now";
         else
             return DateUtil.formatDuration(left);
+    }
+
+    public void notify(String message){
+        notificationDAO.insertNotification(new Notification(message));
     }
 }

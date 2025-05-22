@@ -103,6 +103,7 @@ public class ProductDAO {
             p.setCategory(product.getCategory());
             p.setUnit(product.getUnit());
             p.setBarcode(product.getBarcode());
+            p.setMinLimit(product.getMinLimit());
             session.update(p);
             transaction.commit();
         } catch (Exception e){

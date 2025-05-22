@@ -25,6 +25,7 @@ public class EditProductController extends BaseProductController {
         barcodeField.setText(product.getBarcode());
         selectedCategory = product.getCategory();
         selectedUnit = product.getUnit();
+        minStockLimitField.setText(String.valueOf(product.getMinLimit()));
 
         if (selectedCategory != null)
             categoryMenuButton.setText(selectedCategory.getName());
@@ -50,7 +51,8 @@ public class EditProductController extends BaseProductController {
                     expirationDatePicker.getValue(),
                     selectedCategory,
                     selectedUnit,
-                    barcodeField.getText()
+                    barcodeField.getText(),
+                    minStockLimitField.getText()
             );
             if (onCloseAction != null) onCloseAction.run();
             close();

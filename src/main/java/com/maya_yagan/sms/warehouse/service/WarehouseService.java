@@ -1,5 +1,6 @@
 package com.maya_yagan.sms.warehouse.service;
 
+import com.maya_yagan.sms.homepage.service.HomePageService;
 import com.maya_yagan.sms.order.model.Order;
 import com.maya_yagan.sms.order.model.OrderProduct;
 import com.maya_yagan.sms.product.model.Product;
@@ -17,6 +18,7 @@ public class WarehouseService {
     private final WarehouseDAO warehouseDAO = new WarehouseDAO();
     private final ValidationService validationService = new ValidationService();
     private final ProductService productService = new ProductService();
+    private final HomePageService homePageService = new HomePageService();
 
     public List<Warehouse> getAllWarehouses() { return warehouseDAO.getWarehouses(); }
 
@@ -64,6 +66,7 @@ public class WarehouseService {
         warehouse.setCapacity(newCapacity);
         validationService.validateWarehouse(name, newCapacity, totalProducts);
         warehouseDAO.updateWarehouse(warehouse);
+        //checkLowStock();
     }
 
     public void updateProductStock(Warehouse warehouse, ProductWarehouse productWarehouse, int newAmount){
@@ -106,5 +109,27 @@ public class WarehouseService {
                     );
         }
         warehouseDAO.updateWarehouse(fresh);
+    }
+
+    public void checkLowStock(ProductWarehouse productWarehouse){
+        Product product = productWarehouse.getProduct();
+        int limit = product.getMinLimit();
+        if(limit > 0 && productWarehouse.getAmount() <= limit){
+            String message = String.format(
+                    "Low stock on \"%s\" (id=%d): %d %s remaining (limit = %d). " +
+                            "Place a reorder ASAP.",
+                    product.getName(),
+                    product.getId(),
+                    productWarehouse.getAmount(),
+                    product.getUnit(), limit);
+            homePageService.notify(message);
+        }
+    }
+
+    public void checkLowStock(Warehouse w, Product p) {
+        w.getProductWarehouses().stream()
+                .filter(pw -> pw.getProduct().equals(p))
+                .findFirst()
+                .ifPresent(this::checkLowStock);
     }
 }

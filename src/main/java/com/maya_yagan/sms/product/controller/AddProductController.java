@@ -18,13 +18,14 @@ public class AddProductController extends BaseProductController {
             String discount = "0";
             if(productService.addProduct(
                     productNameField.getText(),
-                priceField.getText(),
-            discount,
-            productionDatePicker.getValue(),
-            expirationDatePicker.getValue(),
-                 selectedCategory,
+                    priceField.getText(),
+                    discount,
+                    productionDatePicker.getValue(),
+                    expirationDatePicker.getValue(),
+                    selectedCategory,
                     selectedUnit,
-                    barcodeField.getText())){
+                    barcodeField.getText(),
+                    minStockLimitField.getText())){
 
                 if(onCloseAction != null) onCloseAction.run();
                 close();

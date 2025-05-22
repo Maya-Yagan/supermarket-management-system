@@ -30,7 +30,7 @@ public class  ProductManagementController extends AbstractTableController<Produc
     @FXML private TableColumn<Product, String> nameColumn, productionDate, expirationDateColumn, unitColumn , barcodeColumn;
     @FXML private TableColumn<Product, Double> priceColumn;
     @FXML private TableColumn<Product, Float> discountsColumn;
-    @FXML private Button addProductButton, addCategoryButton, editCategoriesButton ,MoneyUnitButton;
+    @FXML private Button addProductButton, addCategoryButton, editCategoriesButton , moneyUnitButton;
     @FXML private MenuButton categoryMenuButton;
     @FXML private StackPane stackPane;
 
@@ -72,8 +72,6 @@ public class  ProductManagementController extends AbstractTableController<Produc
             String text = (unit != null) ? unit.getFullName() : "";
             return new SimpleStringProperty(text);
         });
-
-
     }
 
     @Override
@@ -85,9 +83,7 @@ public class  ProductManagementController extends AbstractTableController<Produc
     protected List<ContextMenuUtil.MenuItemConfig<Product>> menuItemsFor(Product p){
         return List.of(
                 new ContextMenuUtil.MenuItemConfig<>("Edit Product", (item, row) -> handleEditAction(item)),
-                new ContextMenuUtil.MenuItemConfig<>("Delete Product", (item, row) -> handleDeleteAction(item)),
-                new ContextMenuUtil.MenuItemConfig<>("Add Discount", (item, row) -> handleAddDiscountAction(item))
-
+                new ContextMenuUtil.MenuItemConfig<>("Delete Product", (item, row) -> handleDeleteAction(item))
         );
     }
 
@@ -136,36 +132,7 @@ public class  ProductManagementController extends AbstractTableController<Produc
                     controller.setOnCloseAction(this::loadCategories);
                 }, modalPane));
 
-        MoneyUnitButton.setOnAction(event -> handleMoneyUnitButtonClick());
-
-        setupProductTableContextMenu();
-    }
-
-    private void setupProductTableContextMenu() {
-        tableView.setRowFactory(tv -> {
-            TableRow<Product> row = new TableRow<>();
-            row.itemProperty().addListener((obs, oldVal, newVal) -> {
-                if (newVal != null) {
-                    List<ContextMenuUtil.MenuItemConfig<Product>> menuItems = new ArrayList<>();
-
-                    menuItems.add(new ContextMenuUtil.MenuItemConfig<>("Edit Product",
-                            (product, r) -> handleEditAction(product)));
-
-                    menuItems.add(new ContextMenuUtil.MenuItemConfig<>("Delete Product",
-                            (product, r) -> handleDeleteAction(product)));
-
-                    menuItems.add(new ContextMenuUtil.MenuItemConfig<>("Add Discount",
-                            (product, r) -> handleAddDiscountAction(product)));
-
-
-                    ContextMenu contextMenu = ContextMenuUtil.createContextMenu(row, newVal, menuItems);
-                    row.setContextMenu(contextMenu);
-                } else {
-                    row.setContextMenu(null);
-                }
-            });
-            return row;
-        });
+        moneyUnitButton.setOnAction(event -> handleMoneyUnitButtonClick());
     }
 
     private void handleDeleteAction(Product product) {
@@ -189,33 +156,6 @@ public class  ProductManagementController extends AbstractTableController<Produc
                             onCategorySelected(product.getCategory()));
                 }, modalPane);
     }
-
-    private void handleAddDiscountAction(Product product) {
-        ViewUtil.showStringInputDialog(
-                "Add Discount",
-                "Enter the discount percentage (e.g., 10 for 10%):",
-                "Please enter a valid percentage (0-100):",
-                "",
-                "Discount",
-                discountStr -> {
-                    try {
-                        float discount = Float.parseFloat(discountStr.trim());
-                        if (discount < 0 || discount > 100) {
-                            AlertUtil.showAlert(Alert.AlertType.ERROR, "Invalid Discount", "The discount must be between 0 and 100.");
-                            return;
-                        }
-                        product.setDiscount(discount);
-                        productService.updateProduct(product);
-                        refresh();
-                    } catch (NumberFormatException e) {
-                        AlertUtil.showAlert(Alert.AlertType.ERROR, "Invalid Input", "Please enter a valid number for the discount.");
-                    }
-                }
-        );
-    }
-
-
-
 
     private void onCategorySelected(Category category) {
         currentCategory = category.getName();
@@ -245,8 +185,8 @@ public class  ProductManagementController extends AbstractTableController<Produc
     private void setupDynamicLayoutAdjustment() {
         ViewUtil.setupDynamicLayoutAdjustment(
                 categoryMenuButton,
-                Arrays.asList(addCategoryButton, editCategoriesButton, addProductButton),
-                Arrays.asList(10.0, 130.0, 260.0)
+                Arrays.asList(addCategoryButton, editCategoriesButton, addProductButton, moneyUnitButton),
+                Arrays.asList(10.0, 130.0, 260.0, 375.0)
         );
     }
 }
