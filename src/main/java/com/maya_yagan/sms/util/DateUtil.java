@@ -1,10 +1,7 @@
 package com.maya_yagan.sms.util;
 
-import java.time.DayOfWeek;
-import java.time.Duration;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.time.format.TextStyle;
 import java.util.Locale;
@@ -20,8 +17,10 @@ import javafx.util.StringConverter;
 public class DateUtil {
     public static final String DEFAULT_DATE_PATTERN = "dd.MM.yyyy";
     public static final String DEFAULT_TIME_PATTERN = "HH:mm";
+    public static final String DEFAULT_DATE_TIME_PATTERN = "dd.MM.yyyy HH:mm";
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DEFAULT_DATE_PATTERN);
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern(DEFAULT_TIME_PATTERN);
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_PATTERN);
 
     public static String formatDate(LocalDate date) {
         return date == null
@@ -52,11 +51,8 @@ public class DateUtil {
         return String.format("%d hrs %d mins", hours, minutes);
     }
 
-    public static LocalDate parse(String text) throws DateTimeParseException {
-        if (text == null || text.isEmpty()) {
-            throw new IllegalArgumentException("Date string cannot be empty");
-        }
-        return LocalDate.parse(text, DATE_FORMATTER);
+    public static String formatDateTime(LocalDateTime dateTime){
+        return dateTime == null ? "" : DATE_TIME_FORMATTER.format(dateTime);
     }
 
     public static void applyDateFormat(DatePicker datePicker){

@@ -1,5 +1,7 @@
 package com.maya_yagan.sms.homepage.model;
 
+import com.maya_yagan.sms.user.model.User;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -15,12 +17,24 @@ public class Notification {
     private String message;
     @Column(name = "date")
     private LocalDateTime date;
+    @ManyToOne
+    @JoinColumn(name = "sender_id")
+    private User sender;
 
     public Notification(){}
 
-    public Notification(String message) {
+    public Notification(String message, User sender) {
         this.message = message;
+        this.sender = sender;
         this.date = LocalDateTime.now();
+    }
+
+    public User getSender() {
+        return sender;
+    }
+
+    public void setSender(User sender) {
+        this.sender = sender;
     }
 
     public int getId() {

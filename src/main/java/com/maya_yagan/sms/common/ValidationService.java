@@ -134,7 +134,7 @@ public class ValidationService {
     public int parseAndValidateInt(String input, String fieldName){
         try{
             int number = Integer.parseInt(input.trim());
-            if(number <= 0)
+            if(number < 0)
                 throw new CustomException("The entered number must be greater than zero.", "INVALID_NUMBER");
             else return number;
         } catch(NumberFormatException e){

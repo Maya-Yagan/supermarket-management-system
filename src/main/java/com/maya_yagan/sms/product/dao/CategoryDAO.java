@@ -2,6 +2,7 @@ package com.maya_yagan.sms.product.dao;
 
 import com.maya_yagan.sms.product.model.Category;
 import com.maya_yagan.sms.util.HibernateUtil;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.hibernate.Session;
@@ -75,7 +76,7 @@ public class CategoryDAO {
             return new HashSet<>(query.getResultList());
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return Collections.emptySet();
         }
     }
     

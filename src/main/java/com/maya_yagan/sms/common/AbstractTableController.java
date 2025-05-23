@@ -25,9 +25,9 @@ public abstract class AbstractTableController<T> implements Initializable {
         configureColumns();
         setupContextMenu();
         refresh();
-        postInit();
         tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         tableView.getStyleClass().add(Tweaks.EDGE_TO_EDGE);
+        postInit();
     }
 
     protected abstract void configureColumns();

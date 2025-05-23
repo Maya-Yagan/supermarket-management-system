@@ -66,7 +66,6 @@ public class WarehouseService {
         warehouse.setCapacity(newCapacity);
         validationService.validateWarehouse(name, newCapacity, totalProducts);
         warehouseDAO.updateWarehouse(warehouse);
-        //checkLowStock();
     }
 
     public void updateProductStock(Warehouse warehouse, ProductWarehouse productWarehouse, int newAmount){
@@ -75,6 +74,7 @@ public class WarehouseService {
         validationService.validateStockAmount(newAmount, remainingCapacity);
         productWarehouse.setAmount(newAmount);
         warehouseDAO.updateWarehouse(warehouse);
+        checkStock(productWarehouse);
     }
 
     public void addWarehouse(String name, String capacity){
@@ -111,25 +111,26 @@ public class WarehouseService {
         warehouseDAO.updateWarehouse(fresh);
     }
 
-    public void checkLowStock(ProductWarehouse productWarehouse){
-        Product product = productWarehouse.getProduct();
+    private void checkStock(ProductWarehouse pw) {
+        Product product = pw.getProduct();
+        Warehouse warehouse = pw.getWarehouse();
+        int amount = pw.getAmount();
         int limit = product.getMinLimit();
-        if(limit > 0 && productWarehouse.getAmount() <= limit){
-            String message = String.format(
-                    "Low stock on \"%s\" (id=%d): %d %s remaining (limit = %d). " +
-                            "Place a reorder ASAP.",
-                    product.getName(),
-                    product.getId(),
-                    productWarehouse.getAmount(),
-                    product.getUnit(), limit);
-            homePageService.notify(message);
-        }
-    }
 
-    public void checkLowStock(Warehouse w, Product p) {
-        w.getProductWarehouses().stream()
-                .filter(pw -> pw.getProduct().equals(p))
-                .findFirst()
-                .ifPresent(this::checkLowStock);
+        if (amount == 0) {
+            String msg = String.format(
+                    "%s is out of stock in %s. Make an order ASAP!",
+                    product.getName(), warehouse.getName());
+            homePageService.notify(msg, true);
+            return;
+        }
+
+        if (limit > 0 && amount <= limit) {
+            String msg = String.format(
+                    "Low stock on %s: %d %s remaining in %s. "
+                            + "Place a reorder ASAP!",
+                    product.getName(), amount, product.getUnit().getShortName(), warehouse.getName());
+            homePageService.notify(msg, true);
+        }
     }
 }

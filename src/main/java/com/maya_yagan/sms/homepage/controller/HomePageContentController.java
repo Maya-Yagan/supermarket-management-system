@@ -1,43 +1,41 @@
 package com.maya_yagan.sms.homepage.controller;
 
+import com.maya_yagan.sms.common.AbstractTableController;
 import com.maya_yagan.sms.common.UserSession;
+import com.maya_yagan.sms.homepage.model.Notification;
 import com.maya_yagan.sms.homepage.service.HomePageService;
 import com.maya_yagan.sms.user.model.Attendance;
 import com.maya_yagan.sms.user.model.User;
 import com.maya_yagan.sms.util.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 
-import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ResourceBundle;
+import java.util.Collection;
+import java.util.List;
+
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
-public class HomePageContentController implements Initializable {
+public class HomePageContentController extends AbstractTableController<Notification> {
     @FXML private Label nameLabel, dateLabel, checkInHourLabel, timeSinceCheckInLabel, timeUntilCheckOutLabel;
-    @FXML private Button checkoutButton;
+    @FXML private TableColumn<Notification, String> notificationColumn, dateColumn, senderColumn;
+    @FXML private Button checkoutButton, sendButton;
     @FXML private StackPane stackPane;
+    @FXML TextArea messageTextArea;
 
     User currentUser = UserSession.getInstance().getCurrentUser();
     private final HomePageService homePageService = new HomePageService();
     private Attendance todayAttendance;
     private Timeline timer;
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        loadUserData();
-        startTimer();
-    }
-
     private void loadUserData(){
-        checkoutButton.setOnAction(event -> checkOut());
-
         nameLabel.setText(currentUser.getFullName());
         dateLabel.setText(DateUtil.formatDate(LocalDate.now()));
 
@@ -50,6 +48,43 @@ public class HomePageContentController implements Initializable {
             checkInHourLabel.setText("-");
             timeSinceCheckInLabel.setText("-");
         }
+    }
+
+    @Override
+    protected void configureColumns() {
+        notificationColumn.setCellValueFactory(new PropertyValueFactory<>("message"));
+        dateColumn.setCellValueFactory(cellData -> {
+            LocalDateTime date = cellData.getValue().getDate();
+            String formattedDate = DateUtil.formatDateTime(date);
+            return new ReadOnlyStringWrapper(formattedDate);
+        });
+        senderColumn.setCellValueFactory(cellData -> {
+            User sender = cellData.getValue().getSender();
+            if(sender == null)
+                return new ReadOnlyStringWrapper("System");
+            else
+                return new ReadOnlyStringWrapper(cellData.getValue().getSender().getFullName());
+        });
+    }
+
+    @Override
+    protected Collection<Notification> fetchData() {
+        return homePageService.getNotifications();
+    }
+
+    @Override
+    protected List<ContextMenuUtil.MenuItemConfig<Notification>> menuItemsFor(Notification notification) {
+        return List.of(
+                new ContextMenuUtil.MenuItemConfig<>("Delete Notification", (item, row) -> handleDeleteAction(item))
+        );
+    }
+
+    @Override
+    protected void postInit(){
+        setupEventHandlers();
+        setTableStyling();
+        loadUserData();
+        startTimer();
     }
 
     private void startTimer(){
@@ -86,6 +121,44 @@ public class HomePageContentController implements Initializable {
                     } catch (CustomException e){
                         ExceptionHandler.handleException(e);
                     }
+                }
+        );
+    }
+
+    private void setTableStyling(){
+        tableView.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+        dateColumn.setPrefWidth(140);
+        senderColumn.setPrefWidth(200);
+
+        tableView.widthProperty().addListener((obs, oldWidth, newWidth) -> {
+            double fixedWidth = dateColumn.getWidth() + senderColumn.getWidth() + 2; // +2 for borders/padding
+            double newWidthForNotification = newWidth.doubleValue() - fixedWidth;
+            if (newWidthForNotification > 0) {
+                notificationColumn.setPrefWidth(newWidthForNotification);
+            }
+        });
+    }
+
+    private void setupEventHandlers(){
+        checkoutButton.setOnAction(event -> checkOut());
+        sendButton.setOnAction(event -> handleSendAction());
+    }
+
+    private void handleSendAction(){
+        String message = messageTextArea.getText();
+        homePageService.notify(message, false);
+        refresh();
+        messageTextArea.clear();
+    }
+
+    private void handleDeleteAction(Notification notification){
+        AlertUtil.showDeleteConfirmation(notification,
+                "Delete Notification",
+                "Are you sure you want to delete this notification?",
+                "This action cannot be undone.",
+                n -> {
+                    homePageService.deleteNotification(n.getId());
+                    refresh();
                 }
         );
     }

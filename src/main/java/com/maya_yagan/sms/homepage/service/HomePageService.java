@@ -1,5 +1,6 @@
 package com.maya_yagan.sms.homepage.service;
 
+import com.maya_yagan.sms.common.UserSession;
 import com.maya_yagan.sms.homepage.dao.NotificationDAO;
 import com.maya_yagan.sms.homepage.model.Notification;
 import com.maya_yagan.sms.login.service.AuthenticationService;
@@ -12,6 +13,7 @@ import com.maya_yagan.sms.util.DateUtil;
 
 import java.time.Duration;
 import java.time.LocalTime;
+import java.util.Set;
 
 public class HomePageService {
     private final AttendanceService attendanceService = new AttendanceService();
@@ -48,7 +50,18 @@ public class HomePageService {
             return DateUtil.formatDuration(left);
     }
 
-    public void notify(String message){
-        notificationDAO.insertNotification(new Notification(message));
+    public void notify(String message, boolean systemFlag){
+        if(systemFlag)
+            notificationDAO.insertNotification(new Notification(message, null));
+        else
+            notificationDAO.insertNotification(new Notification(message, UserSession.getInstance().getCurrentUser()));
+    }
+
+    public Set<Notification> getNotifications(){
+        return notificationDAO.getNotifications();
+    }
+
+    public void deleteNotification(int id){
+        notificationDAO.deleteNotification(id);
     }
 }
