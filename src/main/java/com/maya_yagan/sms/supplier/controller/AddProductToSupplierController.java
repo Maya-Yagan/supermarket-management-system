@@ -65,7 +65,12 @@ public class AddProductToSupplierController extends AbstractTableController<Prod
         TableViewUtil.setupCheckboxColumn(
                 selectColumn,
                 selectedProducts,
-                this::promptForPriceAndSelect
+                (product, selected) -> {
+                    if(selected)
+                        promptForPriceAndSelect(product);
+                    else
+                        selectedProducts.remove(product);
+                }
         );
     }
 

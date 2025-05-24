@@ -25,7 +25,9 @@ public class AddProductController extends BaseProductController {
                     selectedCategory,
                     selectedUnit,
                     barcodeField.getText(),
-                    minStockLimitField.getText())){
+                    minStockLimitField.getText(),
+                    taxField.getText())
+            ){
 
                 if(onCloseAction != null) onCloseAction.run();
                 close();

@@ -98,7 +98,15 @@ public class AddOrderController extends AbstractTableController<SupplierProduct>
         TableViewUtil.setupCheckboxColumn(
                 addToOrderColumn,
                 productsAmount,
-                this::promptForAmountAndSelect
+                (sp , selected) -> {
+                    if(selected)
+                        promptForAmountAndSelect(sp);
+                    else {
+                        productsAmount.remove(sp);
+                        refresh();
+                        updateTotals();
+                    }
+                }
         );
     }
 

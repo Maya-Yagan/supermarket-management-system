@@ -46,6 +46,8 @@
          <TextField fx:id="barcodeField" promptText="Barcode" GridPane.columnIndex="1" GridPane.rowIndex="3" />
          <Label text="Min Stock Limit:" GridPane.columnIndex="2" GridPane.rowIndex="4" />
          <TextField fx:id="minStockLimitField" promptText="Min Stock Limit" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+         <Label text="Tax Percentage:" GridPane.rowIndex="5" />
+         <TextField fx:id="taxField" promptText="Tax Percentage" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 
             <columnConstraints>
                 <ColumnConstraints maxWidth="136.66666666666669" minWidth="124.66666666666666" prefWidth="130.00001017252606" />
@@ -59,8 +61,8 @@
                 <RowConstraints maxHeight="61.600006103515625" minHeight="27.999987792968753" prefHeight="27.999987792968753" />
                 <RowConstraints maxHeight="50.399987792968744" minHeight="22.399993896484375" prefHeight="34.400000000000006" />
                 <RowConstraints maxHeight="52.79999999999998" minHeight="10.0" prefHeight="26.400012207031267" />
-            <RowConstraints maxHeight="30.400000000000006" minHeight="8.799993896484352" prefHeight="16.80000000000001" />
-            <RowConstraints maxHeight="25.600012207031227" minHeight="10.0" prefHeight="22.399999999999977" />
+            <RowConstraints maxHeight="38.39997253417968" minHeight="8.799993896484352" prefHeight="28.800012207031244" />
+            <RowConstraints maxHeight="25.600012207031227" minHeight="1.6000274658203466" prefHeight="11.199987792968784" />
             </rowConstraints>
         </GridPane>
     </children>

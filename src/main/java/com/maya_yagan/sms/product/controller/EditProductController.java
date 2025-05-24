@@ -26,6 +26,7 @@ public class EditProductController extends BaseProductController {
         selectedCategory = product.getCategory();
         selectedUnit = product.getUnit();
         minStockLimitField.setText(String.valueOf(product.getMinLimit()));
+        taxField.setText(String.valueOf(product.getTaxPercentage()));
 
         if (selectedCategory != null)
             categoryMenuButton.setText(selectedCategory.getName());
@@ -52,7 +53,8 @@ public class EditProductController extends BaseProductController {
                     selectedCategory,
                     selectedUnit,
                     barcodeField.getText(),
-                    minStockLimitField.getText()
+                    minStockLimitField.getText(),
+                    taxField.getText()
             );
             if (onCloseAction != null) onCloseAction.run();
             close();

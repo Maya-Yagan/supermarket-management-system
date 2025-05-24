@@ -1,9 +1,12 @@
 package com.maya_yagan.sms.product.model;
 
 import com.maya_yagan.sms.order.model.OrderProduct;
+import com.maya_yagan.sms.payment.model.ReceiptItem;
 import com.maya_yagan.sms.warehouse.model.ProductWarehouse;
 import com.maya_yagan.sms.supplier.model.SupplierProduct;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -57,6 +60,10 @@ public class Product {
     private String barcode;
     @Column(name = "minLimit")
     private int minLimit;
+    @OneToMany(mappedBy = "product")
+    private List<ReceiptItem> receiptItems = new ArrayList<>();
+    @Column(name = "taxPercentage")
+    private float taxPercentage;
 
     /**
      * Default constructor
@@ -200,6 +207,22 @@ public class Product {
 
     public void setOrderProducts(Set<OrderProduct> orderProducts){
         this.orderProducts = orderProducts;
+    }
+
+    public float getTaxPercentage() {
+        return taxPercentage;
+    }
+
+    public void setTaxPercentage(float taxPercentage) {
+        this.taxPercentage = taxPercentage;
+    }
+
+    public List<ReceiptItem> getReceiptItems() {
+        return receiptItems;
+    }
+
+    public void setReceiptItems(List<ReceiptItem> receiptItems) {
+        this.receiptItems = receiptItems;
     }
 
     @Override

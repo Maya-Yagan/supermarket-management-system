@@ -101,6 +101,9 @@ public class ValidationService {
                 throw new CustomException(
                         "Invalid Expiration date.\nExpiration date can't be before production date",
                         "INVALID_DATE");
+
+            if(product.getTaxPercentage() < 0)
+                throw new CustomException("The tax value cannot be negative.", "INVALID_NUMBER");
         }
     }
 
@@ -123,7 +126,7 @@ public class ValidationService {
     public float parseAndValidateFloat(String input, String fieldName){
         try{
             float number = Float.parseFloat(input.trim());
-            if(number <= 0)
+            if(number < 0)
                 throw new CustomException("The entered number must be greater than zero.", "INVALID_NUMBER");
             else return number;
         } catch(NumberFormatException e){
@@ -139,17 +142,6 @@ public class ValidationService {
             else return number;
         } catch(NumberFormatException e){
             throw new CustomException("Invalid " + fieldName + " format.\nPlease Enter a valid " + fieldName, "INVALID_NUMBER");
-        }
-    }
-
-    public float parseDiscount(String input){
-        try {
-            float number = Float.parseFloat(input.trim());
-            if (number < 0)
-                throw new CustomException("Discount cannot be negative.", "INVALID_DISCOUNT");
-            return number;
-        } catch(NumberFormatException e){
-            return 0f;
         }
     }
 

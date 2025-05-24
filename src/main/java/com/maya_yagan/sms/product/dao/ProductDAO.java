@@ -104,6 +104,7 @@ public class ProductDAO {
             p.setUnit(product.getUnit());
             p.setBarcode(product.getBarcode());
             p.setMinLimit(product.getMinLimit());
+            p.setTaxPercentage(product.getTaxPercentage());
             session.update(p);
             transaction.commit();
         } catch (Exception e){
@@ -127,6 +128,15 @@ public class ProductDAO {
         } catch (Exception e){
             if(transaction != null) transaction.rollback();
             e.printStackTrace();
+        }
+    }
+
+    public Product getProductByBarcode(String barcode) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<Product> q = session.createQuery(
+                    "FROM Product p WHERE p.barcode = :code", Product.class);
+            q.setParameter("code", barcode);
+            return q.uniqueResult();
         }
     }
 }

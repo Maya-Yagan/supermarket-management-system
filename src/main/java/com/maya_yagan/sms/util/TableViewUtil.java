@@ -4,6 +4,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
@@ -14,22 +15,20 @@ public class TableViewUtil {
     public static <T, V> void setupCheckboxColumn(
             TableColumn<T, Boolean> column,
             Map<T, V> backingMap,
-            Consumer<T> onChecked) {
+            BiConsumer<T, Boolean> onToggle) {
+
         column.setCellValueFactory(cellData -> {
             T item = cellData.getValue();
-            SimpleBooleanProperty prop =
-                    new SimpleBooleanProperty(backingMap.containsKey(item));
+            SimpleBooleanProperty prop = new SimpleBooleanProperty(backingMap.containsKey(item));
 
             prop.addListener((obs, wasSelected, isNowSelected) -> {
-                if (isNowSelected) {
-                    onChecked.accept(item);
-                } else {
-                    backingMap.remove(item);
-                }
+                onToggle.accept(item, isNowSelected);
                 cellData.getTableView().refresh();
             });
+
             return prop;
         });
+
         column.setCellFactory(CheckBoxTableCell.forTableColumn(column));
         column.setEditable(true);
     }

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import org.controlsfx.control.*?>
+
+<StackPane fx:id="stackPane" prefHeight="667.0" prefWidth="946.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.payment.controller.PaymentPageController">
+   <children>
+      <HBox prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <AnchorPane prefHeight="667.0" prefWidth="531.0">
+               <children>
+                  <Label layoutX="14.0" layoutY="14.0" prefHeight="27.0" prefWidth="66.0" text="Receipt" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="241.20000000000002" AnchorPane.topAnchor="14.0">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
+                  <HBox layoutX="20.0" layoutY="452.0" prefHeight="100.0" prefWidth="230.0" AnchorPane.bottomAnchor="115.20000000000005" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="71.19999999999999">
+                     <children>
+                        <VBox prefHeight="100.0" prefWidth="153.0">
+                           <children>
+                              <Label text="Subtotal:" />
+                              <Label text="Taxes:" />
+                              <Label text="Total Cost:" />
+                              <Label text="Amount Paid:" />
+                              <Label text="Change:" />
+                           </children>
+                        </VBox>
+                        <VBox prefHeight="100.0" prefWidth="126.0">
+                           <children>
+                              <Label fx:id="subtotalLabel" text="00.0" />
+                              <Label fx:id="taxLabel" text="00.0" />
+                              <Label fx:id="totalCostLabel" style="-fx-font-weight: bold;" text="00.0" />
+                              <Label fx:id="amountPaidLabel" text="00.0" />
+                              <Label fx:id="changeLabel" text="00.0" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <ScrollPane fitToWidth="true" prefHeight="290.0" prefWidth="300.0" AnchorPane.bottomAnchor="232.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="145.0">
+                     <content>
+                        <GridPane fx:id="gridPane" hgap="20" layoutX="11.0" layoutY="145.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="10.6" AnchorPane.topAnchor="144.8" />
+                     </content>
+                  </ScrollPane>
+                  <HBox layoutX="14.0" layoutY="60.0" prefHeight="63.0" prefWidth="300.0" AnchorPane.leftAnchor="13.600000000000023" AnchorPane.rightAnchor="7.600000000000023" AnchorPane.topAnchor="60.0">
+                     <children>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <Label text="Date:" />
+                              <Label text="Receipt No:" />
+                              <Label text="Cashier:" />
+                           </children>
+                        </VBox>
+                        <VBox prefHeight="63.0" prefWidth="230.0">
+                           <children>
+                              <Label fx:id="dateLabel" text="DD.MM.YY" />
+                              <Label fx:id="receiptNumberLabel" prefHeight="18.0" prefWidth="215.0" text="XXXXXX" />
+                              <Label fx:id="employeeNameLabel" text="NAME" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <VBox alignment="CENTER" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                     <ImageView fx:id="barcodeImageView" fitHeight="100.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS" VBox.vgrow="NEVER" />
+                  </VBox>
+
+                  <Separator layoutX="8.8" layoutY="42.0" prefHeight="24.0" prefWidth="307.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="42.0" />
+                  <Separator layoutX="10.0" layoutY="122.0" prefHeight="24.0" prefWidth="300.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="118.4" />
+                  <Separator layoutX="10.0" layoutY="428.0" prefHeight="24.0" prefWidth="300.0" AnchorPane.bottomAnchor="215.20000000000005" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="667.0" prefWidth="834.0" style="-fx-background-color: #f2f6f7;" HBox.hgrow="ALWAYS">
+               <children>
+                  <TableView fx:id="tableView" layoutX="46.0" layoutY="159.0" prefHeight="444.0" prefWidth="554.0" AnchorPane.bottomAnchor="63.0" AnchorPane.leftAnchor="35.0" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="160.0">
+                    <columns>
+                      <TableColumn fx:id="productColumn" prefWidth="75.0" text="Product" />
+                      <TableColumn fx:id="unitPriceColumn" prefWidth="85.60002899169922" text="Unit Price" />
+                        <TableColumn fx:id="discountColumn" prefWidth="85.60002899169922" text="Discount" />
+                        <TableColumn fx:id="discountedPriceColumn" prefWidth="127.99998474121094" text="Discounted Price" />
+                        <TableColumn fx:id="addColumn" prefWidth="85.60002899169922" text="Add" />
+                    </columns>
+                  </TableView>
+                  <SearchableComboBox fx:id="categoryComboBox" layoutX="439.0" layoutY="39.0" prefWidth="150.0" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="39.0" />
+                  <Label layoutX="334.0" layoutY="44.0" text="Category" AnchorPane.rightAnchor="234.79999999999995" AnchorPane.topAnchor="47.0" />
+                  <Label layoutX="318.0" layoutY="84.0" text="Add by name:" AnchorPane.rightAnchor="205.0" AnchorPane.topAnchor="85.0" />
+                  <Label layoutX="37.0" layoutY="93.0" text="Add by barcode:" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="93.0" />
+                  <Button fx:id="returnButton" layoutX="328.0" layoutY="617.0" mnemonicParsing="false" styleClass="danger" text="Return Item" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="328.0" />
+                  <Button fx:id="cashButton" layoutX="56.0" layoutY="617.0" mnemonicParsing="false" style="-fx-background-color: #9ccf93;" text="Cash Payment" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="35.0" />
+                  <Button fx:id="creditButton" layoutX="161.0" layoutY="617.0" mnemonicParsing="false" styleClass="accent" text="Credit Card Payment" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="161.0" />
+                  <Label layoutX="46.0" layoutY="29.0" text="Payment Page" textFill="#455079" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="30.0">
+                     <font>
+                        <Font size="32.0" />
+                     </font>
+                  </Label>
+                  <SearchableComboBox fx:id="nameComboBox" layoutX="439.0" layoutY="76.0" prefWidth="150.0" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="76.0" />
+                  <TextField fx:id="barcodeField" layoutX="35.0" layoutY="117.0" prefHeight="36.0" prefWidth="496.0" promptText="Enter Barcode" AnchorPane.leftAnchor="35.0" AnchorPane.rightAnchor="93.59999999999991" AnchorPane.topAnchor="117.0" />
+                  <Button fx:id="addButton" layoutX="540.0" layoutY="117.0" mnemonicParsing="false" styleClass="accent" text="Add" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="117.0" />
+               </children>
+            </AnchorPane>
+         </children>
+      </HBox>
+   </children>
+</StackPane>

@@ -13,9 +13,7 @@ import com.maya_yagan.sms.warehouse.model.ProductWarehouse;
 import com.maya_yagan.sms.warehouse.model.Warehouse;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  *
@@ -79,12 +77,15 @@ public class ProductService {
     }
 
     public boolean addProduct(String name, String priceText, String discountText,LocalDate productionDate,
-                              LocalDate expirationDate, Category category, ProductUnit unit , String barcode, String minStockLimit){
+                              LocalDate expirationDate, Category category, ProductUnit unit , String barcode,
+                              String minStockLimit, String tax){
         float price = validationService.parseAndValidateFloat(priceText, "price");
-        float discount = validationService.parseDiscount(discountText);
+        float discount = validationService.parseAndValidateFloat(discountText, "Discount");
         Product product = new Product(name, price, productionDate, expirationDate, category, unit, discount, barcode);
         int minLimit = validationService.parseAndValidateInt(minStockLimit, "Min Stock Limit");
         product.setMinLimit(minLimit);
+        float taxPercentage = validationService.parseAndValidateFloat(tax, "Tax");
+        product.setTaxPercentage(taxPercentage);
         validationService.validateProduct(product);
         return productDAO.insertProduct(product);
     }
@@ -96,16 +97,20 @@ public class ProductService {
         return categoryDAO.insertCategory(category);
     }
 
-    public void updateProductData(Product product, String name, String priceText,String discountText, LocalDate productionDate,
-                                  LocalDate expirationDate, Category category, ProductUnit unit, String barcode, String minLimit){
+    public void updateProductData(Product product, String name, String priceText,
+                                  String discountText, LocalDate productionDate,
+                                  LocalDate expirationDate, Category category,
+                                  ProductUnit unit, String barcode, String minLimit, String tax){
         product.setName(name);
         product.setCategory(category);
         product.setPrice(validationService.parseAndValidateFloat(priceText, "price"));
-        product.setDiscount(validationService.parseDiscount(discountText));
+        product.setDiscount(validationService.parseAndValidateFloat(discountText, "Discount"));
         product.setProductionDate(productionDate);
         product.setExpirationDate(expirationDate);
         product.setUnit(unit);
         product.setBarcode(barcode);
+        float taxPercentage = validationService.parseAndValidateFloat(tax, "Tax");
+        product.setTaxPercentage(taxPercentage);
         int min = validationService.parseAndValidateInt(minLimit, "Min Stock Limit");
         product.setMinLimit(min);
         validationService.validateProduct(product);
@@ -130,5 +135,27 @@ public class ProductService {
 
     public Set<MoneyUnit> getAllMoneyUnits() {
         return moneyUnitDAO.getAllMoneyUnits();
+    }
+
+    public List<String> getProductNames(){
+        var products = getAllProducts();
+        return products.stream().map(Product::getName).toList();
+    }
+
+    public float calculateDiscountedPrice(Product product){
+        float price = product.getPrice();
+        float discountPercent = product.getDiscount();
+        return price * (1 - discountPercent / 100f);
+    }
+
+    public Optional<Product> findProductByName(String name){
+        return getAllProducts()
+                .stream()
+                .filter(p -> p.getName().equalsIgnoreCase(name))
+                .findFirst();
+    }
+
+    public Optional<Product> findProductByBarcode(String barcode){
+        return Optional.ofNullable(productDAO.getProductByBarcode(barcode));
     }
 }

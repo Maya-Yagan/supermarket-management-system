@@ -36,12 +36,12 @@
             <TextField fx:id="productNameField" promptText="Product Name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Label text="Price:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
             <TextField fx:id="priceField" promptText="Price" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-            <Label text="Discount:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-            <TextField fx:id="discountField" promptText="Discount" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label text="Discount:" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+            <TextField fx:id="discountField" promptText="Discount" GridPane.columnIndex="3" GridPane.rowIndex="3" />
 
-            <Label text="Production Date:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-            <Label text="Expiration Date:" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-            <DatePicker fx:id="expirationDatePicker" promptText="MM/DD/YYYY" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+            <Label text="Production Date:" GridPane.rowIndex="2" />
+            <Label text="Expiration Date:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+            <DatePicker fx:id="expirationDatePicker" promptText="MM/DD/YYYY" GridPane.columnIndex="3" GridPane.rowIndex="2" />
             <Label text="Category:" GridPane.rowIndex="4" />
             <MenuButton fx:id="categoryMenuButton" prefHeight="36.0" prefWidth="162.0" text="Select" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <Label text="Edit Product">
@@ -49,7 +49,7 @@
                   <Font size="23.0" />
                </font>
             </Label>
-            <DatePicker fx:id="productionDatePicker" promptText="MM/DD/YYYY" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <DatePicker fx:id="productionDatePicker" promptText="MM/DD/YYYY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <Button fx:id="saveButton" mnemonicParsing="false" onAction="#handleSave" styleClass="accent" text="Save" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="7">
                <GridPane.margin>
                   <Insets right="45.0" />
@@ -58,10 +58,12 @@
             <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#close" text="Cancel" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
             <MenuButton fx:id="unitMenuButton" mnemonicParsing="false" prefHeight="36.0" prefWidth="169.0" text="Select" GridPane.columnIndex="3" GridPane.rowIndex="4" />
             <Label text="Product Unit" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-            <TextField fx:id="barcodeField" promptText="Barcode" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-            <Label prefHeight="18.0" prefWidth="88.0" text="Barcode:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+            <TextField fx:id="barcodeField" promptText="Barcode" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label prefHeight="18.0" prefWidth="88.0" text="Barcode:" GridPane.rowIndex="3" />
             <Label text="Min Stock Limit" GridPane.rowIndex="5" />
             <TextField fx:id="minStockLimitField" promptText="Min Stock Limit" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <Label text="Tax Percentage:" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+            <TextField fx:id="taxField" promptText="Tax Percentage" GridPane.columnIndex="3" GridPane.rowIndex="5" />
          </children>
       </GridPane>
    </children>

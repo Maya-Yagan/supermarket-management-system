@@ -81,6 +81,8 @@ public class HomePageController implements Initializable {
         navigateToPage("/view/order/OrderManagement.fxml", "Order Management");
     }
 
+    private void goToPayment() { navigateToPage("/view/payment/PaymentPage.fxml", "Payment Page"); }
+
     private void logout() {
         UserSession.getInstance().clear();
         ViewUtil.changeScene(
@@ -105,6 +107,7 @@ public class HomePageController implements Initializable {
                 new Sidebar.SidebarItem("Warehouse Management", Feather.DISC, this::goToWarehouseManagement, null),
                 new Sidebar.SidebarItem("Supplier Management", Feather.BOX, this::gotToSupplierManagement, null),
                 new Sidebar.SidebarItem("Order Management", Feather.PEN_TOOL, this::goToOrderManagement, null),
+                new Sidebar.SidebarItem("Payment Page", Feather.SHOPPING_CART, this::goToPayment, null),
                 new Sidebar.SidebarItem("Log out", Feather.LOG_OUT, this::logout, null)
         );
         sidebar = Sidebar.createSidebar(sidebarItems, toggleButton);
