@@ -8,12 +8,15 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import com.maya_yagan.sms.common.UserSession;
+import com.maya_yagan.sms.payment.service.CashBoxService;
+import com.maya_yagan.sms.util.AlertUtil;
 import com.maya_yagan.sms.util.ViewUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
@@ -33,6 +36,7 @@ public class HomePageController implements Initializable {
     @FXML StackPane stackPane;
     private VBox sidebar;
     private boolean isSidebarVisible = true;
+    private final CashBoxService cashBoxService= new CashBoxService();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -81,7 +85,14 @@ public class HomePageController implements Initializable {
         navigateToPage("/view/order/OrderManagement.fxml", "Order Management");
     }
 
-    private void goToPayment() { navigateToPage("/view/payment/PaymentPage.fxml", "Payment Page"); }
+    private void goToPayment() {
+        if(cashBoxService.isCashBoxOpen())
+            navigateToPage("/view/payment/PaymentPage.fxml", "Payment Page");
+        else
+            AlertUtil.showAlert(Alert.AlertType.WARNING,
+                    "No Open Cash Box",
+                    "No open cash box!\nPlease open the cash box first.");
+    }
 
     private void logout() {
         UserSession.getInstance().clear();

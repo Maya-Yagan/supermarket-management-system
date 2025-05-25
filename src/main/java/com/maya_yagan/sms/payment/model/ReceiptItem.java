@@ -28,7 +28,7 @@ public class ReceiptItem {
     private BigDecimal unitPrice;              // price at sale time
 
     @Column(nullable = false)
-    private Integer quantity;
+    private Double quantity;
 
     @Column(precision = 5, scale = 2)
     private BigDecimal discount;               // absolute amount; null = none
@@ -39,7 +39,7 @@ public class ReceiptItem {
     public ReceiptItem(){}
 
     @PrePersist @PreUpdate
-    private void calcLineTotal() {
+    public void calcLineTotal() {
         BigDecimal gross = unitPrice.multiply(BigDecimal.valueOf(quantity));
         this.lineTotal = (discount == null)
                 ? gross
@@ -89,11 +89,11 @@ public class ReceiptItem {
         this.unitPrice = unitPrice;
     }
 
-    public Integer getQuantity() {
+    public Double getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(Double quantity) {
         this.quantity = quantity;
     }
 

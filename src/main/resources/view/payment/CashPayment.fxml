@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<StackPane prefHeight="276.0" prefWidth="478.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.payment.controller.CashPaymentController">
+   <children>
+      <AnchorPane prefHeight="400.0" prefWidth="600.0">
+         <children>
+            <Label layoutX="35.0" layoutY="14.0" text="Cash Payment" textFill="#455079" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="14.0">
+               <font>
+                  <Font size="30.0" />
+               </font>
+            </Label>
+            <Label layoutX="35.0" layoutY="83.0" text="Total amount to be paid:" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="83.0">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <TextField fx:id="cashReceivedField" layoutX="190.0" layoutY="142.0" prefHeight="36.0" prefWidth="265.0" promptText="Enter received amount" AnchorPane.leftAnchor="190.0" AnchorPane.rightAnchor="23.0" AnchorPane.topAnchor="142.0">
+               <font>
+                  <Font size="20.0" />
+               </font></TextField>
+            <Label fx:id="totalAmountLabel" layoutX="270.0" layoutY="83.0" prefHeight="30.0" prefWidth="194.0" text="00.0" AnchorPane.leftAnchor="270.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="83.0">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label layoutX="35.0" layoutY="149.0" text="Cash Received:" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="149.0">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label layoutX="35.0" layoutY="215.0" text="Change to be returned:" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="215.0">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label fx:id="changeLabel" layoutX="270.0" layoutY="215.0" prefHeight="30.0" prefWidth="194.0" text="00.0" AnchorPane.leftAnchor="270.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="215.0">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+   </children>
+</StackPane>

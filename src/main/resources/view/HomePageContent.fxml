@@ -35,9 +35,9 @@
                   </VBox>
                </children>
             </HBox>
-            <HBox layoutX="50.0" layoutY="110.0" prefHeight="40.0" prefWidth="262.0" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="120.0">
+            <HBox layoutX="51.2" layoutY="110.0" prefHeight="60.0" prefWidth="282.0" AnchorPane.leftAnchor="51.0" AnchorPane.topAnchor="120.0">
                <children>
-                  <VBox prefHeight="40.0" prefWidth="85.0">
+                  <VBox prefHeight="60.0" prefWidth="123.0">
                      <children>
                         <Label text="Current User: ">
                            <font>
@@ -45,9 +45,10 @@
                            </font>
                         </Label>
                         <Label text="Date:" textFill="#484848" />
+                        <Label text="Cash Box Status:" />
                      </children>
                   </VBox>
-                  <VBox prefHeight="40.0" prefWidth="163.0">
+                  <VBox prefHeight="60.0" prefWidth="178.0">
                      <children>
                         <Label fx:id="nameLabel" text="Name">
                            <font>
@@ -55,6 +56,11 @@
                            </font>
                         </Label>
                         <Label fx:id="dateLabel" text="DD.MM.YYYY" textFill="#484848" />
+                        <Label fx:id="cashBoxStatusLabel" text="STATUS">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
                      </children>
                   </VBox>
                </children>
@@ -66,7 +72,7 @@
             </Text>
             <Button fx:id="checkoutButton" layoutX="725.0" layoutY="108.0" mnemonicParsing="false" styleClass="danger" text="Check out" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="120.0" />
             <Separator layoutX="30.0" layoutY="86.0" prefHeight="24.0" prefWidth="802.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" />
-            <TableView fx:id="tableView" layoutX="503.0" layoutY="180.0" prefHeight="201.0" prefWidth="770.0" AnchorPane.bottomAnchor="199.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="180.0">
+            <TableView fx:id="tableView" layoutX="503.0" layoutY="187.2" prefHeight="194.0" prefWidth="762.0" AnchorPane.bottomAnchor="199.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="187.0">
               <columns>
                 <TableColumn fx:id="notificationColumn" prefWidth="167.20001220703125" text="Notifications" />
                   <TableColumn fx:id="dateColumn" prefWidth="141.60001220703123" text="Date" />
@@ -78,6 +84,8 @@
             <Label layoutX="50.4" layoutY="433.0" text="to notify everyone:" AnchorPane.bottomAnchor="127.0" AnchorPane.leftAnchor="50.4" />
             <Separator layoutX="30.4" layoutY="388.0" prefHeight="24.0" prefWidth="496.0" AnchorPane.bottomAnchor="168.0" AnchorPane.leftAnchor="30.4" AnchorPane.rightAnchor="30.399999999999977" />
             <Button fx:id="sendButton" layoutX="750.0" layoutY="485.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="66.0" styleClass="accent" text="Send" AnchorPane.bottomAnchor="45.0" AnchorPane.rightAnchor="50.0" />
+            <Button fx:id="openCashBoxButton" layoutX="440.0" layoutY="122.0" mnemonicParsing="false" styleClass="success" text="Open Cash Box" AnchorPane.rightAnchor="304.0" AnchorPane.topAnchor="120.0" />
+            <Button fx:id="closeCashBoxButton" layoutX="583.0" layoutY="120.0" mnemonicParsing="false" style="-fx-background-color: #f2c446;" text="Close Cash Box" AnchorPane.rightAnchor="161.79999999999995" AnchorPane.topAnchor="120.0" />
          </children>
       </AnchorPane>
    </children>

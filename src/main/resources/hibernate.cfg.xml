@@ -33,5 +33,7 @@
         <mapping class="com.maya_yagan.sms.homepage.model.Notification"/>
         <mapping class="com.maya_yagan.sms.payment.model.Receipt"/>
         <mapping class="com.maya_yagan.sms.payment.model.ReceiptItem"/>
+        <mapping class="com.maya_yagan.sms.payment.model.CashBox"/>
+        <mapping class="com.maya_yagan.sms.payment.model.FinancialRecord"/>
     </session-factory>
 </hibernate-configuration>

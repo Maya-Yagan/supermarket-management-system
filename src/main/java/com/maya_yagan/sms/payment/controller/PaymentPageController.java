@@ -2,6 +2,8 @@ package com.maya_yagan.sms.payment.controller;
 
 import com.google.zxing.WriterException;
 import com.maya_yagan.sms.common.AbstractTableController;
+import com.maya_yagan.sms.payment.model.PaymentMethod;
+import com.maya_yagan.sms.payment.model.Receipt;
 import com.maya_yagan.sms.payment.service.PaymentService;
 import com.maya_yagan.sms.product.model.Category;
 import com.maya_yagan.sms.product.model.Product;
@@ -21,6 +23,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import org.controlsfx.control.SearchableComboBox;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -42,12 +45,12 @@ public class PaymentPageController extends AbstractTableController<Product> {
     @FXML private Button returnButton, creditButton, cashButton, addButton;
     @FXML private Label dateLabel, changeLabel, amountPaidLabel, employeeNameLabel,
                 receiptNumberLabel, taxLabel, subtotalLabel, totalCostLabel;
-
+    private static final String STYLE = "-fx-font-weight: bold;";
     private static final String ALL_CATEGORIES = "All Categories";
     private String currentCategory = ALL_CATEGORIES;
     private final ProductService productService = new ProductService();
     private final PaymentService paymentService = new PaymentService();
-    private final Map<Product, Double> productsAmount = new HashMap<>();
+    private final Map<Product, Double> basket = new HashMap<>();
     private boolean selectionHandled = false;
 
     private void loadCategories() {
@@ -100,7 +103,7 @@ public class PaymentPageController extends AbstractTableController<Product> {
         discountColumn.setCellValueFactory(new PropertyValueFactory<>("discount"));
         discountedPriceColumn.setCellValueFactory(cellData -> {
             var product = cellData.getValue();
-            float discountedPrice = productService.calculateDiscountedPrice(product);
+            float discountedPrice = paymentService.calculateDiscountedPrice(product);
             return new SimpleFloatProperty(discountedPrice).asObject();
         });
 
@@ -118,7 +121,7 @@ public class PaymentPageController extends AbstractTableController<Product> {
 
         TableViewUtil.setupCheckboxColumn(
                 addColumn,
-                productsAmount,
+                basket,
                 (product, selected) -> {
                     if(selected)
                         promptForAmountAndSelect(product);
@@ -155,6 +158,24 @@ public class PaymentPageController extends AbstractTableController<Product> {
             }
         });
         addButton.setOnAction(event -> handleBarcodeEntry());
+        cashButton.setOnAction(event -> {
+            try {
+                Receipt receipt = paymentService.createReceipt(
+                        basket,
+                        receiptNumberLabel.getText(),
+                        PaymentMethod.CASH
+                );
+
+                ViewUtil.showDialog(
+                        "/view/payment/CashPayment.fxml",
+                        "Cash Payment",
+                        (CashPaymentController controller) -> controller.setReceipt(receipt),
+                        CashPaymentController::save
+                );
+            } catch (IOException e) {
+                throw new CustomException("Error loading view: " + e.getMessage(), "IO_ERROR");
+            }
+        });
     }
 
     private void promptForAmountAndSelect(Product product){
@@ -166,7 +187,7 @@ public class PaymentPageController extends AbstractTableController<Product> {
                 "Amount",
                 newAmt -> {
                     try {
-                        productsAmount.put(product, newAmt);
+                        basket.put(product, newAmt);
                         refresh();
                         refreshPaymentSection();
                     } catch(CustomException e){
@@ -231,15 +252,15 @@ public class PaymentPageController extends AbstractTableController<Product> {
     }
 
     private void onProductDeselected(Product p) {
-        productsAmount.remove(p);
+        basket.remove(p);
         refreshPaymentSection();
     }
 
     private void refreshPaymentSection() {
         populateGridPane();
-        float subtotal = paymentService.calculateSubtotal(productsAmount);
-        float tax = paymentService.calculateTotalTax(productsAmount);
-        float totalCost = paymentService.calculateTotalCost(productsAmount);
+        float subtotal = paymentService.calculateSubtotal(basket);
+        float tax = paymentService.calculateTotalTax(basket);
+        float totalCost = paymentService.calculateTotalCost(basket);
 
         subtotalLabel.setText(String.format("%.2f", subtotal));
         taxLabel.setText(String.format("%.2f", tax));
@@ -250,19 +271,19 @@ public class PaymentPageController extends AbstractTableController<Product> {
         gridPane.getChildren().clear();
 
         Label productHeader = new Label("Product");
-        productHeader.setStyle("-fx-font-weight: bold;");
+        productHeader.setStyle(STYLE);
 
         Label amountHeader = new Label("Amount");
-        amountHeader.setStyle("-fx-font-weight: bold;");
+        amountHeader.setStyle(STYLE);
 
         Label unitPriceHeader = new Label("Unit Price");
-        unitPriceHeader.setStyle("-fx-font-weight: bold;");
+        unitPriceHeader.setStyle(STYLE);
 
         Label totalHeader = new Label("Total Price");
-        totalHeader.setStyle("-fx-font-weight: bold;");
+        totalHeader.setStyle(STYLE);
 
         Label taxHeader = new Label("Tax");
-        taxHeader.setStyle("-fx-font-weight: bold;");
+        taxHeader.setStyle(STYLE);
 
         gridPane.add(productHeader,    0, 0);
         gridPane.add(amountHeader,     1, 0);
@@ -270,11 +291,11 @@ public class PaymentPageController extends AbstractTableController<Product> {
         gridPane.add(totalHeader,      3, 0);
         gridPane.add(taxHeader, 4, 0);
 
-        int row = 1; // Start from row 1 for product entries
-        for (var entry : productsAmount.entrySet()) {
+        int row = 1;
+        for (var entry : basket.entrySet()) {
             Product p = entry.getKey();
             double amount = entry.getValue();
-            float unitPrice = paymentService.getDisplayPrice(p);
+            float unitPrice = paymentService.calculateDiscountedPrice(p);
             float taxRate = p.getTaxPercentage();
             double total = amount * unitPrice;
             String amountWithUnit = String.format("%.2f %s", amount, p.getUnit().getShortName());

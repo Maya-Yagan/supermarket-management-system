@@ -1,5 +1,6 @@
 package com.maya_yagan.sms.payment.model;
 
+import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.user.model.User;
 
 import javax.persistence.*;
@@ -7,6 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Entity
@@ -39,12 +41,22 @@ public class Receipt {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 12)
-    private ReceiptStatus status = ReceiptStatus.COMPLETED;
+    private ReceiptStatus status = ReceiptStatus.PENDING;
 
     @OneToMany(mappedBy = "receipt", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReceiptItem> items = new ArrayList<>();
 
     public Receipt(){}
+
+    public Receipt(String code,
+                   LocalDateTime dateTime,
+                   User cashier,
+                   PaymentMethod paymentMethod) {
+        this.code          = code;
+        this.dateTime      = dateTime;
+        this.cashier       = cashier;
+        this.paymentMethod = paymentMethod;
+    }
 
     public void addItem(ReceiptItem li) {
         items.add(li);
@@ -66,7 +78,11 @@ public class Receipt {
     @Transient
     public BigDecimal getTotalCost() {
         return items.stream()
-                .map(ReceiptItem::getLineTotal)
+                .map(i -> {
+                    BigDecimal lt = i.getLineTotal();
+                    return lt != null ? lt :
+                            i.getUnitPrice().multiply(BigDecimal.valueOf(i.getQuantity()));
+                })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 

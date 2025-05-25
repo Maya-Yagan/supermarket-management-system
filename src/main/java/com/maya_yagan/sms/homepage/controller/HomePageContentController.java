@@ -4,6 +4,7 @@ import com.maya_yagan.sms.common.AbstractTableController;
 import com.maya_yagan.sms.common.UserSession;
 import com.maya_yagan.sms.homepage.model.Notification;
 import com.maya_yagan.sms.homepage.service.HomePageService;
+import com.maya_yagan.sms.payment.service.CashBoxService;
 import com.maya_yagan.sms.user.model.Attendance;
 import com.maya_yagan.sms.user.model.User;
 import com.maya_yagan.sms.util.*;
@@ -24,14 +25,15 @@ import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
 public class HomePageContentController extends AbstractTableController<Notification> {
-    @FXML private Label nameLabel, dateLabel, checkInHourLabel, timeSinceCheckInLabel, timeUntilCheckOutLabel;
+    @FXML private Label nameLabel, dateLabel, checkInHourLabel, timeSinceCheckInLabel, timeUntilCheckOutLabel, cashBoxStatusLabel;
     @FXML private TableColumn<Notification, String> notificationColumn, dateColumn, senderColumn;
-    @FXML private Button checkoutButton, sendButton;
+    @FXML private Button checkoutButton, sendButton, openCashBoxButton, closeCashBoxButton;
     @FXML private StackPane stackPane;
     @FXML TextArea messageTextArea;
 
     User currentUser = UserSession.getInstance().getCurrentUser();
     private final HomePageService homePageService = new HomePageService();
+    private final CashBoxService cashBoxService = new CashBoxService();
     private Attendance todayAttendance;
     private Timeline timer;
 
@@ -48,6 +50,8 @@ public class HomePageContentController extends AbstractTableController<Notificat
             checkInHourLabel.setText("-");
             timeSinceCheckInLabel.setText("-");
         }
+
+        cashBoxStatusLabel.setText(cashBoxService.getCashBoxStatus());
     }
 
     @Override
@@ -108,6 +112,9 @@ public class HomePageContentController extends AbstractTableController<Notificat
 
     private void checkOut(){
         String time = DateUtil.formatTime(LocalTime.now());
+        AlertUtil.showAlert(Alert.AlertType.INFORMATION,
+                "Confirm Check Out",
+                "If you are the last employee to check out today,\nplease remember to close the cash box.");
         ViewUtil.showStringInputDialog(
                 "Check Out",
                 "You’re about to check out at " + time + " for " + currentUser.getFullName(),
@@ -142,6 +149,24 @@ public class HomePageContentController extends AbstractTableController<Notificat
     private void setupEventHandlers(){
         checkoutButton.setOnAction(event -> checkOut());
         sendButton.setOnAction(event -> handleSendAction());
+
+        openCashBoxButton.setOnAction(event -> {
+            try{
+                cashBoxService.openCashBox();
+                loadUserData();
+            } catch (CustomException e){
+                ExceptionHandler.handleException(e);
+            }
+        });
+
+        closeCashBoxButton.setOnAction(event -> {
+            try{
+                cashBoxService.closeCashBox();
+                loadUserData();
+            } catch (CustomException e){
+                ExceptionHandler.handleException(e);
+            }
+        });
     }
 
     private void handleSendAction(){

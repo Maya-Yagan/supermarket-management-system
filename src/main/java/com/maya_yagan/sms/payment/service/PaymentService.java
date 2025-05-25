@@ -1,17 +1,23 @@
 package com.maya_yagan.sms.payment.service;
 
 import com.maya_yagan.sms.common.UserSession;
+import com.maya_yagan.sms.payment.model.PaymentMethod;
+import com.maya_yagan.sms.payment.model.Receipt;
+import com.maya_yagan.sms.payment.model.ReceiptItem;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.product.service.ProductService;
-import com.maya_yagan.sms.homepage.service.HomePageService;
+import com.maya_yagan.sms.user.model.User;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 public class PaymentService {
 
     private final ProductService productService = new ProductService();
-    private final HomePageService homePageService = new HomePageService();
 
     public String getCurrentEmployeeName() {
         return UserSession.getInstance().getCurrentUser().getFullName();
@@ -24,9 +30,10 @@ public class PaymentService {
                 .toUpperCase();
     }
 
-    /** Unit-price to show in the GridPane (discount already applied). */
-    public float getDisplayPrice(Product p) {
-        return productService.calculateDiscountedPrice(p);
+    public float calculateDiscountedPrice(Product product){
+        float price = product.getPrice();
+        float discountPercent = product.getDiscount();
+        return price * (1 - discountPercent / 100f);
     }
 
     /** Adds up all line totals (amount × discounted price). */
@@ -34,7 +41,7 @@ public class PaymentService {
         return (float) items.entrySet()
                 .stream()
                 .mapToDouble(e ->
-                        e.getValue() * getDisplayPrice(e.getKey()))
+                 e.getValue() * calculateDiscountedPrice(e.getKey()))
                 .sum();
     }
 
@@ -47,7 +54,7 @@ public class PaymentService {
                 .mapToDouble(e -> {
                     Product p = e.getKey();
                     double amount = e.getValue();
-                    float price = getDisplayPrice(p);
+                    float price = calculateDiscountedPrice(p);
                     float taxRate = p.getTaxPercentage();
                     return amount * price * taxRate;
                 }).sum();
@@ -57,5 +64,31 @@ public class PaymentService {
         float subtotal = calculateSubtotal(items);
         float tax = calculateTotalTax(items);
         return subtotal + tax;
+    }
+
+    public Receipt createReceipt(Map<Product, Double> basket,
+                                 String code,
+                                 PaymentMethod method) {
+        User cashier = UserSession.getInstance().getCurrentUser();
+        Receipt receipt = new Receipt(code, LocalDateTime.now(), cashier, method);
+
+        List<ReceiptItem> items = new ArrayList<>();
+        for (var entry : basket.entrySet()) {
+            Product p = entry.getKey();
+            double qty = entry.getValue();
+
+            ReceiptItem item = new ReceiptItem();
+            item.setReceipt(receipt);
+            item.setProduct(p);
+            item.setProductName(p.getName());
+            item.setQuantity(qty);
+            item.setUnitPrice(BigDecimal.valueOf(calculateDiscountedPrice(p)));
+            item.setDiscount(BigDecimal.valueOf(p.getDiscount()));
+            item.calcLineTotal();
+            items.add(item);
+        }
+
+        receipt.setItems(items);
+        return receipt;
     }
 }

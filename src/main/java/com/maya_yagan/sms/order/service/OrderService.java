@@ -3,6 +3,8 @@ package com.maya_yagan.sms.order.service;
 import com.maya_yagan.sms.order.dao.OrderDAO;
 import com.maya_yagan.sms.order.model.Order;
 import com.maya_yagan.sms.order.model.OrderProduct;
+import com.maya_yagan.sms.payment.model.TransactionType;
+import com.maya_yagan.sms.payment.service.CashBoxService;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.supplier.model.Supplier;
 import com.maya_yagan.sms.supplier.model.SupplierProduct;
@@ -20,6 +22,7 @@ public class OrderService {
     private final OrderDAO orderDAO = new OrderDAO();
     private final WarehouseService warehouseService = new WarehouseService();
     private final ValidationService validationService = new ValidationService();
+    private final CashBoxService cashBoxService = new CashBoxService();
 
     public Set<Order> getOrders(){
         return orderDAO.getOrders();
@@ -102,6 +105,13 @@ public class OrderService {
 
     public void deliverOrder(Order order, Warehouse warehouse){
         warehouseService.allocateOrder(order, warehouse);
+        double totalCost = getPrice(order);
+        boolean ok = cashBoxService.recordTransaction(totalCost, TransactionType.EXPENSE);
+        if(!ok)
+            throw new CustomException(
+                    "Cannot record expense. No open cash box.",
+                    "NO_OPEN_CASH_BOX"
+            );
         order.setDeliveryDate(LocalDate.now());
         orderDAO.updateOrder(order);
     }

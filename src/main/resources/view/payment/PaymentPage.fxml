@@ -86,7 +86,7 @@
                   <Label layoutX="334.0" layoutY="44.0" text="Category" AnchorPane.rightAnchor="234.79999999999995" AnchorPane.topAnchor="47.0" />
                   <Label layoutX="318.0" layoutY="84.0" text="Add by name:" AnchorPane.rightAnchor="205.0" AnchorPane.topAnchor="85.0" />
                   <Label layoutX="37.0" layoutY="93.0" text="Add by barcode:" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="93.0" />
-                  <Button fx:id="returnButton" layoutX="328.0" layoutY="617.0" mnemonicParsing="false" styleClass="danger" text="Return Item" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="328.0" />
+                  <Button fx:id="returnButton" layoutX="452.0" layoutY="627.0" mnemonicParsing="false" styleClass="danger" text="Return Item" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="452.0" />
                   <Button fx:id="cashButton" layoutX="56.0" layoutY="617.0" mnemonicParsing="false" style="-fx-background-color: #9ccf93;" text="Cash Payment" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="35.0" />
                   <Button fx:id="creditButton" layoutX="161.0" layoutY="617.0" mnemonicParsing="false" styleClass="accent" text="Credit Card Payment" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="161.0" />
                   <Label layoutX="46.0" layoutY="29.0" text="Payment Page" textFill="#455079" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="30.0">
@@ -97,6 +97,7 @@
                   <SearchableComboBox fx:id="nameComboBox" layoutX="439.0" layoutY="76.0" prefWidth="150.0" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="76.0" />
                   <TextField fx:id="barcodeField" layoutX="35.0" layoutY="117.0" prefHeight="36.0" prefWidth="496.0" promptText="Enter Barcode" AnchorPane.leftAnchor="35.0" AnchorPane.rightAnchor="93.59999999999991" AnchorPane.topAnchor="117.0" />
                   <Button fx:id="addButton" layoutX="540.0" layoutY="117.0" mnemonicParsing="false" styleClass="accent" text="Add" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="117.0" />
+                  <Button layoutX="322.0" layoutY="627.0" mnemonicParsing="false" styleClass="success" text="Mixed Payment" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="322.0" />
                </children>
             </AnchorPane>
          </children>

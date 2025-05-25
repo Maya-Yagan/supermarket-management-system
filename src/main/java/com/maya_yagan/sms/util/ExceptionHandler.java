@@ -53,6 +53,14 @@ public class ExceptionHandler {
                 alertTitle = "Invalid Format";
                 alertMessage = exception.getMessage();
                 break;
+            case "NO_OPEN_CASH_BOX":
+                alertTitle = "No Open Cash Box";
+                alertMessage = exception.getMessage();
+                break;
+            case "GENERAL":
+                alertTitle = "Error";
+                alertMessage = exception.getMessage();
+                break;
             default:
                 alertTitle = "Unexpected Error";
                 alertMessage = "An unexpected error occurred: " + exception.getMessage();

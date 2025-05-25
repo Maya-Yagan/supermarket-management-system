@@ -31,5 +31,16 @@ public class AlertUtil {
             onConfirmAction.accept(entity);
     }
 
+    public static void showConfirmation(String title, String headerText, String contentText, Runnable onConfirmAction) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(headerText);
+        alert.setContentText(contentText);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            onConfirmAction.run();
+        }
+    }
 
 }
