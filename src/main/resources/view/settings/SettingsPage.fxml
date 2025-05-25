@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<StackPane prefHeight="541.0" prefWidth="766.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.settings.controller.SettingsPageController">
+   <children>
+      <AnchorPane prefHeight="400.0" prefWidth="600.0">
+         <children>
+            <Label layoutX="44.8" layoutY="25.4" text="Settings Page" textFill="#455079" AnchorPane.leftAnchor="44.8" AnchorPane.topAnchor="25.4">
+               <font>
+                  <Font size="30.0" />
+               </font>
+            </Label>
+            <Label layoutX="48.0" layoutY="111.0" text="Market Name:" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="111.0" />
+            <Label layoutX="48.0" layoutY="164.0" text="Address:" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="164.0" />
+            <Label layoutX="43.0" layoutY="214.0" text="Phone:" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="214.0" />
+            <Label layoutX="45.0" layoutY="271.0" text="Money Unit:" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="271.0" />
+            <TextField fx:id="nameField" layoutX="145.0" layoutY="107.0" prefHeight="36.0" prefWidth="579.0" promptText="Enter the name of this supermarket" AnchorPane.leftAnchor="145.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="107.0" />
+            <atlantafx.base.controls.MaskTextField mask="(999) 999 99 99" promptText="(XXX) XXX XX XX" fx:id="phoneField" layoutX="146.0" layoutY="156.0" prefHeight="36.0" prefWidth="579.0" AnchorPane.leftAnchor="145.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="206.0" />
+            <TextField fx:id="addressField" layoutX="146.0" layoutY="156.0" prefHeight="36.0" prefWidth="579.0" promptText="Enter the address that will be printed on receipts" AnchorPane.leftAnchor="145.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="156.0" />
+            <TextField fx:id="moneyUnitField" layoutX="145.0" layoutY="263.0" prefHeight="36.0" prefWidth="582.0" promptText="Enter the money unit (e.g. $, €, ₺..)" AnchorPane.leftAnchor="145.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="263.0" />
+            <Button fx:id="saveButton" layoutX="660.0" layoutY="473.0" mnemonicParsing="false" styleClass="accent" text="Save" AnchorPane.bottomAnchor="32.60000000000002" AnchorPane.rightAnchor="53.59999999999998" />
+         </children>
+      </AnchorPane>
+   </children>
+</StackPane>

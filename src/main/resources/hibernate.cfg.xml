@@ -18,7 +18,6 @@
         <property name="hibernate.hbm2ddl.auto">update</property>
 
         <!-- Register entity class -->
-        <mapping class="com.maya_yagan.sms.product.model.MoneyUnit"/>
         <mapping class="com.maya_yagan.sms.user.model.Role"/>
         <mapping class="com.maya_yagan.sms.user.model.User"/>
         <mapping class="com.maya_yagan.sms.product.model.Category"/>
@@ -35,5 +34,6 @@
         <mapping class="com.maya_yagan.sms.payment.model.ReceiptItem"/>
         <mapping class="com.maya_yagan.sms.payment.model.CashBox"/>
         <mapping class="com.maya_yagan.sms.payment.model.FinancialRecord"/>
+        <mapping class="com.maya_yagan.sms.settings.model.Settings"/>
     </session-factory>
 </hibernate-configuration>

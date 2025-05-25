@@ -8,6 +8,8 @@ import com.maya_yagan.sms.payment.service.PaymentService;
 import com.maya_yagan.sms.product.model.Category;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.product.service.ProductService;
+import com.maya_yagan.sms.settings.model.Settings;
+import com.maya_yagan.sms.settings.service.SettingsService;
 import com.maya_yagan.sms.util.*;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleFloatProperty;
@@ -21,6 +23,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Text;
 import org.controlsfx.control.SearchableComboBox;
 
 import java.io.IOException;
@@ -39,19 +42,25 @@ public class PaymentPageController extends AbstractTableController<Product> {
     @FXML private SearchableComboBox<Category> categoryComboBox;
     @FXML private TextField barcodeField;
 
-    @FXML private StackPane stackPane;
     @FXML private GridPane gridPane;
     @FXML private ImageView barcodeImageView;
     @FXML private Button returnButton, creditButton, cashButton, addButton;
+    @FXML private Text addressText;
     @FXML private Label dateLabel, changeLabel, amountPaidLabel, employeeNameLabel,
-                receiptNumberLabel, taxLabel, subtotalLabel, totalCostLabel;
+                receiptNumberLabel, taxLabel, subtotalLabel, totalCostLabel, marketNameLabel, phoneLabel;
+
+
     private static final String STYLE = "-fx-font-weight: bold;";
     private static final String ALL_CATEGORIES = "All Categories";
-    private String currentCategory = ALL_CATEGORIES;
+
+    private final SettingsService settingsService = new SettingsService();
     private final ProductService productService = new ProductService();
     private final PaymentService paymentService = new PaymentService();
+    private final Settings settings = settingsService.getSettings();
     private final Map<Product, Double> basket = new HashMap<>();
+
     private boolean selectionHandled = false;
+    private String currentCategory = ALL_CATEGORIES;
 
     private void loadCategories() {
         List<Category> categories = new ArrayList<>(productService.getAllCategories());
@@ -243,10 +252,16 @@ public class PaymentPageController extends AbstractTableController<Product> {
     private void setStaticHeaderFields() {
         String receiptNumber = paymentService.generateReceiptNumber();
         String barcodeData   = paymentService.generateSimpleBarcodeData(receiptNumber);
+        String marketName    = settings.getMarketName();
+        String address       = settings.getAddress();
+        String phone         = settings.getPhone();
 
         dateLabel.setText(DateUtil.formatDateTime(LocalDateTime.now()));
         employeeNameLabel.setText(paymentService.getCurrentEmployeeName());
         receiptNumberLabel.setText(receiptNumber);
+        marketNameLabel.setText(marketName);
+        addressText.setText(address);
+        phoneLabel.setText(phone);
 
         showBarcode(barcodeData);
     }
@@ -262,9 +277,9 @@ public class PaymentPageController extends AbstractTableController<Product> {
         float tax = paymentService.calculateTotalTax(basket);
         float totalCost = paymentService.calculateTotalCost(basket);
 
-        subtotalLabel.setText(String.format("%.2f", subtotal));
-        taxLabel.setText(String.format("%.2f", tax));
-        totalCostLabel.setText(String.format("%.2f", totalCost));
+        subtotalLabel.setText(String.format("%.2f", subtotal) + " "+ settings.getMoneyUnit());
+        taxLabel.setText(String.format("%.2f", tax) + " "+ settings.getMoneyUnit());
+        totalCostLabel.setText(String.format("%.2f", totalCost) + " "+ settings.getMoneyUnit());
     }
 
     private void populateGridPane() {

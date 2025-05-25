@@ -5,7 +5,7 @@ import com.maya_yagan.sms.payment.model.PaymentMethod;
 import com.maya_yagan.sms.payment.model.Receipt;
 import com.maya_yagan.sms.payment.model.ReceiptItem;
 import com.maya_yagan.sms.product.model.Product;
-import com.maya_yagan.sms.product.service.ProductService;
+import com.maya_yagan.sms.settings.service.SettingsService;
 import com.maya_yagan.sms.user.model.User;
 
 import java.math.BigDecimal;
@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public class PaymentService {
 
-    private final ProductService productService = new ProductService();
+    private final SettingsService settingsService = new SettingsService();
 
     public String getCurrentEmployeeName() {
         return UserSession.getInstance().getCurrentUser().getFullName();
@@ -87,8 +87,13 @@ public class PaymentService {
             item.calcLineTotal();
             items.add(item);
         }
-
+        receipt.setTotalCost(BigDecimal.valueOf(calculateTotalCost(basket)));
         receipt.setItems(items);
         return receipt;
+    }
+
+    public String formatMoney(BigDecimal amount){
+        String unit = settingsService.getSettings().getMoneyUnit();
+        return String.format("%.2f %s", amount, unit);
     }
 }

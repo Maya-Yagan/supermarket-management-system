@@ -55,15 +55,15 @@ public class WarehouseManagementController extends AbstractTableController<Wareh
     protected List<ContextMenuUtil.MenuItemConfig<Warehouse>> menuItemsFor(Warehouse w) {
         return List.of(
                 new ContextMenuUtil.MenuItemConfig<>("View Products", (item, row) -> handleViewAction(item)),
-                new ContextMenuUtil.MenuItemConfig<>("Edit Warehouse", (item, row) -> handleEditAction(item)),
-                new ContextMenuUtil.MenuItemConfig<>("Delete Warehouse", (item,  row) -> handleDeleteAction(item))
+                new ContextMenuUtil.MenuItemConfig<>("Edit Inventory", (item, row) -> handleEditAction(item)),
+                new ContextMenuUtil.MenuItemConfig<>("Delete Inventory", (item,  row) -> handleDeleteAction(item))
         );
     }
 
     private void handleDeleteAction(Warehouse warehouse) {
         AlertUtil.showDeleteConfirmation(warehouse,
-                "Delete Warehouse",
-                "Are you sure you want to delete this warehouse?",
+                "Delete Inventory",
+                "Are you sure you want to delete this inventory?",
                 "This action cannot be undone",
                 (w) -> {
                     warehouseService.deleteWarehouse(w.getId());

@@ -1,16 +1,11 @@
 package com.maya_yagan.sms.product.service;
 
-import com.maya_yagan.sms.homepage.service.HomePageService;
 import com.maya_yagan.sms.product.dao.CategoryDAO;
 import com.maya_yagan.sms.product.dao.ProductDAO;
-import com.maya_yagan.sms.product.dao.MoneyUnitDAO;
 import com.maya_yagan.sms.product.model.Category;
-import com.maya_yagan.sms.product.model.MoneyUnit;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.product.model.ProductUnit;
 import com.maya_yagan.sms.common.ValidationService;
-import com.maya_yagan.sms.warehouse.model.ProductWarehouse;
-import com.maya_yagan.sms.warehouse.model.Warehouse;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -22,7 +17,6 @@ import java.util.*;
 public class ProductService {
     private final ProductDAO productDAO = new ProductDAO();
     private final CategoryDAO categoryDAO = new CategoryDAO();
-    private final MoneyUnitDAO moneyUnitDAO = new MoneyUnitDAO();
     private final ValidationService validationService = new ValidationService();
 
 
@@ -121,20 +115,6 @@ public class ProductService {
         category.setName(name);
         validationService.validateCategory(category);
         updateCategory(category);
-    }
-
-    public void addMoneyUnit(String code, String name, String symbol) {
-        moneyUnitDAO.deleteAllMoneyUnits();
-        MoneyUnit moneyUnit = new MoneyUnit(code, name, symbol);
-        moneyUnitDAO.insertMoneyUnit(moneyUnit);
-    }
-
-    public MoneyUnit getMoneyUnitByCode(String code) {
-        return moneyUnitDAO.getMoneyUnitByCode(code);
-    }
-
-    public Set<MoneyUnit> getAllMoneyUnits() {
-        return moneyUnitDAO.getAllMoneyUnits();
     }
 
     public List<String> getProductNames(){

@@ -1,23 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-<?import org.controlsfx.control.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<StackPane fx:id="stackPane" prefHeight="667.0" prefWidth="946.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.payment.controller.PaymentPageController">
+<?import org.controlsfx.control.SearchableComboBox?>
+<StackPane fx:id="stackPane" prefHeight="667.0" prefWidth="946.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.payment.controller.PaymentPageController">
    <children>
       <HBox prefHeight="100.0" prefWidth="200.0">
          <children>
             <AnchorPane prefHeight="667.0" prefWidth="531.0">
                <children>
-                  <Label layoutX="14.0" layoutY="14.0" prefHeight="27.0" prefWidth="66.0" text="Receipt" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="241.20000000000002" AnchorPane.topAnchor="14.0">
+                  <Label fx:id="marketNameLabel" layoutX="11.0" layoutY="5.0" prefHeight="27.0" prefWidth="284.0" text="Market Name" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="26.599999999999966" AnchorPane.topAnchor="5.0">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
-                  <HBox layoutX="20.0" layoutY="452.0" prefHeight="100.0" prefWidth="230.0" AnchorPane.bottomAnchor="115.20000000000005" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="71.19999999999999">
+                  <HBox layoutX="22.0" layoutY="460.0" prefHeight="100.0" prefWidth="230.0" AnchorPane.bottomAnchor="107.20000000000005" AnchorPane.leftAnchor="22.0" AnchorPane.rightAnchor="69.20000000000005">
                      <children>
                         <VBox prefHeight="100.0" prefWidth="153.0">
                            <children>
@@ -39,14 +50,14 @@
                         </VBox>
                      </children>
                   </HBox>
-                  <ScrollPane fitToWidth="true" prefHeight="290.0" prefWidth="300.0" AnchorPane.bottomAnchor="232.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="145.0">
+                  <ScrollPane fitToWidth="true" layoutY="163.2" prefHeight="280.0" prefWidth="338.0" AnchorPane.bottomAnchor="224.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="163.0">
                      <content>
                         <GridPane fx:id="gridPane" hgap="20" layoutX="11.0" layoutY="145.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="10.6" AnchorPane.topAnchor="144.8" />
                      </content>
                   </ScrollPane>
-                  <HBox layoutX="14.0" layoutY="60.0" prefHeight="63.0" prefWidth="300.0" AnchorPane.leftAnchor="13.600000000000023" AnchorPane.rightAnchor="7.600000000000023" AnchorPane.topAnchor="60.0">
+                  <HBox layoutX="13.0" layoutY="87.0" prefHeight="63.0" prefWidth="300.0" AnchorPane.leftAnchor="13.0" AnchorPane.rightAnchor="8.600000000000023" AnchorPane.topAnchor="87.0">
                      <children>
-                        <VBox prefHeight="200.0" prefWidth="100.0">
+                        <VBox prefHeight="52.0" prefWidth="85.0">
                            <children>
                               <Label text="Date:" />
                               <Label text="Receipt No:" />
@@ -62,13 +73,16 @@
                         </VBox>
                      </children>
                   </HBox>
-                  <VBox alignment="CENTER" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                  <VBox alignment="CENTER" layoutX="11.2" layoutY="560.0" prefHeight="71.0" prefWidth="338.0" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="11.0">
                      <ImageView fx:id="barcodeImageView" fitHeight="100.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS" VBox.vgrow="NEVER" />
                   </VBox>
 
-                  <Separator layoutX="8.8" layoutY="42.0" prefHeight="24.0" prefWidth="307.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="42.0" />
-                  <Separator layoutX="10.0" layoutY="122.0" prefHeight="24.0" prefWidth="300.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="118.4" />
-                  <Separator layoutX="10.0" layoutY="428.0" prefHeight="24.0" prefWidth="300.0" AnchorPane.bottomAnchor="215.20000000000005" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                  <Separator layoutX="12.8" layoutY="74.2" prefHeight="24.0" prefWidth="307.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="74.2" />
+                  <Separator layoutX="10.4" layoutY="145.0" prefHeight="24.0" prefWidth="300.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="145.0" />
+                  <Separator layoutX="13.0" layoutY="436.0" prefHeight="24.0" prefWidth="300.0" AnchorPane.bottomAnchor="207.20000000000005" AnchorPane.leftAnchor="13.0" AnchorPane.rightAnchor="7.800000000000011" />
+                  <Label fx:id="phoneLabel" layoutX="66.4" layoutY="31.4" text="Phone Number" AnchorPane.leftAnchor="66.4" AnchorPane.topAnchor="31.4" />
+                  <Text fx:id="addressText" layoutX="12.8" layoutY="65.6" strokeType="OUTSIDE" strokeWidth="0.0" text="Address" wrappingWidth="300.0" AnchorPane.leftAnchor="12.8" AnchorPane.topAnchor="50.599999999999994" />
+                  <Label layoutX="14.0" layoutY="30.0" text="Phone:" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="30.0" />
                </children>
             </AnchorPane>
             <AnchorPane prefHeight="667.0" prefWidth="834.0" style="-fx-background-color: #f2f6f7;" HBox.hgrow="ALWAYS">

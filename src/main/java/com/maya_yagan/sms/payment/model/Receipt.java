@@ -1,6 +1,5 @@
 package com.maya_yagan.sms.payment.model;
 
-import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.user.model.User;
 
 import javax.persistence.*;
@@ -8,7 +7,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 @Entity
@@ -46,6 +44,9 @@ public class Receipt {
     @OneToMany(mappedBy = "receipt", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReceiptItem> items = new ArrayList<>();
 
+    @Column(name = "totalCost")
+    private BigDecimal totalCost;
+
     public Receipt(){}
 
     public Receipt(String code,
@@ -56,34 +57,6 @@ public class Receipt {
         this.dateTime      = dateTime;
         this.cashier       = cashier;
         this.paymentMethod = paymentMethod;
-    }
-
-    public void addItem(ReceiptItem li) {
-        items.add(li);
-        li.setReceipt(this);
-    }
-    public void removeItem(ReceiptItem li) {
-        items.remove(li);
-        li.setReceipt(null);
-    }
-
-    @Transient
-    public BigDecimal getSubTotal() {
-        return items.stream()
-                .map(i -> i.getUnitPrice()
-                        .multiply(BigDecimal.valueOf(i.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    @Transient
-    public BigDecimal getTotalCost() {
-        return items.stream()
-                .map(i -> {
-                    BigDecimal lt = i.getLineTotal();
-                    return lt != null ? lt :
-                            i.getUnitPrice().multiply(BigDecimal.valueOf(i.getQuantity()));
-                })
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public Long getId() {
@@ -152,6 +125,14 @@ public class Receipt {
 
     public void setItems(List<ReceiptItem> items) {
         this.items = items;
+    }
+
+    public BigDecimal getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(BigDecimal totalCost) {
+        this.totalCost = totalCost;
     }
 
     @Override

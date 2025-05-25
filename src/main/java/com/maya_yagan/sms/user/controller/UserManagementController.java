@@ -2,13 +2,13 @@ package com.maya_yagan.sms.user.controller;
 
 import atlantafx.base.controls.ModalPane;
 import com.maya_yagan.sms.common.AbstractTableController;
+import com.maya_yagan.sms.settings.service.SettingsService;
 import com.maya_yagan.sms.user.model.Role;
 import com.maya_yagan.sms.user.model.User;
 import com.maya_yagan.sms.user.service.UserService;
 import com.maya_yagan.sms.util.AlertUtil;
 import com.maya_yagan.sms.util.ContextMenuUtil;
 import com.maya_yagan.sms.util.DateUtil;
-import com.maya_yagan.sms.util.MoneyUnitUtil;
 import com.maya_yagan.sms.util.ViewUtil;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
@@ -35,12 +35,15 @@ public class UserManagementController extends AbstractTableController<User> {
     
     private ModalPane modalPane;
     private final UserService userService = new UserService();
+    private final SettingsService settingsService = new SettingsService();
+    private final String moneyUnit = settingsService.getSettings().getMoneyUnit();
 
     @Override
     protected void configureColumns() {
         firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
         lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
         genderColumn.setCellValueFactory(new PropertyValueFactory<>("gender"));
+        salaryColumn.setText("Daily salary (" + moneyUnit + ")");
         salaryColumn.setCellValueFactory(new PropertyValueFactory<>("salary"));
         startDateColumn.setCellValueFactory(cellData -> {
             LocalDate date = cellData.getValue().getStartDate();
@@ -50,8 +53,6 @@ public class UserManagementController extends AbstractTableController<User> {
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
         phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
         tcNumberColumn.setCellValueFactory(new PropertyValueFactory<>("tcNumber"));
-
-        salaryColumn.setText(MoneyUnitUtil.formatHeaderWithMoneyUnitName("Salary"));
 
         positionColumn.setCellValueFactory(data -> {
             User user = data.getValue();

@@ -4,6 +4,7 @@ import atlantafx.base.controls.ModalPane;
 import com.maya_yagan.sms.common.AbstractTableController;
 import com.maya_yagan.sms.order.service.OrderService;
 import com.maya_yagan.sms.product.service.ProductService;
+import com.maya_yagan.sms.settings.service.SettingsService;
 import com.maya_yagan.sms.util.*;
 import com.maya_yagan.sms.order.model.Order;
 import com.maya_yagan.sms.warehouse.model.Warehouse;
@@ -36,10 +37,14 @@ public class OrderManagementController extends AbstractTableController<Order> {
     @FXML private Button addOrderButton;
     @FXML private StackPane stackPane;
 
-    private ModalPane modalPane;
+
     private final OrderService orderService = new OrderService();
     private final WarehouseService warehouseService = new WarehouseService();
+    private final SettingsService settingsService = new SettingsService();
+    private final String moneyUnit = settingsService.getSettings().getMoneyUnit();
+
     private Order selectedOrder;
+    private ModalPane modalPane;
 
     @Override
     protected void configureColumns() {
@@ -50,9 +55,7 @@ public class OrderManagementController extends AbstractTableController<Order> {
         deliveryDateColumn.setCellValueFactory(cellData -> cellData.getValue().getDeliveryDate() == null
                 ? new SimpleStringProperty("Awaiting Delivery")
                 : new SimpleStringProperty(String.valueOf(cellData.getValue().getDeliveryDate())));
-
-        priceColumn.setText(MoneyUnitUtil.formatPriceHeader("Price"));
-
+        priceColumn.setText("Price (" + moneyUnit + ")");
         priceColumn.setCellValueFactory(cellData -> {
             double price = orderService.getPrice(cellData.getValue());
             return new SimpleDoubleProperty(price).asObject();
@@ -142,22 +145,22 @@ public class OrderManagementController extends AbstractTableController<Order> {
         List<Warehouse> warehouses = warehouseService.getAllWarehouses();
         if(warehouses.isEmpty()){
             AlertUtil.showAlert(Alert.AlertType.WARNING,
-                    "No Warehouses",
-                    "There are no warehouses configured yet");
+                    "No Inventory",
+                    "There are no inventories configured yet");
             return;
         }
 
         ChoiceDialog<Warehouse> dialog = new ChoiceDialog<>(warehouses.get(0), warehouses);
-        dialog.setTitle("Select Warehouse");
-        dialog.setHeaderText("Choose a Warehouse");
-        dialog.setContentText("Select a warehouse where the order's products will be saved:");
+        dialog.setTitle("Select Inventory");
+        dialog.setHeaderText("Choose an Inventory");
+        dialog.setContentText("Select an inventory where the order's products will be saved:");
         dialog.showAndWait().ifPresent(selectedWarehouse -> {
             try{
                 orderService.deliverOrder(order, selectedWarehouse);
                 refresh();
                 AlertUtil.showAlert(Alert.AlertType.INFORMATION,
                         "Success",
-                        "Order's products have been added to warehouse: " + selectedWarehouse.getName());
+                        "Order's products have been added to " + selectedWarehouse.getName());
             } catch (CustomException e){
                 ExceptionHandler.handleException(e);
                 if("INSUFFICIENT_CAPACITY".equals(e.getErrorCode()))

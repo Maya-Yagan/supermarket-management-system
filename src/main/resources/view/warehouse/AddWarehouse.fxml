@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<StackPane fx:id="stackPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="236.0" prefWidth="425.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.warehouse.controller.AddWarehouseController">
+<StackPane fx:id="stackPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="236.0" prefWidth="425.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.warehouse.controller.AddWarehouseController">
    <children>
       <GridPane alignment="CENTER" hgap="10" prefHeight="225.0" prefWidth="425.0" style="-fx-padding: 20;" vgap="10">
          <columnConstraints>
@@ -29,8 +23,8 @@
             <RowConstraints />
          </rowConstraints>
          <children>
-            <Label text="Warehouse Name:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-            <TextField fx:id="nameField" promptText="Warehouse Name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label text="Name:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <TextField fx:id="nameField" promptText="Inventory Name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Button fx:id="saveButton" onAction="#handleSave" styleClass="accent" text="Save" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4">
                <opaqueInsets>
                   <Insets />
@@ -40,13 +34,13 @@
                </GridPane.margin>
             </Button>
             <Button fx:id="cancelButton" onAction="#close" text="Cancel" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
-            <Text fill="#455079" strokeType="OUTSIDE" strokeWidth="0.0" text="Add Warehouse">
+            <Text fill="#455079" strokeType="OUTSIDE" strokeWidth="0.0" text="Add Inventory">
                <font>
                   <Font size="23.0" />
                </font>
             </Text>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Capacity" GridPane.rowIndex="2" />
-            <TextField fx:id="capacityField" promptText="Warehouse Capacity" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="capacityField" promptText="Inventory Capacity" GridPane.columnIndex="1" GridPane.rowIndex="2" />
          </children>
       </GridPane>
    </children>

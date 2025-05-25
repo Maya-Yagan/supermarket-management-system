@@ -94,6 +94,10 @@ public class HomePageController implements Initializable {
                     "No open cash box!\nPlease open the cash box first.");
     }
 
+    private void gotToSettings(){
+        navigateToPage("/view/settings/SettingsPage.fxml", "Settings Page");
+    }
+
     private void logout() {
         UserSession.getInstance().clear();
         ViewUtil.changeScene(
@@ -113,9 +117,10 @@ public class HomePageController implements Initializable {
         toggleButton.setOnAction(e -> toggleSidebar());
         List<Sidebar.SidebarItem> sidebarItems = List.of(
                 new Sidebar.SidebarItem("Home Page", Feather.HOME, this::gotToHomePage, null),
+                new Sidebar.SidebarItem("Settings", Feather.SETTINGS, this::gotToSettings, null),
                 new Sidebar.SidebarItem("Product Management", Feather.SHOPPING_BAG, this::goToProductManagement, null),
                 new Sidebar.SidebarItem("Employee Management", Feather.USERS, this::goToUserManagement, null),
-                new Sidebar.SidebarItem("Warehouse Management", Feather.DISC, this::goToWarehouseManagement, null),
+                new Sidebar.SidebarItem("Inventory Management", Feather.DISC, this::goToWarehouseManagement, null),
                 new Sidebar.SidebarItem("Supplier Management", Feather.BOX, this::gotToSupplierManagement, null),
                 new Sidebar.SidebarItem("Order Management", Feather.PEN_TOOL, this::goToOrderManagement, null),
                 new Sidebar.SidebarItem("Payment Page", Feather.SHOPPING_CART, this::goToPayment, null),

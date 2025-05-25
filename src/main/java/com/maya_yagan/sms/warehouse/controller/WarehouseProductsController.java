@@ -2,8 +2,8 @@ package com.maya_yagan.sms.warehouse.controller;
 
 import atlantafx.base.controls.ModalPane;
 import com.maya_yagan.sms.common.AbstractTableController;
-import com.maya_yagan.sms.product.model.MoneyUnit;
 import com.maya_yagan.sms.product.service.ProductService;
+import com.maya_yagan.sms.settings.service.SettingsService;
 import com.maya_yagan.sms.util.*;
 import com.maya_yagan.sms.product.model.Category;
 import com.maya_yagan.sms.warehouse.model.ProductWarehouse;
@@ -38,8 +38,11 @@ public class WarehouseProductsController extends AbstractTableController<Product
     private String currentCategory = "All Categories";
     private ModalPane modalPane;
     private Warehouse warehouse;
+
     private final ProductService productService = new ProductService();
     private final WarehouseService warehouseService = new WarehouseService();
+    private final SettingsService settingsService = new SettingsService();
+    private final String moneyUnit = settingsService.getSettings().getMoneyUnit();
 
     @Override
     protected void configureColumns(){
@@ -49,6 +52,7 @@ public class WarehouseProductsController extends AbstractTableController<Product
         nameColumn.setCellValueFactory(cell ->
                 new SimpleStringProperty(cell.getValue().getProduct().getName())
         );
+        priceColumn.setText("Price (" + moneyUnit + ")");
         priceColumn.setCellValueFactory(cell ->
                 new ReadOnlyObjectWrapper<>(cell.getValue().getProduct().getPrice())
         );
@@ -78,7 +82,6 @@ public class WarehouseProductsController extends AbstractTableController<Product
         modalPane = ViewUtil.initializeModalPane(stackPane);
         setupDynamicLayoutAdjustment();
         setupEventHandlers();
-        updatePriceColumnHeaderWithMoneyUnit();
     }
 
     @Override
@@ -165,16 +168,5 @@ public class WarehouseProductsController extends AbstractTableController<Product
         this.warehouse = warehouse;
         warehouseName.setText(warehouse.getName());
         refresh();
-    }
-
-    private void updatePriceColumnHeaderWithMoneyUnit() {
-        String selectedCode = MoneyUnitContext.getSelectedMoneyUnitCode();
-        MoneyUnit moneyUnit = productService.getMoneyUnitByCode(selectedCode);
-
-        if (moneyUnit != null) {
-            priceColumn.setText("Price (" + moneyUnit.getName() + ")");
-        } else {
-            priceColumn.setText("Price");
-        }
     }
 }

@@ -2,14 +2,12 @@ package com.maya_yagan.sms.product.controller;
 
 import atlantafx.base.controls.ModalPane;
 import com.maya_yagan.sms.common.AbstractTableController;
-import com.maya_yagan.sms.product.model.MoneyUnit;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.product.model.Category;
 import com.maya_yagan.sms.product.model.ProductUnit;
 import com.maya_yagan.sms.product.service.ProductService;
+import com.maya_yagan.sms.settings.service.SettingsService;
 import com.maya_yagan.sms.util.*;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.StringProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 import java.util.*;
@@ -30,7 +28,7 @@ public class  ProductManagementController extends AbstractTableController<Produc
     @FXML private TableColumn<Product, String> nameColumn, productionDate, expirationDateColumn, unitColumn , barcodeColumn;
     @FXML private TableColumn<Product, Double> priceColumn;
     @FXML private TableColumn<Product, Float> discountsColumn;
-    @FXML private Button addProductButton, addCategoryButton, editCategoriesButton , moneyUnitButton;
+    @FXML private Button addProductButton, addCategoryButton, editCategoriesButton;
     @FXML private MenuButton categoryMenuButton;
     @FXML private StackPane stackPane;
 
@@ -38,8 +36,8 @@ public class  ProductManagementController extends AbstractTableController<Produc
     private ModalPane modalPane;
     private String currentCategory = "All Categories";
     private final ProductService productService = new ProductService();
-    private final StringProperty selectedMoneyUnit = new SimpleStringProperty();
-
+    private final SettingsService settingsService = new SettingsService();
+    private final String moneyUnit = settingsService.getSettings().getMoneyUnit();
 
     private void loadCategories() {
         MenuButtonUtil.populateMenuButton(
@@ -60,6 +58,7 @@ public class  ProductManagementController extends AbstractTableController<Produc
     protected  void configureColumns() {
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        priceColumn.setText("Price (" + moneyUnit + ")");
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         productionDate.setCellValueFactory(new PropertyValueFactory<>("productionDate"));
         discountsColumn.setCellValueFactory(new PropertyValueFactory<>("discount"));
@@ -93,24 +92,6 @@ public class  ProductManagementController extends AbstractTableController<Produc
         setupEventHandlers();
         loadCategories();
         setupDynamicLayoutAdjustment();
-        Set<MoneyUnit> units = productService.getAllMoneyUnits();
-        if (!units.isEmpty()) {
-            MoneyUnit mu = units.iterator().next();
-            selectedMoneyUnit.set(mu.getCode());
-            MoneyUnitContext.setSelectedMoneyUnitCode(mu.getCode());
-        } else {
-            selectedMoneyUnit.set("");
-        }
-
-        priceColumn.textProperty().bind(
-                Bindings.createStringBinding(
-                        () -> {
-                            String code = selectedMoneyUnit.get();
-                            return (code == null || code.isBlank()) ? "Price" : String.format("Price (%s)", code);
-                        },
-                        selectedMoneyUnit
-                )
-        );
     }
 
     private void setupEventHandlers() {
@@ -131,8 +112,6 @@ public class  ProductManagementController extends AbstractTableController<Produc
                     controller.setModalPane(modalPane);
                     controller.setOnCloseAction(this::loadCategories);
                 }, modalPane));
-
-        moneyUnitButton.setOnAction(event -> handleMoneyUnitButtonClick());
     }
 
     private void handleDeleteAction(Product product) {
@@ -163,30 +142,11 @@ public class  ProductManagementController extends AbstractTableController<Produc
         refresh();
     }
 
-    private void handleMoneyUnitButtonClick() {
-        ViewUtil.showStringInputDialog(
-                "Money Unit",
-                "Enter the currency code (e.g., USD, EUR):",
-                "Please enter a valid currency code:",
-                "",
-                "Money Unit",
-                unitStr -> {
-                    String code = unitStr.trim().toUpperCase();
-                    productService.addMoneyUnit(code, code, Optional.ofNullable(
-                                    productService.getMoneyUnitByCode(code))
-                            .map(MoneyUnit::getSymbol).orElse(code));
-                    MoneyUnitContext.setSelectedMoneyUnitCode(code);
-                    selectedMoneyUnit.set(code);
-                }
-        );
-    }
-
-
     private void setupDynamicLayoutAdjustment() {
         ViewUtil.setupDynamicLayoutAdjustment(
                 categoryMenuButton,
-                Arrays.asList(addCategoryButton, editCategoriesButton, addProductButton, moneyUnitButton),
-                Arrays.asList(10.0, 130.0, 260.0, 375.0)
+                Arrays.asList(addCategoryButton, editCategoriesButton, addProductButton),
+                Arrays.asList(10.0, 130.0, 260.0)
         );
     }
 }

@@ -4,6 +4,7 @@ import com.maya_yagan.sms.login.service.AuthenticationService;
 import com.maya_yagan.sms.order.model.Order;
 import com.maya_yagan.sms.product.model.Category;
 import com.maya_yagan.sms.product.model.Product;
+import com.maya_yagan.sms.settings.model.Settings;
 import com.maya_yagan.sms.supplier.model.Supplier;
 import com.maya_yagan.sms.user.model.User;
 import com.maya_yagan.sms.user.service.UserService;
@@ -204,5 +205,13 @@ public class ValidationService {
             );
         }
         return LocalTime.parse(input);
+    }
+
+    public void validateSettings(Settings settings){
+        if(settings.getMoneyUnit() == null || settings.getAddress() == null
+        || settings.getPhone() == null || settings.getMarketName() == null
+        || settings.getMoneyUnit().trim().isEmpty() || settings.getAddress().trim().isEmpty()
+        || settings.getPhone().trim().isEmpty() || settings.getMarketName().trim().isEmpty())
+            throw new CustomException("Please fill all empty fields", "EMPTY_FIELDS");
     }
 }

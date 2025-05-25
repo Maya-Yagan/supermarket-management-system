@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.String?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import org.kordamp.ikonli.javafx.*?>
 
-<StackPane fx:id="stackPane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.warehouse.controller.WarehouseManagementController">
+<StackPane fx:id="stackPane" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.warehouse.controller.WarehouseManagementController">
     <children>
     <AnchorPane fx:id="AnchorPane">
         <children>
@@ -25,8 +21,8 @@
                 <String fx:value="striped" />
              </styleClass>
           </TableView>
-          <Button fx:id="addWarehouseButton" layoutX="32.0" layoutY="75.0" mnemonicParsing="false" onAction="#addWarehouse" styleClass="accent" text="Add Warehouse" AnchorPane.leftAnchor="32.0" AnchorPane.topAnchor="80.0" />
-          <Text fill="#455079" layoutX="32.0" layoutY="56.0" text="Warehouse Management" textAlignment="CENTER" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="430.49609375" AnchorPane.topAnchor="27.943359375">
+          <Button fx:id="addWarehouseButton" layoutX="32.0" layoutY="75.0" mnemonicParsing="false" onAction="#addWarehouse" styleClass="accent" text="Add Inventory" AnchorPane.leftAnchor="32.0" AnchorPane.topAnchor="80.0" />
+          <Text fill="#455079" layoutX="32.0" layoutY="56.0" text="Inventory Management" textAlignment="CENTER" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="430.49609375" AnchorPane.topAnchor="27.943359375">
              <font>
                 <Font size="26.0" />
              </font>
