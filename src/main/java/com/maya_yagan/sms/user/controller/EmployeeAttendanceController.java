@@ -11,8 +11,11 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.StackPane;
+import javafx.stage.FileChooser;
 import javafx.util.Callback;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -36,6 +39,7 @@ public class EmployeeAttendanceController extends AbstractTableController<Attend
     @FXML private Label employeeNameLabel;
     @FXML private MenuButton yearMenuButton, monthMenuButton;
     @FXML private Button closeButton, exportPDFButton;
+    @FXML private StackPane stackPane;
 
     private ModalPane modalPane;
     private Runnable onCloseAction;
@@ -135,6 +139,19 @@ public class EmployeeAttendanceController extends AbstractTableController<Attend
 
     private void setupEventHandlers(){
         closeButton.setOnAction(event -> close());
+        exportPDFButton.setOnAction(event -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Export Attendance Report");
+            fileChooser.getExtensionFilters().add(
+                    new FileChooser.ExtensionFilter("PDF Files", "*.pdf")
+            );
+            fileChooser.setInitialFileName("attendance-report.pdf");
+
+            File file = fileChooser.showSaveDialog(exportPDFButton.getScene().getWindow());
+            if (file != null) {
+                PdfExportUtil.exportNodeToPdf(stackPane, file);
+            }
+        });
     }
 
     private void handleEditAction(Attendance attendance){

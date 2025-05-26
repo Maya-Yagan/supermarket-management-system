@@ -120,14 +120,14 @@ public class AddProductToOrderController extends AbstractTableController<Supplie
         );
     }
 
-    public void saveProducts(){
+    public boolean saveProducts(){
         if (productsAmount.isEmpty()) {
             AlertUtil.showAlert(
                     Alert.AlertType.WARNING,
                     "No Products Selected",
                     "Please select at least one product to add to the order."
             );
-            return;
+            return false;
         }
 
         Optional<ButtonType> result =
@@ -146,10 +146,13 @@ public class AddProductToOrderController extends AbstractTableController<Supplie
                         "The products were added to the order successfully.");
                 if (onCloseAction != null) onCloseAction.run();
                 close();
+                return true;
             } catch (CustomException e) {
                 ExceptionHandler.handleException(e);
+                return false;
             }
         }
+        return false;
     }
 
     private void close(){

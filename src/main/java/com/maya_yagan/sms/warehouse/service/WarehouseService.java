@@ -11,6 +11,7 @@ import com.maya_yagan.sms.warehouse.dao.WarehouseDAO;
 import com.maya_yagan.sms.warehouse.model.ProductWarehouse;
 import com.maya_yagan.sms.warehouse.model.Warehouse;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -132,5 +133,25 @@ public class WarehouseService {
                     product.getName(), amount, product.getUnit().getShortName(), warehouse.getName());
             homePageService.notify(msg, true);
         }
+    }
+
+    public Optional<ProductWarehouse> findProductWarehouseByName(Warehouse warehouse, String name){
+        if (warehouse == null) return Optional.empty();
+
+        return warehouse.getProductWarehouses()
+                .stream()
+                .filter(pw -> pw.getProduct()
+                        .getName()
+                        .equalsIgnoreCase(name))
+                .findFirst();
+    }
+
+    public Optional<ProductWarehouse> findProductWarehouseByBarcode(Warehouse warehouse, String barcode){
+        if (warehouse == null) return Optional.empty();
+
+        return warehouse.getProductWarehouses()
+                .stream()
+                .filter(pw -> barcode.equals(pw.getProduct().getBarcode()))
+                .findFirst();
     }
 }

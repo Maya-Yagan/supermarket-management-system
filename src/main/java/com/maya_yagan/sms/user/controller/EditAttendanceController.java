@@ -72,7 +72,7 @@ public class EditAttendanceController implements Initializable {
         }
     }
 
-    public void save(){
+    public boolean save(){
         try {
             String notes = notesField.getText().trim();
             boolean isAbsent = absneceCheckbox.isSelected();
@@ -87,8 +87,10 @@ public class EditAttendanceController implements Initializable {
                     outText
             );
             close();
+            return true;
         } catch(CustomException e){
             ExceptionHandler.handleException(e);
+            return false;
         }
     }
 

@@ -1,16 +1,19 @@
 package com.maya_yagan.sms.util;
 
 import atlantafx.base.controls.ModalPane;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.DoublePredicate;
+import java.util.function.Function;
 import java.util.function.IntPredicate;
 
 import com.maya_yagan.sms.common.ValidationService;
 import com.maya_yagan.sms.supplier.model.SupplierProduct;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -253,7 +256,7 @@ public class ViewUtil {
             String fxmlPath,
             String title,
             Consumer<T> initController,
-            Consumer<T> onSave) throws IOException {
+            Function<T, Boolean> onSave) throws IOException {
 
         FXMLLoader loader = new FXMLLoader(ViewUtil.class.getResource(fxmlPath));
         Parent root = loader.load();
@@ -267,12 +270,13 @@ public class ViewUtil {
         ButtonType ok = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().setAll(ok, ButtonType.CANCEL);
 
+        Button okButton = (Button) dialog.getDialogPane().lookupButton(ok);
+        okButton.addEventFilter(ActionEvent.ACTION, event -> {
+            if(!onSave.apply(controller))
+                event.consume();
+        });
         Optional<ButtonType> result = dialog.showAndWait();
-        if (result.isPresent() && result.get() == ok) {
-            onSave.accept(controller);
-            return true;
-        }
-        return false;
+        return result.isPresent() && result.get() == ok;
     }
 
     public static void changeScene(String path, String title,StackPane targetPane){

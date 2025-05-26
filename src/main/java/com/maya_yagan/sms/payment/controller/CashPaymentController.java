@@ -1,11 +1,17 @@
 package com.maya_yagan.sms.payment.controller;
 
+import atlantafx.base.controls.ModalPane;
+import com.maya_yagan.sms.common.ValidationService;
 import com.maya_yagan.sms.payment.model.Receipt;
 import com.maya_yagan.sms.payment.service.PaymentService;
-import com.maya_yagan.sms.settings.service.SettingsService;
+import com.maya_yagan.sms.util.AlertUtil;
+import com.maya_yagan.sms.util.CustomException;
+import com.maya_yagan.sms.util.ExceptionHandler;
+import com.maya_yagan.sms.warehouse.model.Warehouse;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
@@ -17,12 +23,65 @@ public class CashPaymentController implements Initializable {
     @FXML private TextField cashReceivedField;
     @FXML private Label changeLabel, totalAmountLabel;
 
+    private final ValidationService validationService = new ValidationService();
     private final PaymentService paymentService = new PaymentService();
     private Runnable onCloseAction;
     private Receipt receipt;
+    private Warehouse currentInventory;
+    private ModalPane modalPane;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        cashReceivedField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!validationService.isValidMoney(newValue))
+                cashReceivedField.setText(oldValue);
+        });
+    }
+
+    public boolean save(){
+        if(receipt == null) return false;
+
+        String receivedCash = cashReceivedField.getText().trim();
+        if(receivedCash.isEmpty()){
+            AlertUtil.showAlert(Alert.AlertType.ERROR,
+                    "Missing Amount", "Please enter how much cash was received.");
+            return false;
+        }
+
+        BigDecimal received;
+        try {
+            received = new BigDecimal(receivedCash);
+        } catch (NumberFormatException e) {
+            AlertUtil.showAlert(Alert.AlertType.ERROR,
+                    "Invalid Number", "Please enter a valid amount.");
+            return false;
+        }
+
+        if (received.compareTo(receipt.getTotalCost()) < 0) {
+            AlertUtil.showAlert(Alert.AlertType.ERROR,
+                    "Insufficient Cash",
+                    "Received amount is less than the total payable.");
+            return false;
+        }
+
+        BigDecimal change = received.subtract(receipt.getTotalCost());
+
+        receipt.setPaidAmount(received);
+        receipt.setChangeGiven(change);
+
+        try {
+            paymentService.completeCashPayment(receipt, currentInventory);
+            close();
+            return true;
+
+        } catch (CustomException ex) {
+            ExceptionHandler.handleException(ex);
+            return false;
+        }
+    }
+
+    private void loadData() {
+        totalAmountLabel.setText(paymentService.formatMoney(receipt.getTotalCost()));
         changeLabel.textProperty().bind(
                 Bindings.createStringBinding(() -> {
                     if (receipt == null) return "";
@@ -35,15 +94,11 @@ public class CashPaymentController implements Initializable {
                     }
                 }, cashReceivedField.textProperty())
         );
-        cashReceivedField.setOnAction(e -> save());
     }
 
-    public void save(){
-
-    }
-
-    private void loadData() {
-        totalAmountLabel.setText(paymentService.formatMoney(receipt.getTotalCost()));
+    private void close(){
+        if(onCloseAction != null) onCloseAction.run();
+        if(modalPane != null) modalPane.hide();
     }
 
     public void setOnCloseAction(Runnable onCloseAction) {
@@ -53,5 +108,13 @@ public class CashPaymentController implements Initializable {
     public void setReceipt(Receipt receipt) {
         this.receipt = receipt;
         loadData();
+    }
+
+    public void setCurrentInventory(Warehouse currentInventory) {
+        this.currentInventory = currentInventory;
+    }
+
+    public void setModalPane(ModalPane modalPane){
+        this.modalPane = modalPane;
     }
 }

@@ -31,7 +31,11 @@ public class ValidationService {
     public boolean isValidSalary(String salary) {
         return salary.matches("\\d*\\.?\\d*");
     }
-    
+
+    public boolean isValidMoney(String money) {
+        return money.matches("\\d*(\\.\\d{0,2})?");
+    }
+
     public boolean isValidDate(String date){
         if(date == null || date.trim().isEmpty()) return false;
         try{

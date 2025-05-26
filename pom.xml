@@ -202,5 +202,17 @@
             <artifactId>javase</artifactId>
             <version>3.5.3</version>
         </dependency>
+        <!--PDF-->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.30</version>
+        </dependency>
+        <!--Credit Card (Stripe)-->
+        <dependency>
+            <groupId>com.stripe</groupId>
+            <artifactId>stripe-java</artifactId>
+            <version>29.1.0</version>
+        </dependency>
     </dependencies>
 </project>
