@@ -1,6 +1,8 @@
 package com.maya_yagan.sms.payment.dao;
 
 import com.maya_yagan.sms.payment.model.Receipt;
+import com.maya_yagan.sms.payment.model.ReceiptItem;
+import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.user.model.User;
 import com.maya_yagan.sms.util.HibernateUtil;
 import java.util.List;
@@ -26,12 +28,17 @@ public class ReceiptDAO {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            session.save(receipt);
+            session.merge(receipt);
             transaction.commit();
             return true;
-        } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
-            e.printStackTrace();
+        } catch (Exception ex) {
+            // ⬇ print the root cause first
+            ex.printStackTrace();             // <-- real reason the flush failed
+            if (transaction != null) {
+                try {
+                    transaction.rollback();            // may throw “connection closed”
+                } catch (Exception ignore) {}
+            }
             return false;
         }
     }

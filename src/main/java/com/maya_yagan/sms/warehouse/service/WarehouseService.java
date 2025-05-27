@@ -50,6 +50,10 @@ public class WarehouseService {
 
     public void deleteProductFromWarehouse(Warehouse warehouse, Product product){
         warehouseDAO.deleteProductFromWarehouse(warehouse, product);
+        String msg = String.format(
+                "%s is out of stock in %s. Make an order ASAP!",
+                product.getName(), warehouse.getName());
+        homePageService.notify(msg, true, true);
     }
 
     public int calculateTotalProducts(Warehouse warehouse){
@@ -122,7 +126,7 @@ public class WarehouseService {
             String msg = String.format(
                     "%s is out of stock in %s. Make an order ASAP!",
                     product.getName(), warehouse.getName());
-            homePageService.notify(msg, true);
+            homePageService.notify(msg, true, true);
             return;
         }
 
@@ -131,7 +135,7 @@ public class WarehouseService {
                     "Low stock on %s: %d %s remaining in %s. "
                             + "Place a reorder ASAP!",
                     product.getName(), amount, product.getUnit().getShortName(), warehouse.getName());
-            homePageService.notify(msg, true);
+            homePageService.notify(msg, true, true);
         }
     }
 

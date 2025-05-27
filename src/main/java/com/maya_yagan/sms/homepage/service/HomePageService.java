@@ -1,5 +1,7 @@
 package com.maya_yagan.sms.homepage.service;
 
+import atlantafx.base.theme.Styles;
+import com.maya_yagan.sms.common.Notifier;
 import com.maya_yagan.sms.common.UserSession;
 import com.maya_yagan.sms.homepage.dao.NotificationDAO;
 import com.maya_yagan.sms.homepage.model.Notification;
@@ -8,12 +10,18 @@ import com.maya_yagan.sms.login.service.LoginService;
 import com.maya_yagan.sms.user.model.Attendance;
 import com.maya_yagan.sms.user.model.User;
 import com.maya_yagan.sms.user.service.AttendanceService;
+import com.maya_yagan.sms.util.AlertUtil;
 import com.maya_yagan.sms.util.CustomException;
 import com.maya_yagan.sms.util.DateUtil;
+import javafx.scene.layout.StackPane;
+import org.kordamp.ikonli.feather.Feather;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.time.Duration;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 
 public class HomePageService {
     private final AttendanceService attendanceService = new AttendanceService();
@@ -24,6 +32,7 @@ public class HomePageService {
     public Attendance getTodayAttendance(User user) {
         return attendanceService.getAttendanceForUserToday(user);
     }
+
 
     public String getElapsedTime(LocalTime checkIn) {
         if(checkIn == null) return "-";
@@ -50,11 +59,18 @@ public class HomePageService {
             return DateUtil.formatDuration(left);
     }
 
-    public void notify(String message, boolean systemFlag){
-        if(systemFlag)
+    public void notify(String message, boolean systemFlag, boolean isError){
+        var icon = isError ? new FontIcon(Feather.X_CIRCLE) : new FontIcon(Feather.INFO);
+        var styles = isError ? List.of(Styles.DANGER, Styles.ELEVATED_1)
+                : List.of(Styles.ACCENT, Styles.ELEVATED_1);
+        if(systemFlag){//there is no stack pane here
+            //AlertUtil.showNotification(stackPane, message, icon, styles, javafx.util.Duration.seconds(4));
             notificationDAO.insertNotification(new Notification(message, null));
-        else
+        }
+        else{
+            //AlertUtil.showNotification(stackPane, message, icon, styles, javafx.util.Duration.seconds(4));
             notificationDAO.insertNotification(new Notification(message, UserSession.getInstance().getCurrentUser()));
+        }
     }
 
     public Set<Notification> getNotifications(){

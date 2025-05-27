@@ -7,6 +7,7 @@ import com.maya_yagan.sms.payment.model.CashBox;
 import com.maya_yagan.sms.payment.model.CashBoxStatus;
 import com.maya_yagan.sms.payment.model.FinancialRecord;
 import com.maya_yagan.sms.payment.model.TransactionType;
+import com.maya_yagan.sms.user.dao.UserDAO;
 import com.maya_yagan.sms.user.model.User;
 import com.maya_yagan.sms.util.AlertUtil;
 import com.maya_yagan.sms.util.CustomException;
@@ -102,6 +103,7 @@ public class CashBoxService {
         record.setAmount(amount);
         record.setType(type);
         record.setCashBox(current);
+        currentUser = new UserDAO().getUserById(currentUser.getId());
         record.setIssuedBy(currentUser);
 
         boolean saved = financialRecordDAO.insertFinancialRecord(record);

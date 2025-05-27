@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>Credit Card Payment</title>
+  <script src="https://js.stripe.com/v3/"></script>
+  <style>
+    /* Center the card container vertically & horizontally */
+    body,
+    html {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #f0f2f5;
+      font-family: Arial, sans-serif;
+      position: relative;
+    }
+
+    /* Spinner overlay */
+    #spinner-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    /* Spinner animation */
+    .spinner {
+      border: 8px solid #f3f3f3;
+      /* Light gray */
+      border-top: 8px solid #5469d4;
+      /* Blue */
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Card container */
+    .card {
+      background: white;
+      padding: 32px 36px;
+      border-radius: 12px;
+      width: 500px;
+      box-sizing: border-box;
+      box-shadow: 0 4px 8px rgb(0 0 0 / 0.1);
+      z-index: 10;
+    }
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 24px;
+      font-weight: 600;
+      color: #333;
+      text-align: center;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Stripe Element styles */
+    #card-element {
+      background-color: white;
+      padding: 12px 14px;
+      border: 1px solid #ccd0d5;
+      border-radius: 6px;
+      box-sizing: border-box;
+      transition: border-color 0.2s ease;
+      height: 44px;
+    }
+
+    #card-element.StripeElement--focus {
+      border-color: #5469d4;
+      box-shadow: 0 0 0 1px #5469d4;
+    }
+
+    #card-element.StripeElement--invalid {
+      border-color: #fa755a;
+      box-shadow: 0 0 0 1px #fa755a;
+    }
+
+    /* Submit button */
+    #submit {
+      background-color: #5469d4;
+      color: white;
+      font-weight: 600;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.2s ease;
+    }
+
+    #submit:hover {
+      background-color: #4353b3;
+    }
+
+    /* Payment status text */
+    #payment-status {
+      text-align: center;
+      font-weight: 600;
+      color: #333;
+      min-height: 24px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Spinner overlay -->
+  <div id="spinner-overlay">
+    <div class="spinner"></div>
+  </div>
+
+  <div class="card" style="display:none;" id="card-container">
+    <h2>Credit Card Payment</h2>
+    <form id="payment-form">
+      <div id="card-element"><!-- Stripe injects the Card Element here --></div>
+      <button id="submit">Pay</button>
+      <p id="payment-status"></p>
+    </form>
+  </div>
+
+  <script>
+  // Show spinner by default
+  const spinnerOverlay = document.getElementById('spinner-overlay');
+  const cardContainer  = document.getElementById('card-container');
+  const form           = document.getElementById('payment-form');
+  const status         = document.getElementById('payment-status');
+  const urlParams      = new URLSearchParams(window.location.search);
+  const clientSecret   = urlParams.get('clientSecret');
+
+  // ---------- all Stripe setup is in a function ----------
+  function initStripe(publishableKey) {
+    const stripe   = Stripe(publishableKey);
+    const elements = stripe.elements();
+
+    const card = elements.create('card', {
+      style: {
+        base: {
+          fontSize: '16px',
+          color:   '#32325d',
+          '::placeholder': { color: '#a0aec0' },
+          fontFamily: 'Arial, sans-serif',
+          padding: '12px 14px'
+        },
+        invalid: { color: '#fa755a', iconColor: '#fa755a' }
+      },
+      hidePostalCode: true
+    });
+
+    card.mount('#card-element');
+
+    card.on('ready', () => {
+      spinnerOverlay.style.display = 'none';
+      cardContainer.style.display  = 'block';
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      spinnerOverlay.style.display = 'flex';
+      status.textContent           = '';
+
+      try {
+        const { error, paymentIntent } =
+          await stripe.confirmCardPayment(clientSecret, { payment_method: { card } });
+
+        spinnerOverlay.style.display = 'none';
+
+        if (error) {
+          status.textContent = `Payment failed: ${error.message}`;
+          status.style.color = 'red';
+        } else if (paymentIntent?.status === 'succeeded') {
+          const amountInDollars = paymentIntent.amount / 100;
+          if (window.javaConnector?.paymentSucceeded)
+            window.javaConnector.paymentSucceeded(amountInDollars.toString());
+
+          status.textContent = 'Payment succeeded!';
+          status.style.color = 'green';
+        }
+      } catch (e) {
+        spinnerOverlay.style.display = 'none';
+        status.textContent           = 'Payment error: ' + e.message;
+        status.style.color           = 'red';
+      }
+    });
+  }
+  // ---------- nothing else runs until Java calls initStripe ----------
+</script>
+
+</body>
+
+</html>

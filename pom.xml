@@ -83,9 +83,15 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>17</version>
+            <version>17.0.12</version>
         </dependency>
-        
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>17.0.12</version>
+        </dependency>
+
+
         <!-- jBCrypt library-->
         <dependency>
             <groupId>org.mindrot</groupId>
@@ -104,14 +110,14 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-base</artifactId>
-            <version>17</version>
+            <version>17.0.12</version>
         </dependency>
 
         <!-- JavaFX graphics module (needed for GUI apps) -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-graphics</artifactId>
-            <version>21.0.2</version>
+            <version>17.0.12</version>
         </dependency>
          
         <!-- Hibernate Core -->
@@ -147,14 +153,6 @@
             <artifactId>javax.persistence-api</artifactId>
             <version>2.2</version>
         </dependency>
-        
-        <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>2.3.232</version>
-            <scope>runtime</scope>
-        </dependency>
 
         <dependency>
             <groupId>com.mchange</groupId>
@@ -165,7 +163,7 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>17</version>
+            <version>17.0.12</version>
         </dependency>
 
         <dependency>
@@ -213,6 +211,12 @@
             <groupId>com.stripe</groupId>
             <artifactId>stripe-java</artifactId>
             <version>29.1.0</version>
+        </dependency>
+        <!--ENV loader-->
+        <dependency>
+            <groupId>io.github.cdimascio</groupId>
+            <artifactId>dotenv-java</artifactId>
+            <version>2.2.0</version>
         </dependency>
     </dependencies>
 </project>

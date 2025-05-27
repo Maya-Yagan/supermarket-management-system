@@ -57,23 +57,10 @@ public class CashPaymentController implements Initializable {
             return false;
         }
 
-        if (received.compareTo(receipt.getTotalCost()) < 0) {
-            AlertUtil.showAlert(Alert.AlertType.ERROR,
-                    "Insufficient Cash",
-                    "Received amount is less than the total payable.");
-            return false;
-        }
-
-        BigDecimal change = received.subtract(receipt.getTotalCost());
-
-        receipt.setPaidAmount(received);
-        receipt.setChangeGiven(change);
-
         try {
-            paymentService.completeCashPayment(receipt, currentInventory);
+            paymentService.completeCashPayment(receipt, currentInventory, received);
             close();
             return true;
-
         } catch (CustomException ex) {
             ExceptionHandler.handleException(ex);
             return false;

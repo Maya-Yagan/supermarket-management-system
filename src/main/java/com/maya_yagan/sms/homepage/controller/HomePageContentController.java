@@ -171,7 +171,7 @@ public class HomePageContentController extends AbstractTableController<Notificat
 
     private void handleSendAction(){
         String message = messageTextArea.getText();
-        homePageService.notify(message, false);
+        homePageService.notify(message, false, false);
         refresh();
         messageTextArea.clear();
     }

@@ -6,11 +6,11 @@ import atlantafx.base.theme.Styles;
 import atlantafx.base.util.Animations;
 import com.google.zxing.WriterException;
 import com.maya_yagan.sms.common.AbstractTableController;
+import com.maya_yagan.sms.payment.creditcard.CreditCardPaymentController;
 import com.maya_yagan.sms.payment.model.PaymentMethod;
 import com.maya_yagan.sms.payment.model.Receipt;
 import com.maya_yagan.sms.payment.service.PaymentService;
 import com.maya_yagan.sms.product.model.Category;
-import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.product.service.ProductService;
 import com.maya_yagan.sms.settings.model.Settings;
 import com.maya_yagan.sms.settings.service.SettingsService;
@@ -21,30 +21,26 @@ import com.maya_yagan.sms.warehouse.service.WarehouseService;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.property.SimpleFloatProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.print.*;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
-import javafx.stage.Screen;
 import javafx.util.Duration;
 import org.controlsfx.control.SearchableComboBox;
 import org.kordamp.ikonli.feather.Feather;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -158,8 +154,8 @@ public class PaymentPageController extends AbstractTableController<ProductWareho
         discountedPriceColumn.setText("Discounted Price (" + moneyUnit + ")");
         discountedPriceColumn.setCellValueFactory(cellData -> {
             var productWarehouse = cellData.getValue();
-            float discountedPrice = paymentService.calculateDiscountedPrice(productWarehouse);
-            return new SimpleFloatProperty(discountedPrice).asObject();
+            BigDecimal discountedPrice = paymentService.calculateDiscountedPrice(productWarehouse);
+            return new SimpleObjectProperty<>(discountedPrice.floatValue());
         });
 
         discountedPriceColumn.setCellFactory(column -> new javafx.scene.control.TableCell<>() {
@@ -209,15 +205,49 @@ public class PaymentPageController extends AbstractTableController<ProductWareho
     }
 
     private void setupEventHandlers(){
+        addButton.setOnAction(event -> handleBarcodeEntry());
+
         barcodeField.setOnKeyPressed(event -> {
             if(event.getCode() == KeyCode.ENTER){
                 handleBarcodeEntry();
                 event.consume();
             }
         });
-        //printButton.setOnAction(event -> printCurrentReceipt());
-        addButton.setOnAction(event -> handleBarcodeEntry());
+
+        creditButton.setOnAction(event -> {
+            if(basket.isEmpty()){
+                AlertUtil.showAlert(Alert.AlertType.WARNING, "Empty basket", "Please add items first.");
+                return;
+            }
+            try {
+                Receipt receipt = paymentService.createReceipt(
+                        basket,
+                        receiptNumberLabel.getText(),
+                        PaymentMethod.CARD
+                );
+
+                ViewUtil.displayModalPaneView(
+                        "/view/payment/CreditCardPayment.fxml",
+                        (CreditCardPaymentController controller) -> {
+                            controller.setReceipt(receipt);
+                            controller.setWarehouse(selectedWarehouse);
+                            controller.setPaymentResultListener(() -> {
+                                Platform.runLater(() -> {
+                                    modalPane.hide();
+                                    refreshAfterPayment();
+                                });
+                            });
+                        }, modalPane);
+            } catch (CustomException e) {
+                ExceptionHandler.handleException(e);
+            }
+        });
+
         cashButton.setOnAction(event -> {
+            if(basket.isEmpty()){
+                AlertUtil.showAlert(Alert.AlertType.WARNING, "Empty basket", "Please add items first.");
+                return;
+            }
             try {
                 Receipt receipt = paymentService.createReceipt(
                         basket,
@@ -232,13 +262,7 @@ public class PaymentPageController extends AbstractTableController<ProductWareho
                             controller.setCurrentInventory(selectedWarehouse);
                             controller.setReceipt(receipt);
                             controller.setModalPane(modalPane);
-                            controller.setOnCloseAction(() -> {
-                                basket.clear();
-                                refresh();
-                                refreshPaymentSection();
-                                setStaticHeaderFields();
-                                showPaymentNotification(stackPane);
-                            });
+                            controller.setOnCloseAction(this::refreshAfterPayment);
                         },
                         CashPaymentController::save
                 );
@@ -353,9 +377,9 @@ public class PaymentPageController extends AbstractTableController<ProductWareho
 
     private void refreshPaymentSection() {
         populateGridPane();
-        float subtotal = paymentService.calculateSubtotal(basket);
-        float tax = paymentService.calculateTotalTax(basket);
-        float totalCost = paymentService.calculateTotalCost(basket);
+        BigDecimal subtotal = paymentService.calculateSubtotal(basket);
+        BigDecimal tax = paymentService.calculateTotalTax(basket);
+        BigDecimal totalCost = paymentService.calculateTotalCost(basket);
 
         subtotalLabel.setText(String.format("%.2f", subtotal) + " "+ moneyUnit);
         taxLabel.setText(String.format("%.2f", tax) + " "+ moneyUnit);
@@ -387,9 +411,9 @@ public class PaymentPageController extends AbstractTableController<ProductWareho
         for (var entry : basket.entrySet()) {
             ProductWarehouse pw = entry.getKey();
             double amount = entry.getValue();
-            float unitPrice = paymentService.calculateDiscountedPrice(pw);
+            BigDecimal unitPrice = paymentService.calculateDiscountedPrice(pw);
             float taxRate = pw.getProduct().getTaxPercentage();
-            double total = amount * unitPrice;
+            BigDecimal total =  unitPrice.multiply(BigDecimal.valueOf(amount));
             String amountWithUnit = String.format("%.2f %s", amount, pw.getProduct().getUnit().getShortName());
 
             gridPane.add(createWrappedLabel(pw.getProduct().getName()), 0, row);
@@ -409,44 +433,11 @@ public class PaymentPageController extends AbstractTableController<ProductWareho
         return label;
     }
 
-    private static void showPaymentNotification(StackPane root) {
-
-        var msg = new Notification(
-                "Payment completed successfully",
-                new FontIcon(Feather.CHECK_CIRCLE)
-        );
-        msg.getStyleClass().addAll(Styles.SUCCESS, Styles.ELEVATED_1);
-        msg.setPrefHeight(Region.USE_PREF_SIZE);
-        msg.setMaxHeight(Region.USE_PREF_SIZE);
-        StackPane.setAlignment(msg, Pos.TOP_RIGHT);
-        StackPane.setMargin(msg, new Insets(10, 10, 0, 0));
-
-        // ---------- add it to the scene (if not already present) ----------
-        if (!root.getChildren().contains(msg)) {
-            root.getChildren().add(msg);
-        }
-
-        // ---------- slide-in animation ----------
-        var slideIn = Animations.slideInDown(msg, Duration.millis(250));
-        slideIn.play();
-
-        // ---------- let it stay up for 3 s, then slide out ----------
-        slideIn.setOnFinished(ev -> {
-            var wait = new PauseTransition(Duration.seconds(3));
-            wait.setOnFinished(e -> {
-                var slideOut = Animations.slideOutUp(msg, Duration.millis(250));
-                slideOut.setOnFinished(f -> root.getChildren().remove(msg));
-                slideOut.play();
-            });
-            wait.play();
-        });
-
-        // Manual close
-        msg.setOnClose(e -> {
-            var slideOut = Animations.slideOutUp(msg, Duration.millis(250));
-            slideOut.setOnFinished(f -> root.getChildren().remove(msg));
-            slideOut.playFromStart();
-        });
+    private void refreshAfterPayment(){
+        basket.clear();
+        refresh();
+        refreshPaymentSection();
+        setStaticHeaderFields();
+        AlertUtil.showSuccess(stackPane, "Payment completed successfully");
     }
-
 }
