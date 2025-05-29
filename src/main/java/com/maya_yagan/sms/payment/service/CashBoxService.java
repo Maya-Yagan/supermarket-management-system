@@ -42,7 +42,7 @@ public class CashBoxService {
 
         ViewUtil.showFloatInputDialog(
                 "Open Cash Box",
-                "Previous closing balance: " + previousBalance,
+                "Previous closing balance: " + String.format("%,.2f", previousBalance),
                 "Confirm or adjust the opening balance:",
                 (float) previousBalance,
                 "Opening Balance",
@@ -59,7 +59,7 @@ public class CashBoxService {
                                 Alert.AlertType.INFORMATION,
                                 "Cash Box Opened",
                                 "Cash box started with balance "
-                                        + openingBalance);
+                                        + String.format("%,.2f", previousBalance));
                     }
                 });
     }
