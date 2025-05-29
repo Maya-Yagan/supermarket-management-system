@@ -2,6 +2,10 @@ package com.maya_yagan.sms.common;
 
 import com.maya_yagan.sms.login.service.AuthenticationService;
 import com.maya_yagan.sms.order.model.Order;
+import com.maya_yagan.sms.payment.model.Receipt;
+import com.maya_yagan.sms.payment.model.ReceiptItem;
+import com.maya_yagan.sms.payment.model.ReceiptStatus;
+import com.maya_yagan.sms.payment.service.RefundService;
 import com.maya_yagan.sms.product.model.Category;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.settings.model.Settings;
@@ -11,6 +15,7 @@ import com.maya_yagan.sms.user.service.UserService;
 import com.maya_yagan.sms.util.CustomException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -155,21 +160,21 @@ public class ValidationService {
             throw new CustomException("Please fill the name", "EMPTY_FIELDS");
     }
 
-    public void validateStockAmount(int newAmount, int remainingCapacity){
-        if (newAmount < 0)
+    public void validateStockAmount(int amountToAdd, int freeSpace){
+        if (amountToAdd < 0)
             throw new CustomException(
                     "The amount cannot be negative.",
                     "INVALID_NUMBER");
 
-        if (remainingCapacity == 0)
+        if (freeSpace == 0)
             throw new CustomException(
                     "The warehouse is already full. No more products can be added.",
                     "INVALID_CAPACITY");
 
-        if (newAmount > remainingCapacity)
+        if (amountToAdd > freeSpace)
             throw new CustomException(
                     "The entered amount exceeds the remaining warehouse capacity. "
-                            + "Remaining capacity: " + remainingCapacity,
+                            + "Remaining capacity: " + freeSpace,
                     "INVALID_CAPACITY");
     }
 
@@ -217,5 +222,26 @@ public class ValidationService {
         || settings.getMoneyUnit().trim().isEmpty() || settings.getAddress().trim().isEmpty()
         || settings.getPhone().trim().isEmpty() || settings.getMarketName().trim().isEmpty())
             throw new CustomException("Please fill all empty fields", "EMPTY_FIELDS");
+    }
+
+    public void validateReceiptCode(Receipt receipt, String code) {
+        if (receipt == null || code == null)
+            throw new CustomException("The entered code is invalid.", "NOT_FOUND");
+
+        if (receipt.getStatus() == ReceiptStatus.REFUNDED)
+            throw new CustomException("This receipt has already been refunded.", "GENERAL");
+
+        LocalDateTime expirationTime = receipt.getDateTime().plusHours(24);
+        if (expirationTime.isBefore(LocalDateTime.now()))
+            throw new CustomException("More than 24 hours have passed on this receipt.\nYou can't refund products after more than 24 hours.", "GENERAL");
+    }
+
+    public void validateRefundQuantity(ReceiptItem item, double enteredQuantity){
+        double originalQuantity = item.getQuantity();
+        if(enteredQuantity > originalQuantity)
+            throw new CustomException(
+                    "You cannot refund more than the original quantity purchased (" + originalQuantity + " " + item.getProduct().getUnit().getShortName() +").",
+                    "GENERAL"
+            );
     }
 }

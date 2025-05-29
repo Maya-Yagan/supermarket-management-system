@@ -3,6 +3,8 @@ package com.maya_yagan.sms.warehouse.service;
 import com.maya_yagan.sms.homepage.service.HomePageService;
 import com.maya_yagan.sms.order.model.Order;
 import com.maya_yagan.sms.order.model.OrderProduct;
+import com.maya_yagan.sms.payment.model.Receipt;
+import com.maya_yagan.sms.payment.model.ReceiptItem;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.product.service.ProductService;
 import com.maya_yagan.sms.util.CustomException;
@@ -43,7 +45,6 @@ public class WarehouseService {
                 .toList();
     }
 
-
     public void deleteWarehouse(int id){
         warehouseDAO.deleteWarehouse(id);
     }
@@ -73,11 +74,15 @@ public class WarehouseService {
         warehouseDAO.updateWarehouse(warehouse);
     }
 
-    public void updateProductStock(Warehouse warehouse, ProductWarehouse productWarehouse, int newAmount){
-        int totalBefore = calculateTotalProducts(warehouse) - productWarehouse.getAmount();
-        int remainingCapacity = warehouse.getCapacity() - totalBefore;
-        validationService.validateStockAmount(newAmount, remainingCapacity);
-        productWarehouse.setAmount(newAmount);
+    public void updateProductStock(Warehouse warehouse, ProductWarehouse productWarehouse, int newTotalForProduct){
+        int currentQty = productWarehouse.getAmount();
+        int delta      = newTotalForProduct - currentQty;
+        int freeSpace = warehouse.getCapacity() - calculateTotalProducts(warehouse);
+
+        if (delta > 0)
+            validationService.validateStockAmount(delta, freeSpace);
+
+        productWarehouse.setAmount(newTotalForProduct);
         warehouseDAO.updateWarehouse(warehouse);
         checkStock(productWarehouse);
     }
@@ -158,4 +163,33 @@ public class WarehouseService {
                 .filter(pw -> barcode.equals(pw.getProduct().getBarcode()))
                 .findFirst();
     }
+
+    public void decreaseReceiptItemFromWarehouse(Receipt receipt, Warehouse warehouse) {
+        for (ReceiptItem item : receipt.getItems()) {
+            Product product = item.getProduct();
+            double quantity = item.getQuantity();
+
+            findProductWarehouseByName(warehouse, product.getName())
+                    .ifPresentOrElse(pw -> {
+                        int currentAmount = pw.getAmount();
+                        int newAmount = currentAmount - (int) quantity;
+                        if (newAmount < 0) {
+                            throw new CustomException("Insufficient stock for product: " + product.getName(), "INSUFFICIENT_STOCK");
+                        }
+                        if (newAmount == 0) {
+                            deleteProductFromWarehouse(warehouse, product);
+                        } else {
+                            updateProductStock(warehouse, pw, newAmount);
+                        }
+                    }, () -> {
+                        throw new CustomException("Product not found in warehouse: " + product.getName(), "PRODUCT_NOT_FOUND");
+                    });
+        }
+    }
+
+    public void addProductToWarehouse(Warehouse warehouse, Product product, int amount){
+        warehouseDAO.addProductToWarehouse(warehouse.getId(), product.getId(), amount);
+
+    }
+
 }

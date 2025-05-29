@@ -2,9 +2,12 @@ package com.maya_yagan.sms.payment.dao;
 
 import com.maya_yagan.sms.payment.model.Receipt;
 import com.maya_yagan.sms.payment.model.ReceiptItem;
+import com.maya_yagan.sms.payment.model.ReceiptStatus;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.user.model.User;
 import com.maya_yagan.sms.util.HibernateUtil;
+
+import java.math.BigDecimal;
 import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -68,9 +71,14 @@ public class ReceiptDAO {
      */
     public Receipt getReceiptByCode(String code) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<Receipt> query = session.createQuery("FROM Receipt r WHERE r.code = :code", Receipt.class);
-            query.setParameter("code", code);
-            return query.uniqueResult();
+            return session.createQuery(
+                            "SELECT r " +
+                                    "FROM Receipt r " +
+                                    "LEFT JOIN FETCH r.items i " +
+                                    "LEFT JOIN FETCH i.product " +
+                                    "WHERE r.code = :code", Receipt.class)
+                    .setParameter("code", code)
+                    .uniqueResult();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -157,4 +165,24 @@ public class ReceiptDAO {
             e.printStackTrace();
         }
     }
+
+    public void markAsRefunded(long receiptId, BigDecimal changeGiven) {
+
+        Transaction tx = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            tx = session.beginTransaction();
+
+            Receipt managed = session.get(Receipt.class, receiptId);
+            if (managed != null) {
+                managed.setStatus(ReceiptStatus.REFUNDED);
+                managed.setChangeGiven(changeGiven);
+            }
+
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            throw e;
+        }
+    }
+
 }

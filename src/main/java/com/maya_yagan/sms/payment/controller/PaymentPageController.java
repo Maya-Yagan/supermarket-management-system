@@ -1,32 +1,29 @@
 package com.maya_yagan.sms.payment.controller;
 
 import atlantafx.base.controls.ModalPane;
-import atlantafx.base.controls.Notification;
-import atlantafx.base.theme.Styles;
-import atlantafx.base.util.Animations;
 import com.google.zxing.WriterException;
 import com.maya_yagan.sms.common.AbstractTableController;
+import com.maya_yagan.sms.common.ValidationService;
 import com.maya_yagan.sms.payment.creditcard.CreditCardPaymentController;
 import com.maya_yagan.sms.payment.model.PaymentMethod;
 import com.maya_yagan.sms.payment.model.Receipt;
 import com.maya_yagan.sms.payment.service.PaymentService;
+import com.maya_yagan.sms.payment.service.RefundService;
 import com.maya_yagan.sms.product.model.Category;
 import com.maya_yagan.sms.product.service.ProductService;
 import com.maya_yagan.sms.settings.model.Settings;
 import com.maya_yagan.sms.settings.service.SettingsService;
+import com.maya_yagan.sms.user.service.UserService;
 import com.maya_yagan.sms.util.*;
 import com.maya_yagan.sms.warehouse.model.ProductWarehouse;
 import com.maya_yagan.sms.warehouse.model.Warehouse;
 import com.maya_yagan.sms.warehouse.service.WarehouseService;
-import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -34,10 +31,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
-import javafx.util.Duration;
 import org.controlsfx.control.SearchableComboBox;
-import org.kordamp.ikonli.feather.Feather;
-import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -58,15 +52,18 @@ public class PaymentPageController extends AbstractTableController<ProductWareho
     @FXML private TextField barcodeField;
     @FXML private GridPane gridPane;
     @FXML private ImageView barcodeImageView;
-    @FXML private Button  creditButton, cashButton, addButton, printButton;
+    @FXML private Button  creditButton, cashButton, addButton, printButton, returnButton;
     @FXML private Text addressText;
     @FXML private MenuButton inventoryMenuButton;
-    @FXML private Label dateLabel, changeLabel, amountPaidLabel, employeeNameLabel,
-                receiptNumberLabel, taxLabel, subtotalLabel, totalCostLabel, marketNameLabel, phoneLabel;
+    @FXML private Label dateLabel, employeeNameLabel, receiptNumberLabel, taxLabel,
+                        subtotalLabel, totalCostLabel, marketNameLabel, phoneLabel;
 
     private static final String STYLE = "-fx-font-weight: bold;";
     private static final String ALL_CATEGORIES = "All Categories";
 
+    private final UserService userService = new UserService();
+    private final ValidationService validationService = new ValidationService();
+    private final RefundService refundService = new RefundService();
     private final WarehouseService warehouseService = new WarehouseService();
     private final SettingsService settingsService = new SettingsService();
     private final ProductService productService = new ProductService();
@@ -207,6 +204,27 @@ public class PaymentPageController extends AbstractTableController<ProductWareho
     private void setupEventHandlers(){
         addButton.setOnAction(event -> handleBarcodeEntry());
 
+        returnButton.setOnAction(event ->
+                ViewUtil.showStringInputDialog(
+                "Enter Receipt Code",
+                "Product Refund",
+                "Please enter the receipt code",
+                "RC-XXXXXXXX",
+                "Receipt Code",
+                code -> {
+                    Receipt receipt = refundService.getReceiptByCode(code);
+                    validationService.validateReceiptCode(receipt, code);
+                        ViewUtil.displayModalPaneView(
+                        "/view/payment/RefundPage.fxml",
+                        (RefundPageController controller) -> {
+                            controller.setReceipt(receipt);
+                            controller.setModalPane(modalPane);
+                            controller.setOnCloseAction(() -> {}); //nothing for now
+                        }, modalPane);
+                    }
+                )
+        );
+
         barcodeField.setOnKeyPressed(event -> {
             if(event.getCode() == KeyCode.ENTER){
                 handleBarcodeEntry();
@@ -231,12 +249,13 @@ public class PaymentPageController extends AbstractTableController<ProductWareho
                         (CreditCardPaymentController controller) -> {
                             controller.setReceipt(receipt);
                             controller.setWarehouse(selectedWarehouse);
-                            controller.setPaymentResultListener(() -> {
+                            controller.setPaymentResultListener(() ->
                                 Platform.runLater(() -> {
                                     modalPane.hide();
                                     refreshAfterPayment();
-                                });
-                            });
+
+                                }
+                            ));
                         }, modalPane);
             } catch (CustomException e) {
                 ExceptionHandler.handleException(e);
@@ -356,7 +375,7 @@ public class PaymentPageController extends AbstractTableController<ProductWareho
         String phone         = settings.getPhone();
 
         dateLabel.setText(DateUtil.formatDateTime(LocalDateTime.now()));
-        employeeNameLabel.setText(paymentService.getCurrentEmployeeName());
+        employeeNameLabel.setText(userService.getCurrentEmployeeName());
         receiptNumberLabel.setText(receiptNumber);
         marketNameLabel.setText(marketName);
         addressText.setText(address);

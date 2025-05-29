@@ -4,7 +4,6 @@ import com.maya_yagan.sms.common.UserSession;
 import com.maya_yagan.sms.payment.creditcard.StripeService;
 import com.maya_yagan.sms.payment.dao.ReceiptDAO;
 import com.maya_yagan.sms.payment.model.*;
-import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.settings.service.SettingsService;
 import com.maya_yagan.sms.user.dao.UserDAO;
 import com.maya_yagan.sms.user.model.User;
@@ -32,10 +31,6 @@ public class PaymentService {
     private final CashBoxService cashBoxService = new CashBoxService();
     private final ReceiptDAO receiptDAO = new ReceiptDAO();
 
-    public String getCurrentEmployeeName() {
-        return UserSession.getInstance().getCurrentUser().getFullName();
-    }
-
     public String generateReceiptNumber() {
         return "RC-" + UUID.randomUUID()
                 .toString()
@@ -54,7 +49,6 @@ public class PaymentService {
                 .setScale(2, RoundingMode.HALF_UP);
     }
 
-    /** Adds up all line totals (amount × discounted price). */
     public BigDecimal calculateSubtotal(Map<ProductWarehouse, Double> items) {
         return items.entrySet().stream()
                 .map(e -> calculateDiscountedPrice(e.getKey())
@@ -137,31 +131,8 @@ public class PaymentService {
         if(!ok)
             throw new CustomException("Cannot record income. No open cash box.", "NO_OPEN_CASH_BOX");
 
-        decreaseProductFromWarehouse(receipt, warehouse);
+        warehouseService.decreaseReceiptItemFromWarehouse(receipt, warehouse);
         receiptDAO.insertReceipt(receipt);
-    }
-
-    private void decreaseProductFromWarehouse(Receipt receipt, Warehouse warehouse) {
-        for (ReceiptItem item : receipt.getItems()) {
-            Product product = item.getProduct();
-            double quantity = item.getQuantity();
-
-            warehouseService.findProductWarehouseByName(warehouse, product.getName())
-                    .ifPresentOrElse(pw -> {
-                        int currentAmount = pw.getAmount();
-                        int newAmount = currentAmount - (int) quantity;
-                        if (newAmount < 0) {
-                            throw new CustomException("Insufficient stock for product: " + product.getName(), "INSUFFICIENT_STOCK");
-                        }
-                        if (newAmount == 0) {
-                            warehouseService.deleteProductFromWarehouse(warehouse, product);
-                        } else {
-                            warehouseService.updateProductStock(warehouse, pw, newAmount);
-                        }
-                    }, () -> {
-                        throw new CustomException("Product not found in warehouse: " + product.getName(), "PRODUCT_NOT_FOUND");
-                    });
-        }
     }
 
     public void completeCreditCardPayment(WebView webView, Receipt receipt, Object javaBridge){

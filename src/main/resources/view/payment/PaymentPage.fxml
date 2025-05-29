@@ -36,8 +36,6 @@
                               <Label text="Subtotal:" />
                               <Label text="Taxes:" />
                               <Label text="Total Cost:" />
-                              <Label text="Amount Paid:" />
-                              <Label text="Change:" />
                            </children>
                         </VBox>
                         <VBox prefHeight="100.0" prefWidth="126.0">
@@ -45,8 +43,6 @@
                               <Label fx:id="subtotalLabel" text="00.0" />
                               <Label fx:id="taxLabel" text="00.0" />
                               <Label fx:id="totalCostLabel" style="-fx-font-weight: bold;" text="00.0" />
-                              <Label fx:id="amountPaidLabel" text="00.0" />
-                              <Label fx:id="changeLabel" text="00.0" />
                            </children>
                         </VBox>
                      </children>

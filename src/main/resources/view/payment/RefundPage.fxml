@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.payment.controller.RefundPageController">
+   <children>
+      <AnchorPane prefHeight="585.0" prefWidth="781.0">
+         <children>
+            <TableView fx:id="tableView" layoutX="50.4" layoutY="118.0" prefHeight="342.0" prefWidth="681.0" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="118.0">
+              <columns>
+                <TableColumn fx:id="productNameColumn" prefWidth="75.0" text="Product" />
+                <TableColumn fx:id="amountColumn" prefWidth="75.0" text="Amount" />
+                  <TableColumn fx:id="unitPriceColumn" prefWidth="83.20002746582031" text="Unit Price" />
+                  <TableColumn fx:id="totalPriceColumn" prefWidth="100.79998779296875" text="Total Price" />
+                  <TableColumn fx:id="selectColumn" prefWidth="75.0" text="Select" />
+              </columns>
+            </TableView>
+            <Label layoutX="57.0" layoutY="33.0" text="Refund Page" textFill="#455079" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="33.0">
+               <font>
+                  <Font size="30.0" />
+               </font>
+            </Label>
+            <Label layoutX="52.0" layoutY="88.0" text="Receipt Date:" />
+            <Label fx:id="dateTimeLabel" layoutX="139.0" layoutY="88.0" text="DD.MM.YYYY HH:MM" AnchorPane.leftAnchor="139.0" />
+            <Button fx:id="proceedButton" layoutX="567.0" layoutY="518.0" mnemonicParsing="false" styleClass="accent" text="Proceed" AnchorPane.bottomAnchor="31.600000000000023" AnchorPane.rightAnchor="140.20000000000005" />
+            <Button fx:id="cancelButton" layoutX="645.0" layoutY="518.0" mnemonicParsing="false" text="Cancel" AnchorPane.bottomAnchor="31.600000000000023" AnchorPane.rightAnchor="50.0" />
+            <HBox layoutX="52.0" layoutY="473.0" prefHeight="62.0" prefWidth="296.0" style="-fx-background-color: #f0f0f0;" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="50.0">
+               <children>
+                  <VBox prefHeight="100.0" prefWidth="204.0">
+                     <children>
+                        <Label text="Total Cost:" />
+                        <Label text="Total Paid Amount:" />
+                        <Label text="Payment Method:" />
+                        <Label text="Total Refund Amount:" />
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="100.0" prefWidth="196.0">
+                     <children>
+                        <Label fx:id="totalCostLabel" text="00.0" />
+                        <Label fx:id="totalPaidAmountLabel" text="00.0" />
+                        <Label fx:id="paymentMethodLabel" text="00.0" />
+                        <Label fx:id="totalRefundLabel" text="00.0">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </AnchorPane>
+   </children>
+</StackPane>

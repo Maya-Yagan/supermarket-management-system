@@ -1,7 +1,6 @@
 package com.maya_yagan.sms.homepage.service;
 
 import atlantafx.base.theme.Styles;
-import com.maya_yagan.sms.common.Notifier;
 import com.maya_yagan.sms.common.UserSession;
 import com.maya_yagan.sms.homepage.dao.NotificationDAO;
 import com.maya_yagan.sms.homepage.model.Notification;
@@ -10,10 +9,8 @@ import com.maya_yagan.sms.login.service.LoginService;
 import com.maya_yagan.sms.user.model.Attendance;
 import com.maya_yagan.sms.user.model.User;
 import com.maya_yagan.sms.user.service.AttendanceService;
-import com.maya_yagan.sms.util.AlertUtil;
 import com.maya_yagan.sms.util.CustomException;
 import com.maya_yagan.sms.util.DateUtil;
-import javafx.scene.layout.StackPane;
 import org.kordamp.ikonli.feather.Feather;
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -21,7 +18,6 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
-import java.util.Stack;
 
 public class HomePageService {
     private final AttendanceService attendanceService = new AttendanceService();

@@ -1,6 +1,7 @@
 package com.maya_yagan.sms.warehouse.dao;
 
 import com.maya_yagan.sms.product.model.Product;
+import com.maya_yagan.sms.util.CustomException;
 import com.maya_yagan.sms.warehouse.model.ProductWarehouse;
 import com.maya_yagan.sms.warehouse.model.Warehouse;
 import com.maya_yagan.sms.util.HibernateUtil;
@@ -34,6 +35,60 @@ public class WarehouseDAO {
         } catch (Exception e){
             if(transaction != null) transaction.rollback();
             e.printStackTrace();
+        }
+    }
+
+    public void addProductToWarehouse(int warehouseId, int productId, int amount) {
+
+        if (amount <= 0) {
+            throw new CustomException("Amount must be greater than 0", "INVALID_AMOUNT");
+        }
+
+        Transaction tx = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            tx = session.beginTransaction();
+
+            Warehouse warehouse = session.get(Warehouse.class, warehouseId);
+            if (warehouse == null) {
+                throw new CustomException("Warehouse not found", "NOT_FOUND");
+            }
+
+            Product product = session.get(Product.class, productId);
+            if (product == null) {
+                throw new CustomException("Product not found", "NOT_FOUND");
+            }
+
+            Hibernate.initialize(warehouse.getProductWarehouses());
+
+            int currentTotal = warehouse.getProductWarehouses()
+                    .stream()
+                    .mapToInt(ProductWarehouse::getAmount)
+                    .sum();
+            if (currentTotal + amount > warehouse.getCapacity()) {
+                throw new CustomException(
+                        "This warehouse doesn't have enough capacity.",
+                        "INSUFFICIENT_CAPACITY");
+            }
+
+            // Either bump existing amount or create a new ProductWarehouse row
+            ProductWarehouse pw = warehouse.getProductWarehouses()
+                    .stream()
+                    .filter(x -> x.getProduct().getId() == productId)
+                    .findFirst()
+                    .orElseGet(() -> {
+                        ProductWarehouse newPw =
+                                new ProductWarehouse(warehouse, product, 0);
+                        warehouse.getProductWarehouses().add(newPw);
+                        return newPw;
+                    });
+
+            pw.setAmount(pw.getAmount() + amount);
+
+            session.merge(warehouse);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            throw e;
         }
     }
     

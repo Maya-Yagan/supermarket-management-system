@@ -1,5 +1,6 @@
 package com.maya_yagan.sms.user.service;
 
+import com.maya_yagan.sms.common.UserSession;
 import com.maya_yagan.sms.user.dao.RoleDAO;
 import com.maya_yagan.sms.user.dao.UserDAO;
 import com.maya_yagan.sms.user.model.Role;
@@ -114,5 +115,9 @@ public class UserService {
 
     public User getUserByEmail(String email){
         return userDAO.getUserByEmail(email);
+    }
+
+    public String getCurrentEmployeeName() {
+        return UserSession.getInstance().getCurrentUser().getFullName();
     }
 }
