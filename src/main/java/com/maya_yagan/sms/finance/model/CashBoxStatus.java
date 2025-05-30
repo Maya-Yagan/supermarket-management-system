@@ -1,4 +1,4 @@
-package com.maya_yagan.sms.payment.model;
+package com.maya_yagan.sms.finance.model;
 
 public enum CashBoxStatus {
     OPEN,

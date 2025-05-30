@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import com.maya_yagan.sms.common.UserSession;
-import com.maya_yagan.sms.payment.service.CashBoxService;
+import com.maya_yagan.sms.finance.service.CashBoxService;
 import com.maya_yagan.sms.util.AlertUtil;
 import com.maya_yagan.sms.util.ViewUtil;
 import javafx.application.Platform;

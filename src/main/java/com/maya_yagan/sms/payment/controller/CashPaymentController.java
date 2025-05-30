@@ -7,6 +7,7 @@ import com.maya_yagan.sms.payment.service.PaymentService;
 import com.maya_yagan.sms.util.AlertUtil;
 import com.maya_yagan.sms.util.CustomException;
 import com.maya_yagan.sms.util.ExceptionHandler;
+import com.maya_yagan.sms.util.MoneyUtil;
 import com.maya_yagan.sms.warehouse.model.Warehouse;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
@@ -68,14 +69,14 @@ public class CashPaymentController implements Initializable {
     }
 
     private void loadData() {
-        totalAmountLabel.setText(paymentService.formatMoney(receipt.getTotalCost()));
+        totalAmountLabel.setText(MoneyUtil.formatMoney(receipt.getTotalCost()));
         changeLabel.textProperty().bind(
                 Bindings.createStringBinding(() -> {
                     if (receipt == null) return "";
                     try {
                         BigDecimal received = new BigDecimal(cashReceivedField.getText().trim());
                         BigDecimal change = received.subtract(receipt.getTotalCost());
-                        return paymentService.formatMoney(change.max(BigDecimal.ZERO));
+                        return MoneyUtil.formatMoney(change.max(BigDecimal.ZERO));
                     } catch (NumberFormatException ex) {
                         return "";
                     }

@@ -1,19 +1,21 @@
-package com.maya_yagan.sms.payment.service;
+package com.maya_yagan.sms.finance.service;
 
 import com.maya_yagan.sms.common.UserSession;
-import com.maya_yagan.sms.payment.dao.CashBoxDAO;
-import com.maya_yagan.sms.payment.dao.FinancialRecordDAO;
-import com.maya_yagan.sms.payment.model.CashBox;
-import com.maya_yagan.sms.payment.model.CashBoxStatus;
-import com.maya_yagan.sms.payment.model.FinancialRecord;
-import com.maya_yagan.sms.payment.model.TransactionType;
+import com.maya_yagan.sms.finance.dao.CashBoxDAO;
+import com.maya_yagan.sms.finance.dao.FinancialRecordDAO;
+import com.maya_yagan.sms.finance.model.CashBox;
+import com.maya_yagan.sms.finance.model.CashBoxStatus;
+import com.maya_yagan.sms.finance.model.FinancialRecord;
+import com.maya_yagan.sms.finance.model.TransactionType;
 import com.maya_yagan.sms.user.dao.UserDAO;
 import com.maya_yagan.sms.user.model.User;
 import com.maya_yagan.sms.util.AlertUtil;
 import com.maya_yagan.sms.util.CustomException;
+import com.maya_yagan.sms.util.MoneyUtil;
 import com.maya_yagan.sms.util.ViewUtil;
 import javafx.scene.control.Alert;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -36,21 +38,21 @@ public class CashBoxService {
             throw new CustomException("A cash box is already open.", "GENERAL");
 
         CashBox lastClosed = cashBoxDAO.getLastClosedCashBox();
-        double previousBalance = lastClosed == null
-                ? 0.0
+        BigDecimal previousBalance = lastClosed == null
+                ? BigDecimal.ZERO
                 : lastClosed.getTotalBalance();
 
         ViewUtil.showFloatInputDialog(
                 "Open Cash Box",
-                "Previous closing balance: " + String.format("%,.2f", previousBalance),
+                "Previous closing balance: " + MoneyUtil.formatMoney(previousBalance),
                 "Confirm or adjust the opening balance:",
-                (float) previousBalance,
+                previousBalance.floatValue(),
                 "Opening Balance",
                 val -> val >= 0,
                 openingBalance -> {
                     CashBox newCashBox = new CashBox();
                     newCashBox.setOpenedAt(LocalDateTime.now());
-                    newCashBox.setTotalBalance(openingBalance);
+                    newCashBox.setTotalBalance(BigDecimal.valueOf(openingBalance));
                     newCashBox.setStatus(CashBoxStatus.OPEN);
                     newCashBox.setOpenedBy(currentUser);
 
@@ -59,7 +61,7 @@ public class CashBoxService {
                                 Alert.AlertType.INFORMATION,
                                 "Cash Box Opened",
                                 "Cash box started with balance "
-                                        + String.format("%,.2f", previousBalance));
+                                        + MoneyUtil.formatMoney(previousBalance));
                     }
                 });
     }
@@ -93,7 +95,7 @@ public class CashBoxService {
      * @param type The type of the transaction (INCOME or EXPENSE).
      * @return true if the record was saved, false otherwise.
      */
-    public boolean recordTransaction(double amount, TransactionType type) {
+    public boolean recordTransaction(BigDecimal amount, TransactionType type) {
         CashBox current = cashBoxDAO.getOpenCashBox();
         if (current == null)
             throw new CustomException("No open cash box.\nPlease open the cash box first.", "NO_OPEN_CASH_BOX");
@@ -109,9 +111,9 @@ public class CashBoxService {
         boolean saved = financialRecordDAO.insertFinancialRecord(record);
         if (!saved) return false;
 
-        double newBalance = type == TransactionType.INCOME
-                ? current.getTotalBalance() + amount
-                : current.getTotalBalance() - amount;
+        BigDecimal newBalance = type == TransactionType.INCOME
+                ? current.getTotalBalance().add(amount)
+                : current.getTotalBalance().subtract(amount);
 
         current.setTotalBalance(newBalance);
         cashBoxDAO.updateCashBox(current);

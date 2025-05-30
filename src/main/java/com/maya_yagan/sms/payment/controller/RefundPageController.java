@@ -5,7 +5,6 @@ import com.maya_yagan.sms.common.AbstractTableController;
 import com.maya_yagan.sms.common.ValidationService;
 import com.maya_yagan.sms.payment.model.Receipt;
 import com.maya_yagan.sms.payment.model.ReceiptItem;
-import com.maya_yagan.sms.payment.service.CashBoxService;
 import com.maya_yagan.sms.payment.service.PaymentService;
 import com.maya_yagan.sms.payment.service.RefundService;
 import com.maya_yagan.sms.util.*;
@@ -35,7 +34,6 @@ public class RefundPageController extends AbstractTableController<ReceiptItem> {
 
     private final WarehouseService warehouseService = new WarehouseService();
     private final ValidationService validationService = new ValidationService();
-    private final PaymentService paymentService = new PaymentService();
     private final RefundService refundService = new RefundService();
     private final Map<ReceiptItem, Double> basket = new HashMap<>();
     private Receipt receipt;
@@ -117,12 +115,12 @@ public class RefundPageController extends AbstractTableController<ReceiptItem> {
 
     private void updateTotals(){
         refundAmount = refundService.calculateRefundTotal(basket);
-        totalRefundLabel.setText(paymentService.formatMoney(refundAmount));
+        totalRefundLabel.setText(MoneyUtil.formatMoney(refundAmount));
     }
 
     private void loadLabels(){
-        totalPaidAmountLabel.setText(paymentService.formatMoney(receipt.getPaidAmount()));
-        totalCostLabel.setText(paymentService.formatMoney(receipt.getTotalCost()));
+        totalPaidAmountLabel.setText(MoneyUtil.formatMoney(receipt.getPaidAmount()));
+        totalCostLabel.setText(MoneyUtil.formatMoney(receipt.getTotalCost()));
         dateTimeLabel.setText(DateUtil.formatDateTime(receipt.getDateTime()));
         paymentMethodLabel.setText(receipt.getPaymentMethod().toString());
     }

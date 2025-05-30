@@ -4,7 +4,7 @@ import com.maya_yagan.sms.common.AbstractTableController;
 import com.maya_yagan.sms.common.UserSession;
 import com.maya_yagan.sms.homepage.model.Notification;
 import com.maya_yagan.sms.homepage.service.HomePageService;
-import com.maya_yagan.sms.payment.service.CashBoxService;
+import com.maya_yagan.sms.finance.service.CashBoxService;
 import com.maya_yagan.sms.user.model.Attendance;
 import com.maya_yagan.sms.user.model.User;
 import com.maya_yagan.sms.util.*;

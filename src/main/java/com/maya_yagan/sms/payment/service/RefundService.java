@@ -1,10 +1,11 @@
 package com.maya_yagan.sms.payment.service;
 
+import com.maya_yagan.sms.finance.service.CashBoxService;
 import com.maya_yagan.sms.payment.dao.ReceiptDAO;
 import com.maya_yagan.sms.payment.model.Receipt;
 import com.maya_yagan.sms.payment.model.ReceiptItem;
 import com.maya_yagan.sms.payment.model.ReceiptStatus;
-import com.maya_yagan.sms.payment.model.TransactionType;
+import com.maya_yagan.sms.finance.model.TransactionType;
 import com.maya_yagan.sms.util.CustomException;
 import com.maya_yagan.sms.warehouse.model.Warehouse;
 import com.maya_yagan.sms.warehouse.service.WarehouseService;
@@ -46,7 +47,7 @@ public class RefundService {
                                BigDecimal          refundAmount) {
 
         boolean ok = cashBoxService.recordTransaction(
-                refundAmount.doubleValue(), TransactionType.EXPENSE);
+                refundAmount, TransactionType.EXPENSE);
         if (!ok) {
             throw new CustomException(
                     "Cannot record expense. No open cash box.",

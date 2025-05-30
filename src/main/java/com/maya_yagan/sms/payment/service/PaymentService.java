@@ -1,6 +1,8 @@
 package com.maya_yagan.sms.payment.service;
 
 import com.maya_yagan.sms.common.UserSession;
+import com.maya_yagan.sms.finance.model.TransactionType;
+import com.maya_yagan.sms.finance.service.CashBoxService;
 import com.maya_yagan.sms.payment.creditcard.StripeService;
 import com.maya_yagan.sms.payment.dao.ReceiptDAO;
 import com.maya_yagan.sms.payment.model.*;
@@ -110,11 +112,6 @@ public class PaymentService {
         return receipt;
     }
 
-    public String formatMoney(BigDecimal amount){
-        String unit = settingsService.getSettings().getMoneyUnit();
-        return String.format("%.2f %s", amount, unit);
-    }
-
     public void completeCashPayment(Receipt receipt, Warehouse warehouse, BigDecimal paidAmount){
         if (paidAmount == null)
             throw new CustomException("Received cash amount is required", "MISSING_CASH_RECEIVED");
@@ -127,7 +124,7 @@ public class PaymentService {
         receipt.setChangeGiven(paidAmount.subtract(totalCost));
 
         receipt.setStatus(ReceiptStatus.COMPLETED);
-        boolean ok = cashBoxService.recordTransaction(receipt.getTotalCost().doubleValue(), TransactionType.INCOME);
+        boolean ok = cashBoxService.recordTransaction(receipt.getTotalCost(), TransactionType.INCOME);
         if(!ok)
             throw new CustomException("Cannot record income. No open cash box.", "NO_OPEN_CASH_BOX");
 

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<StackPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.finance.controller.MainFinancePageController">
+
+    <children>
+        <ScrollPane fitToWidth="true">
+            <content>
+                <VBox>
+
+                    <!-- Title and Date Filters -->
+                    <HBox alignment="CENTER_LEFT" spacing="20">
+                        <Label text="Financial Records" textFill="#455079">
+                            <font>
+                                <Font size="30.0" />
+                            </font>
+                        </Label>
+
+                        <Region HBox.hgrow="ALWAYS" />
+
+                        <HBox spacing="10">
+                            <ToggleButton fx:id="todayFilterButton" selected="true" text="Today" />
+                            <ToggleButton fx:id="thisMonthFilter" text="This Month" />
+                            <ToggleButton fx:id="customDateFilter" text="Custom Date" />
+                        </HBox>
+
+                        <padding>
+                            <Insets bottom="20" left="20" right="20" top="20" />
+                        </padding>
+                    </HBox>
+
+
+                    <!-- Summary Cards -->
+                    <HBox alignment="CENTER" spacing="20">
+                        <VBox alignment="CENTER" spacing="5" style="-fx-background-color: #ffffff; -fx-padding: 20; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+                            <Label style="-fx-font-size: 16px; -fx-text-fill: #666666;" text="INCOME" />
+                            <Label fx:id="incomeLabel" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="3200" textFill="#77e45b" />
+                        </VBox>
+                        <VBox alignment="CENTER" spacing="5" style="-fx-background-color: #ffffff; -fx-padding: 20; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+                            <Label style="-fx-font-size: 16px; -fx-text-fill: #666666;" text="PROFIT" />
+                            <Label fx:id="profitLabel" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="2000" />
+                        </VBox>
+                        <VBox alignment="CENTER" spacing="5" style="-fx-background-color: #ffffff; -fx-padding: 20; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+                            <Label style="-fx-font-size: 16px; -fx-text-fill: #666666;" text="OUTCOME" />
+                            <Label fx:id="outcomeLabel" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="1200" textFill="#f45656" />
+                        </VBox>
+                    </HBox>
+
+                    <!-- Line Chart -->
+                    <LineChart fx:id="lineChart" prefHeight="300" prefWidth="800">
+                        <xAxis>
+                            <CategoryAxis side="BOTTOM" />
+                        </xAxis>
+                        <yAxis>
+                            <NumberAxis side="LEFT" />
+                        </yAxis>
+                    </LineChart>
+
+                    <!-- Table View -->
+                    <TitledPane text="Financial Records">
+                        <content>
+                            <TableView fx:id="tableView" prefHeight="200">
+                                <columns>
+                                    <TableColumn fx:id="dateColumn" prefWidth="150" text="Date" />
+                                    <TableColumn fx:id="descriptionColumn" prefWidth="300" text="Description" />
+                                    <TableColumn fx:id="categoryColumn" prefWidth="100" text="Category" />
+                                    <TableColumn fx:id="amountColumn" prefWidth="150" text="Amount" />
+                                </columns>
+                            </TableView>
+                        </content>
+                    </TitledPane>
+
+                </VBox>
+            </content>
+        </ScrollPane>
+    </children>
+</StackPane>

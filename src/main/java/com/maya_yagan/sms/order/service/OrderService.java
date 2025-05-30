@@ -3,8 +3,8 @@ package com.maya_yagan.sms.order.service;
 import com.maya_yagan.sms.order.dao.OrderDAO;
 import com.maya_yagan.sms.order.model.Order;
 import com.maya_yagan.sms.order.model.OrderProduct;
-import com.maya_yagan.sms.payment.model.TransactionType;
-import com.maya_yagan.sms.payment.service.CashBoxService;
+import com.maya_yagan.sms.finance.model.TransactionType;
+import com.maya_yagan.sms.finance.service.CashBoxService;
 import com.maya_yagan.sms.product.model.Product;
 import com.maya_yagan.sms.supplier.model.Supplier;
 import com.maya_yagan.sms.supplier.model.SupplierProduct;
@@ -13,6 +13,7 @@ import com.maya_yagan.sms.common.ValidationService;
 import com.maya_yagan.sms.warehouse.model.Warehouse;
 import com.maya_yagan.sms.warehouse.service.WarehouseService;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.Set;
@@ -106,7 +107,7 @@ public class OrderService {
     public void deliverOrder(Order order, Warehouse warehouse){
         warehouseService.allocateOrder(order, warehouse);
         double totalCost = getPrice(order);
-        boolean ok = cashBoxService.recordTransaction(totalCost, TransactionType.EXPENSE);
+        boolean ok = cashBoxService.recordTransaction(BigDecimal.valueOf(totalCost), TransactionType.EXPENSE);
         if(!ok)
             throw new CustomException(
                     "Cannot record expense. No open cash box.",

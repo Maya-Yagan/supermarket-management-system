@@ -1,8 +1,9 @@
-package com.maya_yagan.sms.payment.model;
+package com.maya_yagan.sms.finance.model;
 
 import com.maya_yagan.sms.user.model.User;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -15,8 +16,8 @@ public class CashBox {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "totalBalance")
-    private double totalBalance;
+    @Column(name = "totalBalance", precision = 12, scale = 2, nullable = false)
+    private BigDecimal totalBalance;
 
     @Column(name = "openedAt")
     private LocalDateTime openedAt;
@@ -45,11 +46,11 @@ public class CashBox {
         return id;
     }
 
-    public double getTotalBalance() {
+    public BigDecimal getTotalBalance() {
         return totalBalance;
     }
 
-    public void setTotalBalance(double totalBalance) {
+    public void setTotalBalance(BigDecimal totalBalance) {
         this.totalBalance = totalBalance;
     }
 

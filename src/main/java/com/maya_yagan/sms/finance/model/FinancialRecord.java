@@ -1,8 +1,9 @@
-package com.maya_yagan.sms.payment.model;
+package com.maya_yagan.sms.finance.model;
 
 import com.maya_yagan.sms.user.model.User;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -17,8 +18,8 @@ public class FinancialRecord {
     @Column(name = "dateTime")
     private LocalDateTime dateTime;
 
-    @Column(name = "amount")
-    private double amount;
+    @Column(name = "amount", precision = 12, scale = 2, nullable = false)
+    private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
@@ -46,11 +47,11 @@ public class FinancialRecord {
         this.dateTime = dateTime;
     }
 
-    public double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 

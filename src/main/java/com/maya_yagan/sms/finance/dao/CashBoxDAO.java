@@ -1,7 +1,7 @@
-package com.maya_yagan.sms.payment.dao;
+package com.maya_yagan.sms.finance.dao;
 
-import com.maya_yagan.sms.payment.model.CashBox;
-import com.maya_yagan.sms.payment.model.CashBoxStatus;
+import com.maya_yagan.sms.finance.model.CashBox;
+import com.maya_yagan.sms.finance.model.CashBoxStatus;
 import com.maya_yagan.sms.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
