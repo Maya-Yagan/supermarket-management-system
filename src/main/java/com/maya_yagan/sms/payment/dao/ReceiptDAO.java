@@ -1,5 +1,6 @@
 package com.maya_yagan.sms.payment.dao;
 
+import com.maya_yagan.sms.finance.model.CashBox;
 import com.maya_yagan.sms.payment.model.Receipt;
 import com.maya_yagan.sms.payment.model.ReceiptItem;
 import com.maya_yagan.sms.payment.model.ReceiptStatus;
@@ -8,6 +9,7 @@ import com.maya_yagan.sms.user.model.User;
 import com.maya_yagan.sms.util.HibernateUtil;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -185,4 +187,17 @@ public class ReceiptDAO {
         }
     }
 
+    public List<Receipt> getReceiptsForPeriod(LocalDateTime from, LocalDateTime to) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery("""
+            SELECT DISTINCT r FROM Receipt r
+            LEFT JOIN FETCH r.items i
+            LEFT JOIN FETCH i.product
+            WHERE r.dateTime BETWEEN :from AND :to
+            """, Receipt.class)
+                    .setParameter("from", from)
+                    .setParameter("to", to)
+                    .list();
+        }
+    }
 }

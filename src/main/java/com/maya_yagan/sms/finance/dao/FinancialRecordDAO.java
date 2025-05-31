@@ -7,6 +7,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -77,6 +78,19 @@ public class FinancialRecordDAO {
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
             e.printStackTrace();
+        }
+    }
+
+    public List<FinancialRecord> getRecordsForPeriod(LocalDateTime from,
+                                                     LocalDateTime to) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery("""
+                FROM FinancialRecord fr
+                WHERE fr.dateTime BETWEEN :from AND :to
+                """, FinancialRecord.class)
+                    .setParameter("from", from)
+                    .setParameter("to",   to)
+                    .list();
         }
     }
 }

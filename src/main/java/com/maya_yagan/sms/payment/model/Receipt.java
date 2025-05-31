@@ -1,5 +1,6 @@
 package com.maya_yagan.sms.payment.model;
 
+import com.maya_yagan.sms.finance.model.CashBox;
 import com.maya_yagan.sms.user.model.User;
 
 import javax.persistence.*;
@@ -46,6 +47,11 @@ public class Receipt {
 
     @Column(name = "totalCost")
     private BigDecimal totalCost;
+
+    @ManyToOne
+    @JoinColumn(name = "cash_box_id")
+    private CashBox cashBox;
+
 
     public Receipt(){}
 
@@ -133,6 +139,14 @@ public class Receipt {
 
     public void setTotalCost(BigDecimal totalCost) {
         this.totalCost = totalCost;
+    }
+
+    public CashBox getCashBox() {
+        return cashBox;
+    }
+
+    public void setCashBox(CashBox cashBox) {
+        this.cashBox = cashBox;
     }
 
     @Override

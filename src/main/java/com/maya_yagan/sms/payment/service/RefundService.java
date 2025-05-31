@@ -47,7 +47,7 @@ public class RefundService {
                                BigDecimal          refundAmount) {
 
         boolean ok = cashBoxService.recordTransaction(
-                refundAmount, TransactionType.EXPENSE);
+                refundAmount, TransactionType.REFUND, "Refund for receipt: " + receipt.getCode());
         if (!ok) {
             throw new CustomException(
                     "Cannot record expense. No open cash box.",

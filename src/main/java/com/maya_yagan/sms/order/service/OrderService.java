@@ -107,7 +107,7 @@ public class OrderService {
     public void deliverOrder(Order order, Warehouse warehouse){
         warehouseService.allocateOrder(order, warehouse);
         double totalCost = getPrice(order);
-        boolean ok = cashBoxService.recordTransaction(BigDecimal.valueOf(totalCost), TransactionType.EXPENSE);
+        boolean ok = cashBoxService.recordTransaction(BigDecimal.valueOf(totalCost), TransactionType.EXPENSE, "Supplier payment for: " + order.getSupplier().getName());
         if(!ok)
             throw new CustomException(
                     "Cannot record expense. No open cash box.",

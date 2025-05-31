@@ -33,6 +33,9 @@ public class FinancialRecord {
     @JoinColumn(name = "issued_by", nullable = false)
     private User issuedBy;
 
+    @Column(name = "description")
+    private String description;
+
     public FinancialRecord() {}
 
     public Long getId() {
@@ -77,6 +80,14 @@ public class FinancialRecord {
 
     public void setIssuedBy(User issuedBy) {
         this.issuedBy = issuedBy;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

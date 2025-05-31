@@ -4,11 +4,9 @@
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
@@ -16,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.finance.controller.MainFinancePageController">
+<StackPane fx:id="stackPane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.finance.controller.MainFinancePageController">
 
     <children>
         <ScrollPane fitToWidth="true">
@@ -33,10 +31,11 @@
 
                         <Region HBox.hgrow="ALWAYS" />
 
-                        <HBox spacing="10">
-                            <ToggleButton fx:id="todayFilterButton" selected="true" text="Today" />
-                            <ToggleButton fx:id="thisMonthFilter" text="This Month" />
-                            <ToggleButton fx:id="customDateFilter" text="Custom Date" />
+                        <HBox>
+                            <ToggleButton fx:id="todayFilterButton" toggleGroup="$filterToggleGroup" selected="true" style="-fx-background-radius: 30 0 0 30;" text="Today" />
+                            <ToggleButton fx:id="thisMonthFilter" toggleGroup="$filterToggleGroup" text="This Month" />
+                            <ToggleButton fx:id="customDateFilter" toggleGroup="$filterToggleGroup" text="Custom Date" />
+                            <ToggleButton fx:id="rangeFilter" toggleGroup="$filterToggleGroup" mnemonicParsing="false" style="-fx-background-radius: 0 30 30 0;" text="Custom Range" />
                         </HBox>
 
                         <padding>
@@ -60,6 +59,7 @@
                             <Label fx:id="outcomeLabel" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="1200" textFill="#f45656" />
                         </VBox>
                     </HBox>
+               <Region prefHeight="78.0" prefWidth="800.0" />
 
                     <!-- Line Chart -->
                     <LineChart fx:id="lineChart" prefHeight="300" prefWidth="800">
@@ -70,20 +70,19 @@
                             <NumberAxis side="LEFT" />
                         </yAxis>
                     </LineChart>
-
-                    <!-- Table View -->
-                    <TitledPane text="Financial Records">
-                        <content>
-                            <TableView fx:id="tableView" prefHeight="200">
-                                <columns>
-                                    <TableColumn fx:id="dateColumn" prefWidth="150" text="Date" />
-                                    <TableColumn fx:id="descriptionColumn" prefWidth="300" text="Description" />
-                                    <TableColumn fx:id="categoryColumn" prefWidth="100" text="Category" />
-                                    <TableColumn fx:id="amountColumn" prefWidth="150" text="Amount" />
-                                </columns>
-                            </TableView>
-                        </content>
-                    </TitledPane>
+               <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                  <children>
+                     <Region prefHeight="100.0" prefWidth="145.0" HBox.hgrow="ALWAYS" />
+                     <Button fx:id="soldProductsButton" mnemonicParsing="false" style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);" styleClass="success" text="Sold Products" />
+                     <Button fx:id="expenseButton" mnemonicParsing="false" style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);" styleClass="danger" text="Expenses" />
+                     <Button fx:id="soldReceiptsButton" mnemonicParsing="false" style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);" styleClass="success" text="Sold Receipts" />
+                     <Button fx:id="refundedButton" mnemonicParsing="false" style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);" styleClass="danger" text="Refunded Receipts" />
+                     <Region prefHeight="100.0" prefWidth="144.0" HBox.hgrow="ALWAYS" />
+                  </children>
+                  <padding>
+                     <Insets top="30.0" />
+                  </padding>
+               </HBox>
 
                 </VBox>
             </content>

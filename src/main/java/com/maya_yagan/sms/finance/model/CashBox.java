@@ -1,10 +1,12 @@
 package com.maya_yagan.sms.finance.model;
 
+import com.maya_yagan.sms.payment.model.Receipt;
 import com.maya_yagan.sms.user.model.User;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,6 +41,10 @@ public class CashBox {
     @ManyToOne
     @JoinColumn(name = "closed_by")
     private User closedBy;
+
+    @OneToMany(mappedBy = "cashBox", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Receipt> receipts = new ArrayList<>();
+
 
     public CashBox(){}
 
@@ -100,6 +106,14 @@ public class CashBox {
 
     public void setClosedBy(User closedBy) {
         this.closedBy = closedBy;
+    }
+
+    public List<Receipt> getReceipts() {
+        return receipts;
+    }
+
+    public void setReceipts(List<Receipt> receipts) {
+        this.receipts = receipts;
     }
 
     @Override

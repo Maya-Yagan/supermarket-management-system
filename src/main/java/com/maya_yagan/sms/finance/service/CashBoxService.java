@@ -95,7 +95,7 @@ public class CashBoxService {
      * @param type The type of the transaction (INCOME or EXPENSE).
      * @return true if the record was saved, false otherwise.
      */
-    public boolean recordTransaction(BigDecimal amount, TransactionType type) {
+    public boolean recordTransaction(BigDecimal amount, TransactionType type, String description) {
         CashBox current = cashBoxDAO.getOpenCashBox();
         if (current == null)
             throw new CustomException("No open cash box.\nPlease open the cash box first.", "NO_OPEN_CASH_BOX");
@@ -105,6 +105,7 @@ public class CashBoxService {
         record.setAmount(amount);
         record.setType(type);
         record.setCashBox(current);
+        record.setDescription(description);
         currentUser = new UserDAO().getUserById(currentUser.getId());
         record.setIssuedBy(currentUser);
 

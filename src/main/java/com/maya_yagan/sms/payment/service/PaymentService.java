@@ -1,6 +1,7 @@
 package com.maya_yagan.sms.payment.service;
 
 import com.maya_yagan.sms.common.UserSession;
+import com.maya_yagan.sms.finance.model.CashBox;
 import com.maya_yagan.sms.finance.model.TransactionType;
 import com.maya_yagan.sms.finance.service.CashBoxService;
 import com.maya_yagan.sms.payment.creditcard.StripeService;
@@ -29,7 +30,6 @@ import java.util.UUID;
 public class PaymentService {
 
     private final WarehouseService warehouseService = new WarehouseService();
-    private final SettingsService settingsService = new SettingsService();
     private final CashBoxService cashBoxService = new CashBoxService();
     private final ReceiptDAO receiptDAO = new ReceiptDAO();
 
@@ -91,6 +91,9 @@ public class PaymentService {
         User cashier = UserSession.getInstance().getCurrentUser();
         cashier = new UserDAO().getUserById(cashier.getId());
         Receipt receipt = new Receipt(code, LocalDateTime.now(), cashier, method);
+        CashBox current = cashBoxService.getCurrentOpenCashBox();
+        if (current == null)
+            throw new CustomException("No open cash box.\nPlease open the cash box first.", "NO_OPEN_CASH_BOX");
 
         List<ReceiptItem> items = new ArrayList<>();
         for (var entry : basket.entrySet()) {
@@ -109,6 +112,7 @@ public class PaymentService {
         }
         receipt.setTotalCost(calculateTotalCost(basket));
         receipt.setItems(items);
+        receipt.setCashBox(current);
         return receipt;
     }
 
@@ -124,7 +128,7 @@ public class PaymentService {
         receipt.setChangeGiven(paidAmount.subtract(totalCost));
 
         receipt.setStatus(ReceiptStatus.COMPLETED);
-        boolean ok = cashBoxService.recordTransaction(receipt.getTotalCost(), TransactionType.INCOME);
+        boolean ok = cashBoxService.recordTransaction(receipt.getTotalCost(), TransactionType.INCOME, "Sale completed for receipt: " + receipt.getCode());
         if(!ok)
             throw new CustomException("Cannot record income. No open cash box.", "NO_OPEN_CASH_BOX");
 

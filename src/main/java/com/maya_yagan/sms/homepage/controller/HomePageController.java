@@ -98,6 +98,11 @@ public class HomePageController implements Initializable {
         navigateToPage("/view/settings/SettingsPage.fxml", "Settings Page");
     }
 
+    private void goToFinance(){
+        navigateToPage("/view/finance/MainFinancePage.fxml", "Finance Page");
+    }
+
+
     private void logout() {
         UserSession.getInstance().clear();
         ViewUtil.changeScene(
@@ -124,6 +129,7 @@ public class HomePageController implements Initializable {
                 new Sidebar.SidebarItem("Supplier Management", Feather.BOX, this::gotToSupplierManagement, null),
                 new Sidebar.SidebarItem("Order Management", Feather.PEN_TOOL, this::goToOrderManagement, null),
                 new Sidebar.SidebarItem("Payment Page", Feather.SHOPPING_CART, this::goToPayment, null),
+                new Sidebar.SidebarItem("Financial Records Tracking", Feather.BOOK_OPEN, this::goToFinance, null),
                 new Sidebar.SidebarItem("Log out", Feather.LOG_OUT, this::logout, null)
         );
         sidebar = Sidebar.createSidebar(sidebarItems, toggleButton);
