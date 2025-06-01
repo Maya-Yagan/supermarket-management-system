@@ -76,9 +76,9 @@ public class SupplierManagementController extends AbstractTableController<Suppli
     @Override
     protected List<ContextMenuUtil.MenuItemConfig<Supplier>> menuItemsFor(Supplier supplier){
         return List.of(
-                new ContextMenuUtil.MenuItemConfig<>("Delete Supplier", (item, row) -> handleDeleteAction(item)),
+                new ContextMenuUtil.MenuItemConfig<>("View Details", (item, row) -> handleDetailsAction(item)),
                 new ContextMenuUtil.MenuItemConfig<>("Edit Supplier", (item, row) -> handleEditAction(item)),
-                new ContextMenuUtil.MenuItemConfig<>("View Details", (item, row) -> handleDetailsAction(item))
+                new ContextMenuUtil.MenuItemConfig<>("Delete Supplier", (item, row) -> handleDeleteAction(item))
         );
     }
 

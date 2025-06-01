@@ -33,7 +33,7 @@ public class WarehouseProductsController extends AbstractTableController<Product
     @FXML private TableColumn<ProductWarehouse, Float> priceColumn;
     @FXML private Button backButton, orderButton;
     @FXML private MenuButton categoryMenuButton;
-    @FXML private Label label1, label2;
+    @FXML private Label label1;
     @FXML private StackPane stackPane;
 
     private String currentCategory = "All Categories";
@@ -222,8 +222,8 @@ public class WarehouseProductsController extends AbstractTableController<Product
     private void setupDynamicLayoutAdjustment(){
         ViewUtil.setupDynamicLayoutAdjustment(
                 categoryMenuButton,
-                Arrays.asList(orderButton, label1, label2),
-                Arrays.asList(10.0, 140.0, 140.0)
+                Arrays.asList(orderButton, label1),
+                Arrays.asList(10.0, 140.0)
         );
     }
 

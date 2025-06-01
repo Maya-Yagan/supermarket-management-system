@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.String?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import org.kordamp.ikonli.javafx.*?>
 
-<StackPane fx:id="stackPane" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.supplier.controller.SupplierManagementController">
+<StackPane fx:id="stackPane" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.supplier.controller.SupplierManagementController">
    <children>
       <AnchorPane fx:id="AnchorPane">
          <children>
@@ -32,12 +28,11 @@
                   <Font size="24.0" />
                </font>
             </Text>
-            <Label contentDisplay="LEFT" graphicTextGap="5" layoutX="50.0" layoutY="78.0" text="To display supplier products, double-click a row" textFill="#a3a1a1">
+            <Label contentDisplay="LEFT" graphicTextGap="5" layoutX="50.0" layoutY="86.0" text="Right-click a row for more actions" textFill="#a3a1a1">
                <graphic>
                   <org.kordamp.ikonli.javafx.FontIcon iconLiteral="fth-info" />
                </graphic>
             </Label>
-            <Label layoutX="50.0" layoutY="98.0" text="To edit supplier info, right-click a row" textFill="#a3a1a1" />
             <Button fx:id="addSupplierButton" layoutX="629.0" layoutY="78.0" mnemonicParsing="false" styleClass="accent" text="Add Supplier" AnchorPane.rightAnchor="50.33333333333333" AnchorPane.topAnchor="78.0" />
             <Button fx:id="makeOrderButton" layoutX="499.0" layoutY="78.0" mnemonicParsing="false" styleClass="accent" text="Make an Order" AnchorPane.rightAnchor="168.33333333333331" AnchorPane.topAnchor="78.0" />
          </children>

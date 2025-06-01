@@ -84,12 +84,12 @@ public class OrderManagementController extends AbstractTableController<Order> {
         return List.of(
                 new ContextMenuUtil.MenuItemConfig<>("Order Details", (item, row) ->
                         handleDetailsAction(row)),
-                new ContextMenuUtil.MenuItemConfig<>("Delete Order", (item, row) ->
-                        handleDeleteAction(row)),
                 new ContextMenuUtil.MenuItemConfig<>("Edit Order", (item,  row) ->
                         handleEditAction(row), notDelivered),
                 new ContextMenuUtil.MenuItemConfig<>("Mark as Delivered", (item, row) ->
-                        handleDeliveryAction(row), notDelivered)
+                        handleDeliveryAction(row), notDelivered),
+                new ContextMenuUtil.MenuItemConfig<>("Delete Order", (item, row) ->
+                        handleDeleteAction(row))
         );
     }
 

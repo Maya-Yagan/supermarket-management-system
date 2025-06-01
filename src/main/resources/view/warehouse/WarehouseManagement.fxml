@@ -27,7 +27,7 @@
                 <Font size="26.0" />
              </font>
           </Text>
-          <Label layoutX="177.0" layoutY="84.0" text="Right-click a cell for more actions." textFill="#a3a1a1" AnchorPane.leftAnchor="177.0" AnchorPane.topAnchor="84.0">
+          <Label layoutX="177.0" layoutY="84.0" text="Right-click a row for more actions." textFill="#a3a1a1" AnchorPane.leftAnchor="177.0" AnchorPane.topAnchor="84.0">
                 <graphic>
                     <org.kordamp.ikonli.javafx.FontIcon iconLiteral="fth-info" />
                 </graphic>

@@ -31,6 +31,7 @@ public class  ProductManagementController extends AbstractTableController<Produc
     @FXML private Button addProductButton, addCategoryButton, editCategoriesButton;
     @FXML private MenuButton categoryMenuButton;
     @FXML private StackPane stackPane;
+    @FXML private Label infoLabel;
 
 
     private ModalPane modalPane;
@@ -145,8 +146,8 @@ public class  ProductManagementController extends AbstractTableController<Produc
     private void setupDynamicLayoutAdjustment() {
         ViewUtil.setupDynamicLayoutAdjustment(
                 categoryMenuButton,
-                Arrays.asList(addCategoryButton, editCategoriesButton, addProductButton),
-                Arrays.asList(10.0, 130.0, 260.0)
+                Arrays.asList(addCategoryButton, editCategoriesButton, addProductButton, infoLabel),
+                Arrays.asList(10.0, 130.0, 260.0, 390.0)
         );
     }
 }
