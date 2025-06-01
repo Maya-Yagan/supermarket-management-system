@@ -4,28 +4,35 @@ import atlantafx.base.controls.ModalPane;
 import com.maya_yagan.sms.finance.service.FinanceService;
 import com.maya_yagan.sms.util.DateUtil;
 import com.maya_yagan.sms.util.ViewUtil;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.util.StringConverter;
 
+import java.math.BigDecimal;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import static com.maya_yagan.sms.util.MoneyUtil.formatMoney;
 
+/**
+ * @author Maya Yagan
+ */
 public class MainFinancePageController implements Initializable {
     @FXML private Label incomeLabel, profitLabel, outcomeLabel;
-    @FXML private LineChart<?, ?> lineChart;
+    @FXML private LineChart<Number, Number> lineChart;
     @FXML private ToggleButton todayFilterButton, thisMonthFilter, customDateFilter, rangeFilter;
     @FXML private Button soldProductsButton, expenseButton, soldReceiptsButton, refundedButton;
     @FXML private StackPane stackPane;
@@ -47,6 +54,8 @@ public class MainFinancePageController implements Initializable {
         thisMonthFilter.setToggleGroup(filterToggleGroup);
         customDateFilter.setToggleGroup(filterToggleGroup);
         rangeFilter.setToggleGroup(filterToggleGroup);
+        thisMonthFilter.setSelected(true);
+        selectedPeriodKind = SummaryTableController.PeriodKind.MONTH;
 
         updateTotalsForCurrentFilter();
         setupEventHandlers();
@@ -221,7 +230,7 @@ public class MainFinancePageController implements Initializable {
 
         switch (selectedPeriodKind) {
             case TODAY -> rows = financeService.getToday();
-            case MONTH -> rows = financeService.getMonth(2025, 5);
+            case MONTH -> rows = financeService.getMonth(LocalDate.now().getYear(), LocalDate.now().getMonthValue());
             case DATE -> {
                 if(selectedDate != null)
                     rows = financeService.getDate(selectedDate);
@@ -241,5 +250,109 @@ public class MainFinancePageController implements Initializable {
         incomeLabel.setText(formatMoney(totals.income()));
         outcomeLabel.setText(formatMoney(totals.outcome()));
         profitLabel.setText(formatMoney(totals.profit()));
+
+        updateChart(rows);
+    }
+
+    private void updateChart(FinanceService.SeparatedRows rows){
+        lineChart.getData().clear();
+
+        Map<LocalDate, BigDecimal> incomeMap = financeService.groupByDate(rows.receipts());
+        Map<LocalDate, BigDecimal> outcomeMap = financeService.groupByDate(rows.expenses());
+        Map<LocalDate, BigDecimal> refundMap = financeService.groupByDate(rows.refunds());
+
+        for (Map.Entry<LocalDate, BigDecimal> refund : refundMap.entrySet()) {
+            outcomeMap.merge(refund.getKey(), refund.getValue(), BigDecimal::add);
+        }
+
+        XYChart.Series<Number, Number> incomeSeries = new XYChart.Series<>();
+        incomeSeries.setName("Income");
+
+        XYChart.Series<Number, Number> outcomeSeries = new XYChart.Series<>();
+        outcomeSeries.setName("Outcome");
+
+        incomeMap.forEach((date, amount) ->
+                incomeSeries.getData().add(new XYChart.Data<>(date.toEpochDay(), amount))
+        );
+
+        outcomeMap.forEach((date, amount) ->
+                outcomeSeries.getData().add(new XYChart.Data<>(date.toEpochDay(), amount))
+        );
+
+        lineChart.getData().addAll(incomeSeries, outcomeSeries);
+        applySeriesColors();
+        formatXAxisAsDates();
+    }
+
+    private void applySeriesColors() {
+        Platform.runLater(() -> {
+            for (int i = 0; i < lineChart.getData().size(); i++) {
+                XYChart.Series<?, ?> series = lineChart.getData().get(i);
+                String color = (i == 0) ? "green" : "red";
+
+                Node line = series.getNode().lookup(".chart-series-line");
+                if (line != null) {
+                    line.setStyle("-fx-stroke: " + color + ";");
+                }
+
+                for (XYChart.Data<?, ?> data : series.getData()) {
+                    Node node = data.getNode();
+                    if (node != null) {
+                        node.setStyle("-fx-background-color: " + color + ", white;");
+                    }
+                }
+
+                Set<Node> legendItems = lineChart.lookupAll(".chart-legend-item");
+                int finalI = i;
+                int[] count = {0}; // Helper to track series index
+                legendItems.forEach(item -> {
+                    if (count[0] == finalI) {
+                        Node symbol = item.lookup(".chart-legend-item-symbol");
+                        if (symbol != null) {
+                            symbol.setStyle("-fx-background-color: " + color + ", white;");
+                        }
+                    }
+                    count[0]++;
+                });
+            }
+        });
+    }
+
+
+    private void formatXAxisAsDates() {
+        NumberAxis xAxis = (NumberAxis) lineChart.getXAxis();
+
+        // Collect all x-values (epoch days) from the data
+        long minEpoch = Long.MAX_VALUE;
+        long maxEpoch = Long.MIN_VALUE;
+
+        for (XYChart.Series<Number, Number> series : lineChart.getData()) {
+            for (XYChart.Data<Number, Number> data : series.getData()) {
+                long epoch = data.getXValue().longValue();
+                if (epoch < minEpoch) minEpoch = epoch;
+                if (epoch > maxEpoch) maxEpoch = epoch;
+            }
+        }
+
+        if (minEpoch == Long.MAX_VALUE || maxEpoch == Long.MIN_VALUE) return; // no data
+
+        // Set axis bounds and tick unit
+        xAxis.setAutoRanging(false);
+        xAxis.setLowerBound(minEpoch);
+        xAxis.setUpperBound(maxEpoch);
+        xAxis.setTickUnit(1); // one tick per day
+
+        // Set formatter to convert epoch day to date string
+        xAxis.setTickLabelFormatter(new StringConverter<Number>() {
+            @Override
+            public String toString(Number object) {
+                return LocalDate.ofEpochDay(object.longValue()).toString();
+            }
+
+            @Override
+            public Number fromString(String string) {
+                return LocalDate.parse(string).toEpochDay();
+            }
+        });
     }
 }

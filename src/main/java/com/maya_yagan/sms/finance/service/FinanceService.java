@@ -14,6 +14,9 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.TreeMap;
 
 public class FinanceService {
     private final FinancialRecordDAO financialRecordDAO = new FinancialRecordDAO();
@@ -132,6 +135,16 @@ public class FinanceService {
             List<FinanceRow> expenses,
             List<FinanceRow> refunds) {
     }
+
+    public Map<LocalDate, BigDecimal> groupByDate(List<FinanceRow> rows) {
+        return rows.stream()
+                .collect(Collectors.groupingBy(
+                        row -> row.getDateTime().toLocalDate(),
+                        TreeMap::new,
+                        Collectors.reducing(BigDecimal.ZERO, FinanceRow::getAmount, BigDecimal::add)
+                ));
+    }
+
 
     public enum PeriodKind { TODAY, MONTH, DATE, RANGE }
 }

@@ -32,7 +32,7 @@
                         <Region HBox.hgrow="ALWAYS" />
 
                         <HBox>
-                            <ToggleButton fx:id="todayFilterButton" toggleGroup="$filterToggleGroup" selected="true" style="-fx-background-radius: 30 0 0 30;" text="Today" />
+                            <ToggleButton fx:id="todayFilterButton" toggleGroup="$filterToggleGroup" style="-fx-background-radius: 30 0 0 30;" text="Today" />
                             <ToggleButton fx:id="thisMonthFilter" toggleGroup="$filterToggleGroup" text="This Month" />
                             <ToggleButton fx:id="customDateFilter" toggleGroup="$filterToggleGroup" text="Custom Date" />
                             <ToggleButton fx:id="rangeFilter" toggleGroup="$filterToggleGroup" mnemonicParsing="false" style="-fx-background-radius: 0 30 30 0;" text="Custom Range" />
@@ -64,10 +64,10 @@
                     <!-- Line Chart -->
                     <LineChart fx:id="lineChart" prefHeight="300" prefWidth="800">
                         <xAxis>
-                            <CategoryAxis side="BOTTOM" />
+                            <NumberAxis fx:id="xAxis" side="BOTTOM" />
                         </xAxis>
                         <yAxis>
-                            <NumberAxis side="LEFT" />
+                            <NumberAxis fx:id="yAxis" side="LEFT" />
                         </yAxis>
                     </LineChart>
                <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
