@@ -244,4 +244,20 @@ public class ValidationService {
                     "GENERAL"
             );
     }
+
+    public void validateTransfer(int availableInSource,
+                                 int requestedAmount,
+                                 int freeSpaceInTarget) {
+
+        if (requestedAmount <= 0)
+            throw new CustomException("Amount must be greater than 0", "INVALID_NUMBER");
+
+        if (requestedAmount > availableInSource)
+            throw new CustomException("You can’t transfer more than the current stock",
+                    "INVALID_NUMBER");
+
+        if (requestedAmount > freeSpaceInTarget)
+            throw new CustomException("The destination inventory has insufficient capacity",
+                    "INVALID_NUMBER");
+    }
 }

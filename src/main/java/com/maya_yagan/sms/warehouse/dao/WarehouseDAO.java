@@ -203,6 +203,63 @@ public class WarehouseDAO {
         }
     }
 
+    public void transferProduct(int productId, int amount,
+                                int sourceWarehouseId, int targetWarehouseId) {
+
+        if (sourceWarehouseId == targetWarehouseId)
+            throw new CustomException("Source and destination warehouses are the same",
+                    "INVALID_TARGET");
+
+        Transaction tx = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            tx = session.beginTransaction();
+
+            Warehouse source = session.get(Warehouse.class, sourceWarehouseId);
+            Warehouse target = session.get(Warehouse.class, targetWarehouseId);
+            Product   product = session.get(Product.class, productId);
+
+            if (source == null || target == null || product == null)
+                throw new CustomException("Source/Target warehouse or product not found", "NOT_FOUND");
+
+            Hibernate.initialize(source.getProductWarehouses());
+            Hibernate.initialize(target.getProductWarehouses());
+
+            // ---- remove from SOURCE ---------------------------------------------------------------
+            ProductWarehouse sourcePw = source.getProductWarehouses().stream()
+                    .filter(pw -> pw.getProduct().getId() == productId)
+                    .findFirst()
+                    .orElseThrow(() -> new CustomException("Product not in source warehouse",
+                            "NOT_FOUND"));
+
+            int newSourceAmount = sourcePw.getAmount() - amount;
+            if (newSourceAmount == 0) {
+                source.getProductWarehouses().remove(sourcePw);
+                session.delete(sourcePw);
+            } else {
+                sourcePw.setAmount(newSourceAmount);
+            }
+
+            // ---- add to TARGET --------------------------------------------------------------------
+            ProductWarehouse targetPw = target.getProductWarehouses().stream()
+                    .filter(pw -> pw.getProduct().getId() == productId)
+                    .findFirst()
+                    .orElseGet(() -> {
+                        ProductWarehouse pw = new ProductWarehouse(target, product, 0);
+                        target.getProductWarehouses().add(pw);
+                        return pw;
+                    });
+            targetPw.setAmount(targetPw.getAmount() + amount);
+
+            session.merge(source);
+            session.merge(target);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            throw e;
+        }
+    }
+
+
     /**
      * Deletes a warehouse by its unique identifier.
      * 

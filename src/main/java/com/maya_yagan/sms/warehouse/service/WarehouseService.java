@@ -189,7 +189,26 @@ public class WarehouseService {
 
     public void addProductToWarehouse(Warehouse warehouse, Product product, int amount){
         warehouseDAO.addProductToWarehouse(warehouse.getId(), product.getId(), amount);
-
     }
 
+    public void transferProduct(Warehouse           sourceWarehouse,
+                                ProductWarehouse     sourcePw,
+                                int                  amount,
+                                Warehouse            targetWarehouse) {
+
+        if (sourceWarehouse.getId() == targetWarehouse.getId())
+            throw new CustomException("Please choose a different destination warehouse", "GENERAL");
+
+        int freeSpaceInTarget = targetWarehouse.getCapacity()
+                - calculateTotalProducts(targetWarehouse);
+
+        validationService.validateTransfer(sourcePw.getAmount(),
+                amount,
+                freeSpaceInTarget);
+
+        warehouseDAO.transferProduct(sourcePw.getProduct().getId(),
+                amount,
+                sourceWarehouse.getId(),
+                targetWarehouse.getId());
+    }
 }

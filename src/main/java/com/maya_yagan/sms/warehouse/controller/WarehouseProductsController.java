@@ -16,6 +16,7 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 
@@ -87,10 +88,12 @@ public class WarehouseProductsController extends AbstractTableController<Product
     @Override
     protected List<ContextMenuUtil.MenuItemConfig<ProductWarehouse>> menuItemsFor(ProductWarehouse pw){
         return List.of(
-                new ContextMenuUtil.MenuItemConfig<>("Delete Product",
-                        (item, row) -> handleDeleteAction(item)),
                 new ContextMenuUtil.MenuItemConfig<>("Update Amount",
-                        (item, row) -> handleAmountUpdateAction(item))
+                        (item, row) -> handleAmountUpdateAction(item)),
+                new ContextMenuUtil.MenuItemConfig<>("Transfer Product",
+                        (item, row) -> handleTransferAction(item)),
+                new ContextMenuUtil.MenuItemConfig<>("Delete Product",
+                        (item, row) -> handleDeleteAction(item))
         );
     }
 
@@ -155,6 +158,66 @@ public class WarehouseProductsController extends AbstractTableController<Product
                 }
         );
     }
+
+    private void handleTransferAction(ProductWarehouse pw){
+        // --- UI -----------------------------------------------------------------
+        TextField amountField = new TextField(String.valueOf(pw.getAmount()));
+        amountField.setPromptText("Amount");
+
+        MenuButton inventoryMenu = new MenuButton("Choose inventory");
+        var allWarehouses = warehouseService.getAllWarehouses()
+                .stream()
+                .filter(w -> w.getId() != warehouse.getId())   // exclude current
+                .toList();
+
+        // keep a reference to the chosen warehouse
+        final Warehouse[] chosenTarget = new Warehouse[1];
+
+        for (Warehouse w : allWarehouses) {
+            MenuItem mi = new MenuItem(w.getName());
+            mi.setOnAction(e -> {
+                inventoryMenu.setText(w.getName());
+                chosenTarget[0] = w;
+            });
+            inventoryMenu.getItems().add(mi);
+        }
+
+        GridPane content = new GridPane();
+        content.setHgap(15);
+        content.setVgap(10);
+        content.addRow(0, new Label("Amount:"), amountField);
+        content.addRow(1, new Label("Destination:"), inventoryMenu);
+
+        // --- Dialog -----------------------------------------------------------------
+        Optional<ButtonType> result =
+                ViewUtil.showCustomDialog("Transfer Product",
+                        "Transfer " + pw.getProduct().getName(),
+                        content);
+
+        if (result.isPresent() && result.get() == ButtonType.OK){
+            try {
+                int amt = Integer.parseInt(amountField.getText().trim());
+                Warehouse dest = chosenTarget[0];
+
+                if (dest == null)
+                    throw new CustomException("Please select a destination warehouse", "NOT_FOUND");
+
+                warehouseService.transferProduct(warehouse, pw, amt, dest);
+
+                refresh();
+                AlertUtil.showAlert(Alert.AlertType.INFORMATION,
+                        "Success",
+                        "Product transferred successfully.");
+
+            } catch (NumberFormatException ex){
+                AlertUtil.showAlert(Alert.AlertType.ERROR, "Invalid amount",
+                        "Please enter a valid integer.");
+            } catch (CustomException ex){
+                ExceptionHandler.handleException(ex);
+            }
+        }
+    }
+
 
     private void setupDynamicLayoutAdjustment(){
         ViewUtil.setupDynamicLayoutAdjustment(
