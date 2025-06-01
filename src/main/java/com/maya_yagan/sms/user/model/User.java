@@ -42,7 +42,7 @@ public class User {
     private String password;
     @Column(name = "startDate")
     private LocalDate startDate;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "user_role",
         joinColumns = @JoinColumn(name = "user_id"),

@@ -4,11 +4,13 @@ import atlantafx.base.theme.Styles;
 import com.maya_yagan.sms.component.Sidebar;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import com.maya_yagan.sms.common.UserSession;
 import com.maya_yagan.sms.finance.service.CashBoxService;
+import com.maya_yagan.sms.user.model.User;
+import com.maya_yagan.sms.user.service.AuthorizationService;
 import com.maya_yagan.sms.util.AlertUtil;
 import com.maya_yagan.sms.util.ViewUtil;
 import javafx.application.Platform;
@@ -37,6 +39,7 @@ public class HomePageController implements Initializable {
     private VBox sidebar;
     private boolean isSidebarVisible = true;
     private final CashBoxService cashBoxService= new CashBoxService();
+    private final AuthorizationService authorizationService = new AuthorizationService();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -115,23 +118,45 @@ public class HomePageController implements Initializable {
     private void initializeSidebar(){
         if(sidebar != null) return;
         var toggleButton = new Button(null, new FontIcon(Feather.MENU));
-        toggleButton.getStyleClass().addAll(
-            Styles.BUTTON_ICON, Styles.ACCENT
-        );
+        toggleButton.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.ACCENT);
         toggleButton.setStyle("-fx-background-color: #34495e; -fx-text-fill: white;");
         toggleButton.setOnAction(e -> toggleSidebar());
-        List<Sidebar.SidebarItem> sidebarItems = List.of(
-                new Sidebar.SidebarItem("Home Page", Feather.HOME, this::gotToHomePage, null),
-                new Sidebar.SidebarItem("Settings", Feather.SETTINGS, this::gotToSettings, null),
-                new Sidebar.SidebarItem("Product Management", Feather.SHOPPING_BAG, this::goToProductManagement, null),
-                new Sidebar.SidebarItem("Employee Management", Feather.USERS, this::goToUserManagement, null),
-                new Sidebar.SidebarItem("Inventory Management", Feather.DISC, this::goToWarehouseManagement, null),
-                new Sidebar.SidebarItem("Supplier Management", Feather.BOX, this::gotToSupplierManagement, null),
-                new Sidebar.SidebarItem("Order Management", Feather.PEN_TOOL, this::goToOrderManagement, null),
-                new Sidebar.SidebarItem("Payment Page", Feather.SHOPPING_CART, this::goToPayment, null),
-                new Sidebar.SidebarItem("Financial Records Tracking", Feather.BOOK_OPEN, this::goToFinance, null),
-                new Sidebar.SidebarItem("Log out", Feather.LOG_OUT, this::logout, null)
-        );
+
+        User currentUser = UserSession.getInstance().getCurrentUser();
+        Set<AuthorizationService.Module> allowedModules = authorizationService.getAllowedModules(currentUser);
+        List<String> roleNames = currentUser.getRoles().stream()
+                .map(role -> role.getName().toLowerCase())
+                .toList();
+
+        List<Sidebar.SidebarItem> sidebarItems = new ArrayList<>();
+        sidebarItems.add(new Sidebar.SidebarItem("Home Page", Feather.HOME, this::gotToHomePage, null));
+
+        if (roleNames.contains("manager"))
+            sidebarItems.add(new Sidebar.SidebarItem("Settings", Feather.SETTINGS, this::gotToSettings, null));
+
+        if (allowedModules.contains(AuthorizationService.Module.PRODUCT))
+            sidebarItems.add(new Sidebar.SidebarItem("Product Management", Feather.SHOPPING_BAG, this::goToProductManagement, null));
+
+        if (allowedModules.contains(AuthorizationService.Module.EMPLOYEE))
+            sidebarItems.add(new Sidebar.SidebarItem("Employee Management", Feather.USERS, this::goToUserManagement, null));
+
+        if (allowedModules.contains(AuthorizationService.Module.INVENTORY))
+            sidebarItems.add(new Sidebar.SidebarItem("Inventory Management", Feather.DISC, this::goToWarehouseManagement, null));
+
+        if (allowedModules.contains(AuthorizationService.Module.SUPPLIER))
+            sidebarItems.add(new Sidebar.SidebarItem("Supplier Management", Feather.BOX, this::gotToSupplierManagement, null));
+
+        if (allowedModules.contains(AuthorizationService.Module.ORDER))
+            sidebarItems.add(new Sidebar.SidebarItem("Order Management", Feather.PEN_TOOL, this::goToOrderManagement, null));
+
+        if (allowedModules.contains(AuthorizationService.Module.PAYMENT))
+            sidebarItems.add(new Sidebar.SidebarItem("Payment Page", Feather.SHOPPING_CART, this::goToPayment, null));
+
+        if (allowedModules.contains(AuthorizationService.Module.FINANCE))
+            sidebarItems.add(new Sidebar.SidebarItem("Financial Records Tracking", Feather.BOOK_OPEN, this::goToFinance, null));
+
+        sidebarItems.add(new Sidebar.SidebarItem("Log out", Feather.LOG_OUT, this::logout, null));
+
         sidebar = Sidebar.createSidebar(sidebarItems, toggleButton);
         if(!rootLayout.getChildren().contains(sidebar))
             rootLayout.getChildren().add(0, sidebar);
