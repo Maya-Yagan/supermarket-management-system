@@ -33,9 +33,11 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import org.controlsfx.control.SearchableComboBox;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class PaymentPageController extends AbstractTableController<ProductWarehouse> {
@@ -46,17 +48,19 @@ public class PaymentPageController extends AbstractTableController<ProductWareho
     @FXML private TableColumn<ProductWarehouse, Float> unitPriceColumn;
     @FXML private TableColumn<ProductWarehouse, String> productColumn;
 
+    @FXML private ScrollPane scrollPane;
     @FXML private StackPane stackPane;
     @FXML private SearchableComboBox<String> nameComboBox;
     @FXML private SearchableComboBox<Category> categoryComboBox;
     @FXML private TextField barcodeField;
     @FXML private GridPane gridPane;
     @FXML private ImageView barcodeImageView;
-    @FXML private Button  creditButton, cashButton, addButton, printButton, returnButton;
+    @FXML private Button  creditButton, cashButton, addButton, returnButton;
     @FXML private Text addressText;
     @FXML private MenuButton inventoryMenuButton;
     @FXML private Label dateLabel, employeeNameLabel, receiptNumberLabel, taxLabel,
-                        subtotalLabel, totalCostLabel, marketNameLabel, phoneLabel;
+                        subtotalLabel, totalCostLabel, marketNameLabel, phoneLabel,
+                        paidAmountLabel, changeGivenLabel, paymentMethodLabel, receiptStatusLabel;
 
     private static final String STYLE = "-fx-font-weight: bold;";
     private static final String ALL_CATEGORIES = "All Categories";
@@ -77,6 +81,7 @@ public class PaymentPageController extends AbstractTableController<ProductWareho
     private String currentWarehouse = "";
     private Warehouse selectedWarehouse;
     private ModalPane modalPane;
+    private Receipt currentReceipt;
 
     private void loadInventories(){
         MenuButtonUtil.populateMenuButton(
@@ -219,7 +224,6 @@ public class PaymentPageController extends AbstractTableController<ProductWareho
                         (RefundPageController controller) -> {
                             controller.setReceipt(receipt);
                             controller.setModalPane(modalPane);
-                            controller.setOnCloseAction(() -> {}); //nothing for now
                         }, modalPane);
                     }
                 )
@@ -243,6 +247,8 @@ public class PaymentPageController extends AbstractTableController<ProductWareho
                         receiptNumberLabel.getText(),
                         PaymentMethod.CARD
                 );
+                currentReceipt = receipt;
+                updateReceiptLabels(currentReceipt, false);
 
                 ViewUtil.displayModalPaneView(
                         "/view/payment/CreditCardPayment.fxml",
@@ -252,8 +258,9 @@ public class PaymentPageController extends AbstractTableController<ProductWareho
                             controller.setPaymentResultListener(() ->
                                 Platform.runLater(() -> {
                                     modalPane.hide();
+                                    updateReceiptLabels(currentReceipt, true);
+                                    printReceipt();
                                     refreshAfterPayment();
-
                                 }
                             ));
                         }, modalPane);
@@ -273,6 +280,8 @@ public class PaymentPageController extends AbstractTableController<ProductWareho
                         receiptNumberLabel.getText(),
                         PaymentMethod.CASH
                 );
+                currentReceipt = receipt;
+                updateReceiptLabels(currentReceipt, false);
 
                 ViewUtil.showDialog(
                         "/view/payment/CashPayment.fxml",
@@ -281,7 +290,11 @@ public class PaymentPageController extends AbstractTableController<ProductWareho
                             controller.setCurrentInventory(selectedWarehouse);
                             controller.setReceipt(receipt);
                             controller.setModalPane(modalPane);
-                            controller.setOnCloseAction(this::refreshAfterPayment);
+                            controller.setOnCloseAction(() -> {
+                                updateReceiptLabels(currentReceipt, true);
+                                printReceipt();
+                                refreshAfterPayment();
+                            });
                         },
                         CashPaymentController::save
                 );
@@ -289,6 +302,17 @@ public class PaymentPageController extends AbstractTableController<ProductWareho
                 throw new CustomException("Error loading view: " + e.getMessage(), "IO_ERROR");
             }
         });
+    }
+
+    private void printReceipt(){
+        File receiptsDir = new File("receipts");
+        if (!receiptsDir.exists()) {
+            receiptsDir.mkdirs();  // creates folder(s) if missing
+        }
+        File file = new File(receiptsDir, "receipt_" +
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".pdf");
+
+        PdfExportUtil.exportReceiptToPdf(this, file);
     }
 
     private void promptForAmountAndSelect(ProductWarehouse productWarehouse){
@@ -384,6 +408,36 @@ public class PaymentPageController extends AbstractTableController<ProductWareho
         showBarcode(barcodeData);
     }
 
+    private void updateReceiptLabels(Receipt r, boolean showAmounts){
+        if(r == null){
+            paidAmountLabel.setText("00.0");
+            changeGivenLabel.setText("00.0");
+            paymentMethodLabel.setText("UNKNOWN");
+            receiptStatusLabel.setText("PENDING");
+            return;
+        }
+
+        paymentMethodLabel.setText(r.getPaymentMethod().name());
+        receiptStatusLabel.setText(r.getStatus().name());
+
+        if (!showAmounts || r.getPaidAmount() == null) {
+            paidAmountLabel.setText("");
+            changeGivenLabel.setText("");
+            return;
+        }
+
+        // --- payment has finished, we have the real numbers ------------------
+        BigDecimal paid = r.getPaidAmount();               // never null now
+        BigDecimal change =
+                (r.getPaymentMethod() == PaymentMethod.CARD)
+                        ? r.getTotalCost()                 // card rule
+                        : Objects.requireNonNullElse(r.getChangeGiven(),
+                        BigDecimal.ZERO);
+
+        paidAmountLabel.setText(MoneyUtil.formatMoney(paid));
+        changeGivenLabel.setText(MoneyUtil.formatMoney(change));
+    }
+
     private void onInventorySelected(Warehouse warehouse){
         selectedWarehouse = warehouse;
         refresh();
@@ -457,6 +511,24 @@ public class PaymentPageController extends AbstractTableController<ProductWareho
         refresh();
         refreshPaymentSection();
         setStaticHeaderFields();
+        currentReceipt = null;
+        updateReceiptLabels(null, false);
         AlertUtil.showSuccess(stackPane, "Payment completed successfully");
     }
+
+    public Label getPaidAmountLabel()      { return paidAmountLabel; }
+    public Label getChangeGivenLabel()     { return changeGivenLabel; }
+    public Label getReceiptStatusLabel()   { return receiptStatusLabel; }
+    public Label getPaymentMethodLabel()   { return paymentMethodLabel; }
+    public Label   getDateLabel()          { return dateLabel;          }
+    public Label   getReceiptNumberLabel() { return receiptNumberLabel; }
+    public Label   getEmployeeNameLabel()  { return employeeNameLabel;  }
+    public Label   getMarketNameLabel()    { return marketNameLabel;    }
+    public Label   getPhoneLabel()         { return phoneLabel;         }
+    public Text    getAddressText()        { return addressText;        }
+    public Label   getSubtotalLabel()      { return subtotalLabel;      }
+    public Label   getTaxLabel()           { return taxLabel;           }
+    public Label   getTotalCostLabel()     { return totalCostLabel;     }
+    public ImageView getBarcodeImageView() { return barcodeImageView;   }
+    public ScrollPane getItemsScrollPane() { return scrollPane;         }
 }
