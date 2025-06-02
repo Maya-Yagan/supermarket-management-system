@@ -127,4 +127,11 @@ public class AttendanceService {
             }
         }
     }
+
+    public int countPresentDays(User user, int year, int month) {
+        return (int) getAttendances(user, year, month)
+                .stream()
+                .filter(a -> !a.getAbsent())
+                .count();
+    }
 }

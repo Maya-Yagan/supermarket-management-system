@@ -35,5 +35,7 @@
         <mapping class="com.maya_yagan.sms.finance.model.CashBox"/>
         <mapping class="com.maya_yagan.sms.finance.model.FinancialRecord"/>
         <mapping class="com.maya_yagan.sms.settings.model.Settings"/>
+        <mapping class="com.maya_yagan.sms.user.model.Advance"/>
+        <mapping class="com.maya_yagan.sms.user.model.SalaryRecord"/>
     </session-factory>
 </hibernate-configuration>

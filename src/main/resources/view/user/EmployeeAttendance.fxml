@@ -42,7 +42,7 @@
       <Label layoutX="51.0" layoutY="104.0" text="Start Date:" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="104.0" />
       <Button fx:id="exportPDFButton" layoutX="577.0" layoutY="521.0" mnemonicParsing="false" styleClass="accent" text="Export to PDF" AnchorPane.bottomAnchor="28.600000000000023" AnchorPane.rightAnchor="108.60000000000002" />
       <MenuButton fx:id="yearMenuButton" layoutX="476.0" layoutY="57.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="126.0" text="Select Year" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="57.0" />
-      <MenuButton fx:id="monthMenuButton" layoutX="476.0" layoutY="96.0" mnemonicParsing="false" text="Select Month" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="96.0" />
+      <MenuButton fx:id="monthMenuButton" layoutX="476.0" layoutY="96.0" prefHeight="26.0" prefWidth="126.0" mnemonicParsing="false" text="Select Month" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="96.0" />
       <Label layoutX="570.0" layoutY="65.0" text="Year:" AnchorPane.rightAnchor="194.0" AnchorPane.topAnchor="65.0" />
       <Label layoutX="408.0" layoutY="104.0" text="Month:" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="104.0" />
       <Label fx:id="employeeNameLabel" layoutX="111.0" layoutY="77.0" text="Name" AnchorPane.leftAnchor="112.0" AnchorPane.topAnchor="77.0" />

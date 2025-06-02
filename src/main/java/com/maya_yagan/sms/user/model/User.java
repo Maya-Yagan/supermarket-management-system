@@ -2,6 +2,7 @@ package com.maya_yagan.sms.user.model;
 
 import com.maya_yagan.sms.order.model.Order;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.*;
 import org.mindrot.jbcrypt.BCrypt;
@@ -57,6 +58,8 @@ public class User {
     private Set<Order> orders;
     @Column(name = "work_hours")
     private int workHours;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Attendance> attendances = new HashSet<>();
 
     public User(){}
 

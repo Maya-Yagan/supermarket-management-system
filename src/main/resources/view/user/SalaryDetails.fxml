@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+
+<StackPane fx:id="stackPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="370.0" prefWidth="1200.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.user.controller.SalaryDetailsController">
+    <AnchorPane prefHeight="608.0" prefWidth="859.0">
+        <TableView fx:id="tableView" layoutX="11.2" layoutY="171.0" prefHeight="374.0" prefWidth="878.0" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="171.0">
+            <columns>
+                <TableColumn fx:id="totalDaysColumn" prefWidth="74.39996337890625" text="Total days" />
+                <TableColumn fx:id="dailySalaryColumn" prefWidth="95.2000732421875" text="Salary per day" />
+                <TableColumn fx:id="totalAdvanceColumn" prefWidth="100.0" text="Total Advance" />
+                <TableColumn fx:id="monthlyAdvanceColumn" prefWidth="108.79998779296875" text="Monthly Advance" />
+                <TableColumn fx:id="remainingAdvanceColumn" prefWidth="124.0" text="Remaining Advance" />
+                <TableColumn fx:id="grossSalaryColumn" prefWidth="112.0" text="Gross salary" />
+                <TableColumn fx:id="netSalaryColumn" prefWidth="112.79998779296875" text="Net salary" />
+            </columns>
+            <styleClass>
+                <String fx:value="bordered" />
+                <String fx:value="striped" />
+            </styleClass>
+        </TableView>
+
+        <Button fx:id="closeButton" layoutX="538.0" layoutY="355.0" mnemonicParsing="false" text="Close" AnchorPane.bottomAnchor="28.333333333333314" AnchorPane.rightAnchor="30.0" />
+        <Label layoutX="46.0" layoutY="373.0" AnchorPane.bottomAnchor="26.333333333333314" AnchorPane.leftAnchor="30.0" />
+        <Label layoutX="46.0" layoutY="353.0" AnchorPane.bottomAnchor="46.333333333333314" AnchorPane.leftAnchor="30.0" />
+        <Label layoutX="46.0" layoutY="22.0" text="Salary Details" textFill="#4e597e" AnchorPane.leftAnchor="30.0">
+            <font>
+                <Font size="24.0" />
+            </font>
+        </Label>
+        <Label fx:id="fullNameLabel" layoutX="52.0" layoutY="77.0" prefHeight="27.0" prefWidth="219.0" text="Full Name " AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="77.0">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font></Label>
+        <Label layoutX="29.0" layoutY="131.0" text="Start Date:" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="131.0" />
+        <Button fx:id="exportPDFButton" layoutX="673.0" layoutY="544.0" mnemonicParsing="false" styleClass="accent" text="Export to PDF" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="115.80000000000007" />
+        <MenuButton fx:id="yearMenuButton" layoutX="476.0" layoutY="57.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="126.0" text="Select Year" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="57.0" />
+        <MenuButton fx:id="monthMenuButton" layoutX="476.0" layoutY="96.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="126.0" text="Select Month" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="96.0" />
+        <Label layoutX="570.0" layoutY="65.0" text="Year:" AnchorPane.rightAnchor="194.0" AnchorPane.topAnchor="65.0" />
+        <Label layoutX="408.0" layoutY="104.0" text="Month:" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="104.0" />
+        <Label fx:id="startDateLabel" layoutX="109.0" layoutY="131.0" text="DD.MM.YYYY" AnchorPane.leftAnchor="110.0" AnchorPane.topAnchor="131.0" />
+        <Label layoutX="30.0" layoutY="104.0" prefHeight="20.0" prefWidth="70.0" text="Position :" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="104.0" />
+        <Label fx:id="positionLabel" layoutX="109.0" layoutY="105.0" prefHeight="18.0" prefWidth="252.0" text="position" AnchorPane.leftAnchor="110.0" AnchorPane.topAnchor="104.0" />
+    </AnchorPane>
+</StackPane>
