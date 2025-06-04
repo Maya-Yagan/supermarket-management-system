@@ -83,6 +83,7 @@ public class UserService {
     
     public void deleteUser(int id){
         userDAO.deleteUser(id);
+        if(getAllUsers().isEmpty()) insertDefaultUser();
     }
     
     public Set<Role> getRolesByNames(Set<String> roleNames){
@@ -119,5 +120,19 @@ public class UserService {
 
     public String getCurrentEmployeeName() {
         return UserSession.getInstance().getCurrentUser().getFullName();
+    }
+
+    public void insertDefaultUser(){
+        initializeRole();
+        Set<Role> roles = getRolesByNames(Set.of("manager"));
+        User user = new User("admin", "admin", "admin@admin.admin", "123", roles);
+        user.setIsFullTime(true);
+        user.setIsPartTime(false);
+        user.setGender("Female");
+        user.setBirthDate(LocalDate.now());
+        user.setStartDate(LocalDate.now());
+        user.setTcNumber("-");
+        user.setPhoneNumber("-");
+        addUser(user);
     }
 }

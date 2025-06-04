@@ -6,8 +6,10 @@ import com.maya_yagan.sms.homepage.controller.HomePageController;
 import com.maya_yagan.sms.login.service.LoginService;
 import com.maya_yagan.sms.user.model.User;
 import com.maya_yagan.sms.user.service.AttendanceService;
+import com.maya_yagan.sms.user.service.UserService;
 import com.maya_yagan.sms.util.*;
 
+import javafx.scene.control.Alert;
 import javafx.scene.layout.StackPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
@@ -36,6 +38,7 @@ public class LoginController implements Initializable {
     private final LoginService loginService = new LoginService();
     private final ValidationService validationService = new ValidationService();
     private final AttendanceService attendanceService = new AttendanceService();
+    private final UserService userService = new UserService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -46,6 +49,14 @@ public class LoginController implements Initializable {
         if(lastAttendanceInsertDate == null || !lastAttendanceInsertDate.equals(today)){
             attendanceService.createBlankAttendancesForToday();
             lastAttendanceInsertDate = today;
+        }
+        if(userService.getAllUsers().isEmpty()){
+            try{
+                userService.insertDefaultUser();
+            } catch (RuntimeException e){
+                String message = e.getMessage() != null ? e.getMessage() : "No details available.";
+                AlertUtil.showAlert(Alert.AlertType.ERROR, "Error", "An unexpected error occurred\nError message: "+ message);
+            }
         }
     }
 

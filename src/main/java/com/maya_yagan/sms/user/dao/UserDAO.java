@@ -2,6 +2,8 @@ package com.maya_yagan.sms.user.dao;
 
 import com.maya_yagan.sms.util.HibernateUtil;
 import com.maya_yagan.sms.user.model.User;
+
+import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -75,7 +77,7 @@ public class UserDAO {
             return query.getResultList();
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return new ArrayList<>();
         }
     }
     

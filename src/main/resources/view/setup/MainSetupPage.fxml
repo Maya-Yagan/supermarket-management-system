@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="TOP_CENTER" spacing="15" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.maya_yagan.sms.setup.controller.MainSetupPageController">
+
+    <!-- Title -->
+    <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Initial Setup – Supermarket Management System" />
+
+    <!-- Welcome Message -->
+    <TextArea editable="false" prefRowCount="4" wrapText="true">
+        <text>
+            Welcome! This appears to be the first time you're running the application.
+            Before you can use the Supermarket Management System, you need to set up a central database using Microsoft SQL Server.
+            This setup page will guide you through the required steps and allow you to connect to your database server.
+        </text>
+    </TextArea>
+
+    <!-- Instructions Panel -->
+    <TitledPane expanded="false" text="How to Set Up Microsoft SQL Server?">
+        <content>
+            <TextArea editable="false" prefRowCount="18" text=" STEP 1: Install Microsoft SQL Server&#10; - Download SQL Server from the official Microsoft page.&#10; - Choose the 'Developer' or 'Express' edition.&#10; - During setup, select 'Mixed Mode Authentication' and choose a strong password.&#10; &#10; STEP 2: Create the Database&#10; - Open 'SQL Server Management Studio' (SSMS).&#10; - Connect to your local server (usually named like 'DESKTOP-XYZ\\SQLEXPRESS').&#10; - Right-click on 'Databases' &gt; New Database &gt; Name it: supermarket_db &gt; Click OK.&#10; &#10; STEP 3: Create a SQL Login&#10; - Go to 'Security' &gt; 'Logins' &gt; Right-click &gt; New Login.&#10; - Username: supermarket_user&#10; - Password: (choose one, e.g., 123456)&#10; - Go to 'User Mapping' tab &gt; Check 'supermarket_db' &gt; Check 'db_owner' role.&#10; &#10; STEP 4: Enable Network Access (TCP/IP)&#10; - Open 'SQL Server Configuration Manager'.&#10; - Go to 'SQL Server Network Configuration' &gt; Click your SQL instance.&#10; - Double-click 'TCP/IP' &gt; Set 'Enabled' to Yes.&#10; - Restart the SQL Server service.&#10; &#10; STEP 5: Allow Database Access Through Firewall&#10; - Open 'Windows Defender Firewall'.&#10; - Go to 'Advanced Settings' &gt; 'Inbound Rules'.&#10; - Click 'New Rule' &gt; Select 'Port' &gt; Next.&#10; - Choose TCP, enter port: 1433 &gt; Next.&#10; - Allow the connection &gt; Next &gt; Give it a name like 'SQL Server Port'.&#10; &#10; STEP 6: Find Your Server's IP Address&#10; - On the server machine, press Win + R &gt; type 'cmd' &gt; Enter.&#10; - Type 'ipconfig' &gt; Press Enter.&#10; - Look for 'IPv4 Address' (e.g., 192.168.1.5).&#10; - Use this IP on client machines to connect to the central database. " wrapText="true" />
+        </content>
+    </TitledPane>
+   <Region prefHeight="30.0" prefWidth="598.0" />
+
+    <!-- Database Config Form -->
+    <GridPane alignment="CENTER" hgap="10" vgap="10">
+        <columnConstraints>
+            <ColumnConstraints halignment="RIGHT" minWidth="100.0" />
+            <ColumnConstraints minWidth="300.0" />
+        </columnConstraints>
+
+        <Label text="Host / IP:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <TextField fx:id="serverField" promptText="e.g. 192.168.1.10 or localhost" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+        <Label text="Port:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <TextField fx:id="portField" promptText="Default: 1433" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+        <Label text="Database Name:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <TextField fx:id="dbNameField" promptText="e.g. supermarket_db" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+        <Label text="Username:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+        <TextField fx:id="usernameField" promptText="e.g. supermarket_user" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+        <Label text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+        <PasswordField fx:id="passwordField" promptText="Your SQL password" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+      <rowConstraints>
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+      </rowConstraints>
+    </GridPane>
+   <Region prefHeight="32.0" prefWidth="598.0" />
+
+    <!-- Buttons -->
+    <HBox alignment="CENTER" spacing="10">
+        <Button fx:id="testButton" styleClass="success" text="Test Connection" />
+        <Button fx:id="saveButton" styleClass="accent" text="Save and Continue" />
+    </HBox>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>
