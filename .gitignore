@@ -3,3 +3,7 @@ target/
 *.CLASS
 nb-configuration.xml
 .env
+runtime/
+receipts/
+sms.iml
+application.conf
